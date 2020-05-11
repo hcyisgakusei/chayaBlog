@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/chayaBlog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/chayaBlog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/chayaBlog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/chayaBlog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/chayaBlog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/chayaBlog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/chayaBlog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 import 和 export 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。 需要注意的一些概念 首先，es6 的模块是基于文件的模块，在浏览器端还不支持 import 和 export 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。 es6 的模块是单利的，也就是说，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈es6的模块化">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2018/07/28/about-es6-module/index.html">
+<meta property="og:site_name" content="HCY">
+<meta property="og:description" content="如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 import 和 export 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。 需要注意的一些概念 首先，es6 的模块是基于文件的模块，在浏览器端还不支持 import 和 export 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。 es6 的模块是单利的，也就是说，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-11T15:26:41.655Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谈谈es6的模块化">
+<meta name="twitter:description" content="如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 import 和 export 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。 需要注意的一些概念 首先，es6 的模块是基于文件的模块，在浏览器端还不支持 import 和 export 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。 es6 的模块是单利的，也就是说，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/chayaBlog/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2018/07/28/about-es6-module/">
+
+
+
+
+
+  <title>谈谈es6的模块化 | HCY</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/chayaBlog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">HCY</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/chayaBlog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/chayaBlog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/07/28/about-es6-module/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">谈谈es6的模块化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-28T17:39:51+08:00">
+                2018-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 <code>import</code> 和 <code>export</code> 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。</p>
+<h2 id="需要注意的一些概念"><a href="#需要注意的一些概念" class="headerlink" title="需要注意的一些概念"></a>需要注意的一些概念</h2><ul>
+<li>首先，es6 的模块是基于文件的模块，在浏览器端还不支持 <code>import</code> 和 <code>export</code> 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。</li>
+<li>es6 的模块是单利的，也就是说，模块只有一个实例，每次我们 <code>import</code> 的时候，其实都是同一个对象。如果需要有多个模块实例的话，则需要通过 <code>export</code> 一个工厂方法来实现</li>
+</ul>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>es6 模块主要就是两个新的关键字 <code>import</code> 和 <code>export</code></p>
+<h3 id="named-export-命名导出"><a href="#named-export-命名导出" class="headerlink" title="named export (命名导出)"></a>named export (命名导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> awesome = <span class="string">'awesome'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  test,</span><br><span class="line">  awesome</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在模块内作用域都是局部的，只要没有 <code>export</code> 出去，外面就无法访问到。</p>
+<p>我们也可以在导出的时候给成员重命名 <code>export { test as try }</code>。</p>
+<h3 id="模块是单例的"><a href="#模块是单例的" class="headerlink" title="模块是单例的"></a>模块是单例的</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">let name = &apos;test&apos;;</span><br><span class="line">export &#123;name&#125;;</span><br><span class="line"></span><br><span class="line">// index.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">name = &apos;index change it&apos;;</span><br><span class="line"></span><br><span class="line">// getname.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">console.log(name); // index change it</span><br></pre></td></tr></table></figure>
+<p>当我们在 index.js 修改了从 test.js import 进来的 name，之后我们再在 getname.js 中 import 它，这时候我们就会发现这个值就被修改了。</p>
+<p>这是因为在 import 的时候，我们本质上可以看做是引了一个对变量的指针。虽然有这个特性，但是我们应该避免使用这个特性，<br>因为这会增大我们程序的复杂度，会使得程序变得难以维护，追踪变量在哪里被修改是非常麻烦的。</p>
+<h3 id="export-default-默认导出"><a href="#export-default-默认导出" class="headerlink" title="export default (默认导出)"></a>export default (默认导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="keyword">const</span> name = <span class="string">'test'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> name;</span><br></pre></td></tr></table></figure>
+<p>当文件中有默认导出的时候我们可以通过下面几种方式得到这个值</p>
+<ul>
+<li><p><code>import name from &#39;./test&#39;</code> 这个 name 也可以叫其他名字比方说<code>import test from &#39;./test&#39;</code> 这里 name 和 test 其实指的是同一个东西</p>
+</li>
+<li><p><code>import { default as name } from &#39;./test</code> 这里的 default 不能省略</p>
+</li>
+</ul>
+<h3 id="namespace-import-命名空间引入"><a href="#namespace-import-命名空间引入" class="headerlink" title="namespace import (命名空间引入)"></a>namespace import (命名空间引入)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> test <span class="keyword">from</span> <span class="string">'./test'</span></span><br><span class="line"><span class="built_in">console</span>.log(test.name);</span><br></pre></td></tr></table></figure>
+<p>es6 的设计理念是让我们按需引用，不过还是看具体的需要，如果引入的模块比较小的话，<br>我们还是可以通过使用命名空间引入的方式来进行引用。</p>
+<h3 id="import-立执行的函数"><a href="#import-立执行的函数" class="headerlink" title="import 立执行的函数"></a>import 立执行的函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'rxjs/operators/add'</span>;</span><br></pre></td></tr></table></figure>
+<p>有时候我们会看到一些类似于上面的用法，这些一般加载的是一些立执行的函数，一般我们也要避免使用这种，因为他会导致你的代码变得难以理解，后来的 rxjs6 也修改了这种用法</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/chayaBlog/2018/06/14/mac前端开发环境/" rel="next" title="mac前端开发环境">
+                <i class="fa fa-chevron-left"></i> mac前端开发环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chayaBlog/2018/08/01/xss和csrf攻击/" rel="prev" title="Web 安全之 xss和csrf攻击">
+                Web 安全之 xss和csrf攻击 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">HCY</p>
+              <p class="site-description motion-element" itemprop="description">HCY</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/chayaBlog/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/chayaBlog/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#需要注意的一些概念"><span class="nav-number">1.</span> <span class="nav-text">需要注意的一些概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#named-export-命名导出"><span class="nav-number">2.1.</span> <span class="nav-text">named export (命名导出)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块是单例的"><span class="nav-number">2.2.</span> <span class="nav-text">模块是单例的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#export-default-默认导出"><span class="nav-number">2.3.</span> <span class="nav-text">export default (默认导出)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace-import-命名空间引入"><span class="nav-number">2.4.</span> <span class="nav-text">namespace import (命名空间引入)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import-立执行的函数"><span class="nav-number">2.5.</span> <span class="nav-text">import 立执行的函数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HCY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/chayaBlog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

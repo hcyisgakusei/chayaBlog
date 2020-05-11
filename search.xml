@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>谈谈es6的模块化</title>
+    <url>/chayaBlog/2018/07/28/about-es6-module/</url>
+    <content><![CDATA[<p>如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 <code>import</code> 和 <code>export</code> 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。</p>
+<h2 id="需要注意的一些概念"><a href="#需要注意的一些概念" class="headerlink" title="需要注意的一些概念"></a>需要注意的一些概念</h2><ul>
+<li>首先，es6 的模块是基于文件的模块，在浏览器端还不支持 <code>import</code> 和 <code>export</code> 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。</li>
+<li>es6 的模块是单利的，也就是说，模块只有一个实例，每次我们 <code>import</code> 的时候，其实都是同一个对象。如果需要有多个模块实例的话，则需要通过 <code>export</code> 一个工厂方法来实现</li>
+</ul>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>es6 模块主要就是两个新的关键字 <code>import</code> 和 <code>export</code></p>
+<h3 id="named-export-命名导出"><a href="#named-export-命名导出" class="headerlink" title="named export (命名导出)"></a>named export (命名导出)</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> awesome = <span class="string">'awesome'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  test,</span><br><span class="line">  awesome</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在模块内作用域都是局部的，只要没有 <code>export</code> 出去，外面就无法访问到。</p>
+<p>我们也可以在导出的时候给成员重命名 <code>export { test as try }</code>。</p>
+<h3 id="模块是单例的"><a href="#模块是单例的" class="headerlink" title="模块是单例的"></a>模块是单例的</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// test.js</span><br><span class="line">let name = &apos;test&apos;;</span><br><span class="line">export &#123;name&#125;;</span><br><span class="line"></span><br><span class="line">// index.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">name = &apos;index change it&apos;;</span><br><span class="line"></span><br><span class="line">// getname.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">console.log(name); // index change it</span><br></pre></td></tr></table></figure>
+<p>当我们在 index.js 修改了从 test.js import 进来的 name，之后我们再在 getname.js 中 import 它，这时候我们就会发现这个值就被修改了。</p>
+<p>这是因为在 import 的时候，我们本质上可以看做是引了一个对变量的指针。虽然有这个特性，但是我们应该避免使用这个特性，<br>因为这会增大我们程序的复杂度，会使得程序变得难以维护，追踪变量在哪里被修改是非常麻烦的。</p>
+<h3 id="export-default-默认导出"><a href="#export-default-默认导出" class="headerlink" title="export default (默认导出)"></a>export default (默认导出)</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="keyword">const</span> name = <span class="string">'test'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> name;</span><br></pre></td></tr></table></figure>
+<p>当文件中有默认导出的时候我们可以通过下面几种方式得到这个值</p>
+<ul>
+<li><p><code>import name from &#39;./test&#39;</code> 这个 name 也可以叫其他名字比方说<code>import test from &#39;./test&#39;</code> 这里 name 和 test 其实指的是同一个东西</p>
+</li>
+<li><p><code>import { default as name } from &#39;./test</code> 这里的 default 不能省略</p>
+</li>
+</ul>
+<h3 id="namespace-import-命名空间引入"><a href="#namespace-import-命名空间引入" class="headerlink" title="namespace import (命名空间引入)"></a>namespace import (命名空间引入)</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> test <span class="keyword">from</span> <span class="string">'./test'</span></span><br><span class="line"><span class="built_in">console</span>.log(test.name);</span><br></pre></td></tr></table></figure>
+<p>es6 的设计理念是让我们按需引用，不过还是看具体的需要，如果引入的模块比较小的话，<br>我们还是可以通过使用命名空间引入的方式来进行引用。</p>
+<h3 id="import-立执行的函数"><a href="#import-立执行的函数" class="headerlink" title="import 立执行的函数"></a>import 立执行的函数</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'rxjs/operators/add'</span>;</span><br></pre></td></tr></table></figure>
+<p>有时候我们会看到一些类似于上面的用法，这些一般加载的是一些立执行的函数，一般我们也要避免使用这种，因为他会导致你的代码变得难以理解，后来的 rxjs6 也修改了这种用法</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>call、bind、apply 原理与原生实现</title>
+    <url>/chayaBlog/2018/11/24/call-bind-apply/</url>
+    <content><![CDATA[<p>call, apply, bind 算是比较面试中比较常问到的几个问题，再我们实际开发中也算是常用到的几个方法，了解清楚他们背后的运行机制和原理对一个前端开发者来说也就十分的必要了。</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>先来看看他们各自的用法</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> petter = &#123;</span><br><span class="line">    name:<span class="string">'petter'</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">text, color</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">':'</span> + text + <span class="string">','</span> + color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// call 的用法</span></span><br><span class="line">say.call(petter, <span class="string">'call'</span>, <span class="string">'red'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// apply 的用法</span></span><br><span class="line">say.apply(petter, [<span class="string">'call'</span>, <span class="string">'red'</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// bind 的用法</span></span><br><span class="line"><span class="keyword">var</span> petter_say = say.bind(petter, <span class="string">'call'</span>);</span><br><span class="line">petter_say(<span class="string">'red'</span>);</span><br></pre></td></tr></table></figure>
+<p>call 和 apply的区别只是在第二参数，他们第一个参数都是用于改变函数this的指向，call 后面需要按顺序传入函数所需的多个参数， apply 则需要将函数所需的参数放入数组中传给apply的第二参数。</p>
+<p>bind 和他们又很不一样，bind会返回一个改变了this的新的函数，后面和call一样，你可以把所有参数提前传入，也可以后面再把参数传入。</p>
+<h2 id="原生实现"><a href="#原生实现" class="headerlink" title="原生实现"></a>原生实现</h2><p>了解他们各自的用法之后，我们也可以自己通过原生的代码去实现上面的方法</p>
+<h3 id="call-的实现"><a href="#call-的实现" class="headerlink" title="call 的实现"></a>call 的实现</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">Function</span>.prototype.my_call = <span class="function"><span class="keyword">function</span>(<span class="params">new_this, ...params</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用来做唯一索引用的，也可以不用symbol，为了安全用symbol能够保证外面绝对无法访问</span></span><br><span class="line">    <span class="comment">// 整个原理是需要把方法挂载到传入的对象上去，然后通过这个对象去调用用这个函数</span></span><br><span class="line">    <span class="keyword">const</span> fn_symbol = <span class="built_in">Symbol</span>(<span class="string">'fn'</span>);</span><br><span class="line">    <span class="keyword">if</span> (new_this === <span class="literal">null</span> || new_this === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        new_this = <span class="built_in">window</span>; <span class="comment">// 传入null或者undefined的时候需要让this指向window</span></span><br><span class="line">    &#125;</span><br><span class="line">    new_this[fn_symbol] = <span class="keyword">this</span>; <span class="comment">// 这里的this指向的是这个方法</span></span><br><span class="line">    new_this[fn_symbol](...params); </span><br><span class="line">    <span class="keyword">delete</span> new_this[fn_symbol];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="apply-的实现"><a href="#apply-的实现" class="headerlink" title="apply 的实现"></a>apply 的实现</h3><p>实现了call之后，apply 的实现也是类似的</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 唯一的区别就是这里的params不需要展开运算符</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.my_apply = <span class="function"><span class="keyword">function</span>(<span class="params">new_this, params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> fn_symbol = <span class="built_in">Symbol</span>(<span class="string">'fn'</span>);</span><br><span class="line">    <span class="keyword">if</span> (new_this === <span class="literal">null</span> || new_this === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        new_this = <span class="built_in">window</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    new_this[fn_symbol] = <span class="keyword">this</span>;</span><br><span class="line">    new_this[fn_symbol](...params); </span><br><span class="line">    <span class="keyword">delete</span> new_this[fn_symbol];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bind-的实现"><a href="#bind-的实现" class="headerlink" title="bind 的实现"></a>bind 的实现</h3><p>bind 和 call 有点类似，但又不太一样，bind 会返回一个新的函数，所以我们得保存传入的this然后返回一个新的函数出来</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">Function</span>.prototype.my_bind = <span class="function"><span class="keyword">function</span>(<span class="params">new_this, ...params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> fn_symbol = <span class="built_in">Symbol</span>(<span class="string">'fn'</span>);</span><br><span class="line">    <span class="keyword">if</span> (new_this === <span class="literal">null</span> || new_this === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        new_this = <span class="built_in">window</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    new_this[fn_symbol] = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...new_params</span>) </span>&#123;</span><br><span class="line">        new_this[fn_symbol](...[...params, ...new_params]);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者可以借助call来实现</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.my_bind_c = <span class="function"><span class="keyword">function</span>(<span class="params">new_this, ...params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> fn = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">...new_params</span>) </span>&#123;</span><br><span class="line">        fn.call(new_this, ...params, ...new_params);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在我们可以更好的去理解为什么bind之后的方法无法再去改变他的this了，因为闭包的关系，传入的new_this我们是无法再去改变他的指向的.</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>iframe 跨域访问session cookie丢失问题解决方法</title>
+    <url>/chayaBlog/2018/12/10/cookie%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>之前因为工作需要，在一个域名A的页面中，使用iframe包含另一个域名B的页面。在chrome，firefox测试一切正常。<br>当测试到IE7时，发现域名B中的页面session失效，不能写入session。</p>
+<p>网上搜索后了解， 因为IE有安全策略，限制页面不保存第三方cookie(当前访问域名A下的页面为第一方cookie，而域名B下的页面为第三方cookie)。<br>虽然有安全策略限制，但我们可以引入P3P声明允许第三方收集个人信息，使第三方cookie不被拒绝。</p>
+<p>P3P：Platform for Privacy Preferences（隐私偏好平台）是W3C公布的一项隐私保护推荐标准，能够保护在线隐私权。使用Internet者可以选择在浏览网页时，是否被第三方收集并利用自己的个人信息。如果一个站点不遵守P3P标准，它的Cookies将被自动拒绝。</p>
+<p>在iframe的页面头加入以下语句即可解决session失效问题。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">header(&apos;P3P: CP=&quot;CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR&quot;&apos;);</span><br></pre></td></tr></table></figure>
+<p>IE iframe 跨域访问session问题解决了，但测试后发现，即使加入了P3P，safari浏览器依然不能保存iframe页面中的session。</p>
+<p>原来safari的安全策略是，当cookie并未以第一方cookie保存过的（非iframe），将判断为不安全而直接拒绝。因此与IE的P3P有些不同</p>
+<p>首先在iframe的页面中判断某个session值是否存在。如果不存在，使用js修改window.top.location跳到一个本域的setSession.PHP页面。<br>因为是用window.top.location打开，因此并非iframe去访问，且能以第一方cookie保存.<br>然后在setSession.php页面执行完set session后，会跳回A域名的页面。之后就能使用session而不失效了。</p>
+<h5 id="a-com-index-php"><a href="#a-com-index-php" class="headerlink" title="a.com/index.php"></a>a.com/index.php</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;  </span><br><span class="line">&lt;html&gt;  </span><br><span class="line"> &lt;head&gt;  </span><br><span class="line">  &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8&quot;&gt;  </span><br><span class="line">  &lt;title&gt; domain A page &lt;/title&gt;  </span><br><span class="line"> &lt;/head&gt;  </span><br><span class="line">  </span><br><span class="line"> &lt;body&gt;  </span><br><span class="line">  &lt;p&gt;A Page&lt;/p&gt;  </span><br><span class="line">  &lt;iframe src=&quot;http://b.com/index.php&quot;&gt;&lt;/iframe&gt;  </span><br><span class="line"> &lt;/body&gt;  </span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h5 id="b-com-index-php"><a href="#b-com-index-php" class="headerlink" title="b.com/index.php"></a>b.com/index.php</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php  </span><br><span class="line">header(&apos;P3P: CP=&quot;CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR&quot;&apos;);  </span><br><span class="line">session_start();  </span><br><span class="line">  </span><br><span class="line">$ua = $_SERVER[&apos;HTTP_USER_AGENT&apos;];  </span><br><span class="line">// 如果是safari  </span><br><span class="line">if(strstr($ua, &apos;Safari&apos;)!=&apos;&apos; &amp;&amp; strstr($ua, &apos;Chrome&apos;)==&apos;&apos;)&#123;  </span><br><span class="line">    // 如果未设置第一方cookie  </span><br><span class="line">    if(!isset($_SESSION[&apos;safari&apos;]))&#123;  </span><br><span class="line">        echo &apos;&lt;script type=&quot;text/javascript&quot;&gt; window.top.location=&quot;http://b.com/setSession.php&quot;; &lt;/script&gt;&apos;;  </span><br><span class="line">        exit();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">$_SESSION[&apos;code&apos;] = md5(microtime(true));  </span><br><span class="line">?&gt;  </span><br><span class="line">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;  </span><br><span class="line">&lt;html&gt;  </span><br><span class="line"> &lt;head&gt;  </span><br><span class="line">  &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8&quot;&gt;  </span><br><span class="line">  &lt;title&gt; domain B page &lt;/title&gt;  </span><br><span class="line"> &lt;/head&gt;  </span><br><span class="line">  </span><br><span class="line"> &lt;body&gt;  </span><br><span class="line">  &lt;p&gt;B Page&lt;/p&gt;  </span><br><span class="line">  &lt;?php  </span><br><span class="line">  if(isset($_SESSION[&apos;code&apos;]))&#123;  </span><br><span class="line">    echo &apos;code:&apos;.$_SESSION[&apos;code&apos;];  </span><br><span class="line">  &#125;  </span><br><span class="line">  ?&gt;  </span><br><span class="line"> &lt;/body&gt;  </span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h5 id="b-com-setSession-php"><a href="#b-com-setSession-php" class="headerlink" title="b.com/setSession.php"></a>b.com/setSession.php</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php  </span><br><span class="line">header(&apos;P3P: CP=&quot;CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR&quot;&apos;);  </span><br><span class="line">session_start();  </span><br><span class="line">$_SESSION[&apos;safari&apos;] = 1;  </span><br><span class="line">header(&apos;location:http://a.com/index.php&apos;);  </span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>js 对象与hash表</title>
+    <url>/chayaBlog/2019/01/26/js-hash-%E8%A1%A8/</url>
+    <content><![CDATA[<h2 id="hash-表"><a href="#hash-表" class="headerlink" title="hash 表"></a>hash 表</h2><p>哈希表也叫散列表，我们在中使用的对象就是一种hash结构。哈希表根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。</p>
+<h3 id="hash表的结构"><a href="#hash表的结构" class="headerlink" title="hash表的结构"></a>hash表的结构</h3><p>hash表的结构本质上是结合了数组和链表两种结构。</p>
+<p>数组：寻址容易，插入和删除困难，需要预先给定数组的大小<br>链表：寻址困难，插入和删除容易，不需要预先给定空间</p>
+<p>hash 表的可以看做是一个存储链表的数组。</p>
+<h3 id="hash-函数"><a href="#hash-函数" class="headerlink" title="hash 函数"></a>hash 函数</h3><p>我们对哈希表进行put操作的时候，底层会对 key 用hash函数映射到数组中。哈希函数需要具有以下几个特点：</p>
+<ul>
+<li>运算过程要尽量简单高效，以提高哈希表的插入和检索效率；</li>
+<li>哈希函数应该具有较好的散列型，以降低哈希冲突的概率；</li>
+<li>哈希函数应具有较大的压缩性，以节省内存。</li>
+</ul>
+<p>常用的方法有以下几种：</p>
+<ul>
+<li>直接地址法：以关键字的某个线性函数值为哈希地址，可以表示为hash(K)=aK+C;优点是不会产生冲突，缺点是空间复杂度可能会较高，适用于元素较少的情况</li>
+<li>除留余数法：它是由数据元素关键字除以某个常数所留的余数为哈希地址，该方法计算简单，适用范围广，是经常使用的一种哈希函数</li>
+<li>数字分析法：该方法是取数据元素关键字中某些取值较均匀的数字来作为哈希地址的方法，这样可以尽量避免冲突，但是该方法只适合于所有关键字已知的情况，对于想要设计出更加通用的哈希表并不适用</li>
+<li>平方求和法：对当前字串转化为Unicode值，并求出这个值的平方，去平方值中间的几位为当前数字的hash值，具体取几位要取决于当前哈希表的大小。</li>
+<li>分段求和法：根据当前哈希表的位数把所要插入的数值分成若干段，把若干段进行相加，舍去调最高位结果就是这个值的哈希值。</li>
+</ul>
+<h3 id="hash-冲突"><a href="#hash-冲突" class="headerlink" title="hash 冲突"></a>hash 冲突</h3><p>当两个不同key通过hash函数映射到了数组同一个地址中，此时就存在了hash冲突。</p>
+<p>哈希冲突主要与两个因素有关：</p>
+<ul>
+<li>填装因子，填装因子是指哈希表中已存入的数据元素个数与哈希地址空间的大小的比值，a=n/m ; a越小，冲突的可能性就越小，相反则冲突可能性较大；但是a越小空间利用率也就越小，a越大，空间利用率越高，为了兼顾哈希冲突和存储空间利用率，通常将a控制在0.6-0.9之间，</li>
+<li>与所用的哈希函数有关，如果哈希函数得当，就可以使哈希地址尽可能的均匀分布在哈希地址空间上，从而减少冲突的产生，但一个良好的哈希函数的得来很大程度上取决于大量的实践，</li>
+</ul>
+<h4 id="解决-hash冲突"><a href="#解决-hash冲突" class="headerlink" title="解决 hash冲突"></a>解决 hash冲突</h4><p>一般使用拉链法来解决这个问题。即不在数组中直接存储value而是存储一个链表，当存在hash冲突的时候只需要在冲突的位置的结尾加多一个节点。</p>
+<h4 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h4><p>一般我们会预先设定一个临界值，当达到临界值会对hash表进行扩容操作，不过扩容操作是非常损耗性能的</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>js 作用域与闭包</title>
+    <url>/chayaBlog/2018/03/19/js-%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E9%97%AD%E5%8C%85/</url>
+    <content><![CDATA[<p>在 <code>let</code> 和 <code>const</code> 出现之前，js 是没有会计作用域的， 在我们使用 <code>var</code> 定义变量的时候，是有可能会导致变量提升的。</p>
+<p><strong>比如</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>这段代码最后会输出2，这是因为var 导致了变量 i 的提升，在有了 let之后我们用let就不会有这个问题。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// error i is not defined</span></span><br></pre></td></tr></table></figure>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h2><p>我们先看看这段代码</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(b)</span><br><span class="line">    &#125;</span><br><span class="line">    inner();</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line"><span class="built_in">console</span>.log(b)</span><br></pre></td></tr></table></figure>
+<p>上面这段代码会依次输出，1，2，error b is not defined，</p>
+<p>在js中函数是有自己的作用域的，函数内部定义的变量，外部是无法直接访问到的，只有函数内部才能够直接访问。</p>
+<p>函数内部在调用 <code>inner()</code> ，在访问 b 这个变量的时候，会先看自己的作用域中是否有这个变量，发现没有，然后再查找 test 的作用域，发现了这个变量，然后就输出这个变量。</p>
+<p>这里外部无法访问到test中的b，所以在函数执行完之后，b会被销毁掉。</p>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>我们先来看一下代码</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countResult</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        count ++;</span><br><span class="line">        <span class="built_in">console</span>.log(cout)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> tmp = countResult();</span><br><span class="line"><span class="keyword">var</span> tmp2 = countResult();</span><br><span class="line">tmp(); <span class="comment">// 1</span></span><br><span class="line">tmp2(); <span class="comment">// 1</span></span><br><span class="line">tmp(); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>这里虽然我们无法直接访问到 <code>countResult</code> 中的变量count，但是我们通过返回的函数可以间接的访问到count，tmp保持着对count的引用，所以tmp 中的count不会被销毁，我们再新生成一个tmp2，可以发现，tmp和tmp2之间的作用域是不同的，他们都有自己单独的局部作用域。</p>
+<p>闭包的作用主要有两点：</p>
+<ol>
+<li>隔离作用域</li>
+<li>使局部变量能够常驻内存</li>
+</ol>
+<p>同样闭包带来的问题也非常明显：</p>
+<ol>
+<li>闭包会使得函数中的变量都被保存到内存中，导致内存消耗很大。在使用闭包的时候，退出函数之前，我们需要将一些不使用的局部变量全部删除。</li>
+</ol>
+<h2 id="js-的垃圾回收机制"><a href="#js-的垃圾回收机制" class="headerlink" title="js 的垃圾回收机制"></a>js 的垃圾回收机制</h2><h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><p>应有计数通过计算变量的引用数来回收垃圾，如果一个值的引用数为0则将其回收</p>
+<p>引用计数法会存在一个问题。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">function test()&#123;</span><br><span class="line">    var a = &#123;&#125;;</span><br><span class="line">    var b= &#123;&#125;;</span><br><span class="line">    a.b=b;</span><br><span class="line">    b.a=a;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>test 中的 a和b互相引用了对方，但是这里执行完之后本该销毁这两个变量，如果使用引用计数法的话，就不会销毁这两个变量而导致内存泄露。</p>
+<h3 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h3><p>标记清除法是通过根节点向下访问，如果能访问到的都不会被清除，在浏览器中根节点就 <code>window</code>, 这样就避免了循环引用导致的内存泄露问题。</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>[].slice.call(arguments) 转数组的原理</title>
+    <url>/chayaBlog/2018/03/16/prototype-slice/</url>
+    <content><![CDATA[<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log([].slice.call(<span class="built_in">arguments</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="comment">// [1,2,3,4]</span></span><br></pre></td></tr></table></figure>
+<p>我们经常可以看到一些文档或者比人的源码之中用这种方式把<code>arguments</code>转化为数组,但是为什么可以这样子操作呢，现在我们可以看一下<code>Array.prototype.slice</code> 他的实现原理是怎样的。</p>
+<h3 id="slice-的原理"><a href="#slice-的原理" class="headerlink" title="slice 的原理"></a>slice 的原理</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.slice = <span class="function"><span class="keyword">function</span>(<span class="params">begin, end</span>) </span>&#123;</span><br><span class="line">      end = (<span class="keyword">typeof</span> end !== <span class="string">'undefined'</span>) ? end : <span class="keyword">this</span>.length;</span><br><span class="line">    </span><br><span class="line">      <span class="keyword">var</span> i, </span><br><span class="line">        cloned = [],</span><br><span class="line">        size, </span><br><span class="line">        len = <span class="keyword">this</span>.length;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> start = begin || <span class="number">0</span>;</span><br><span class="line">      start = (start &gt;= <span class="number">0</span>) ? start : <span class="built_in">Math</span>.max(<span class="number">0</span>, len + start);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> upTo = (<span class="keyword">typeof</span> end == <span class="string">'number'</span>) ? <span class="built_in">Math</span>.min(end, len) : len;</span><br><span class="line">      <span class="keyword">if</span> (end &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        upTo = len + end;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      size = upTo - start;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        cloned = <span class="keyword">new</span> <span class="built_in">Array</span>(size);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.charAt) &#123;</span><br><span class="line">          <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            cloned[i] = <span class="keyword">this</span>.charAt(start + i);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            cloned[i] = <span class="keyword">this</span>[start + i];</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> cloned;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p>我们可以到 <code>slice</code> 其实是在用 <code>this</code> 访问对象的属性，通过<code>call</code>将<code>arguments</code>绑定到<code>this</code>上，以此可以遍历出 <code>arguments</code> 的全部参数。</p>
+<p>通过 <code>slice</code> 的底层原理我们也可以看出，如果我们传一个字符串进去，会把字符串转化为数组</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[].slice.call(&apos;12345&apos;); // [1,2,3,4,5]</span><br></pre></td></tr></table></figure>
+<h3 id="ES6的新方法"><a href="#ES6的新方法" class="headerlink" title="ES6的新方法"></a>ES6的新方法</h3><p>ES6 给 <code>Array</code> 新加了一个方法，我们也可以通过他把 arguments 转化为数组。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(&#123;<span class="attr">length</span>:<span class="number">2</span>,<span class="number">0</span>:<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>&#125;) <span class="comment">// [1,2]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(<span class="built_in">arguments</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);<span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
+<p>相比于 <code>slice</code>，<code>from</code> 更强大一点，<code>from</code> 还可以将带有遍历器属性<code>[Symbol.iterator]</code>的对象转化为数组</p>
+<p>例如我们可以这样操作</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = &#123;&#125;</span><br><span class="line">test[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span> *(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(test);<span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>mac前端开发环境</title>
+    <url>/chayaBlog/2018/06/14/mac%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[<p>最近正在从 windows 转向 mac，不得不说mac做开发确实省心不少。这里记录下相关环境的搭建与配置。</p>
+<h2 id="git"><a href="#git" class="headerlink" title="git"></a>git</h2><p>git 可以有两种方式去安装，可以从 github上下载然后自己编译安装，由于这个过程比较麻烦，所以我还是选择了另一种方式，直接在app store中安装xCode，安装好之后就会自动的帮你安装好git了。</p>
+<h2 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h2><p>mac 下的包管理工具，很多东西可以通过他来进行安装。他的安装方式也很简单，只需复制一条简单的命令行就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="item2"><a href="#item2" class="headerlink" title="item2"></a>item2</h2><p>item是mac上一框非常好用的终端，基本上也是必备的。直接去官网下载就可以了 <a href="https://iterm2.com/" target="_blank" rel="noopener">https://iterm2.com/</a>。<br>具体的一些相关配置可以参考这偏文档 <a href="https://segmentfault.com/a/1190000010518195" target="_blank" rel="noopener">https://segmentfault.com/a/1190000010518195</a></p>
+<h2 id="谷歌浏览器插件"><a href="#谷歌浏览器插件" class="headerlink" title="谷歌浏览器插件"></a>谷歌浏览器插件</h2><ul>
+<li>Rememberry 翻译非常好用，可以帮助你复习巩固单词，看英文文档的时候也更方便快捷</li>
+<li>Tampermonkey 里面有很多有趣的脚本可以用，比如百度云盘可以免安装客户端直接下载</li>
+<li>Vimium 强烈推荐这个，里面有视频教程，基本看一遍就会了，让你可以完全脱离鼠标，用键盘控制浏览器，非常好用</li>
+<li>Insight.io for Github 让你能够方便快捷的看github仓库的目录结构，甚至能够像ide一样搜索残酷，强烈推荐使用</li>
+<li>postman 调接口非常好用的一个插件，不过现在已经脱离谷歌浏览器成为了一个桌面程序了</li>
+<li>JSON-handle 可以非常方便快捷的格式化json数据</li>
+</ul>
+<h2 id="webstorm"><a href="#webstorm" class="headerlink" title="webstorm"></a>webstorm</h2><p>webstorm 是一款非常好用的前端ide，虽然本身的功能已经十分强大了，但是还是有非常多的强大的插件可以用。这里简单列举几个我常用的插件：</p>
+<ul>
+<li>.ignore    支持 .gitignore 的语法规则，并提供自动将文件加入 .gitignore 的功能</li>
+<li>Key PromoterX  Key Promoter的升级版，使用鼠标点击的时候会提醒你键盘的快捷键是什么，帮助你更好的使用键盘进行工作</li>
+<li>ideaVim 可以让你在 webstorm 中使用vim</li>
+<li>AceJump 帮助你快速跳转代码，和谷歌浏览器中的vimuim功能类似 ,非常好用的一个插件，强力推荐，默认快捷键是 ctrl+; 三个键，由于mac上按+号不是很方便个人建议改成command;</li>
+<li>Material Theme UI     一个很好看的主题</li>
+<li>Rainbow Brackets    更好看的括号颜色</li>
+<li>activate-power-mode 装逼神器，和atom上的敲代码酷炫效果类似，一个比较鸡肋的功能</li>
+<li>CodeGlance 可以在右边看到代码的整体缩略图，也强力推荐使用</li>
+<li>eslint 如果项目中需要用到eslint的话，比较建议装上</li>
+</ul>
+<p>以上是比较通用的一些插件，还有vue,react,angular的一些插件，就看个人需求具体的去安装了。</p>
+<h2 id="dash"><a href="#dash" class="headerlink" title="dash"></a>dash</h2><p>一款非常好用的api文档查看工具，不过是收费的。</p>
+<p>以上是我觉得开发当中比较好用的一些东西，仅供参考，如果有更好的工具欢迎分享~</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>typescript函数重载</title>
+    <url>/chayaBlog/2018/11/15/typescript%E5%87%BD%E6%95%B0%E5%A4%9A%E6%80%81/</url>
+    <content><![CDATA[<p>在使用ts中我们经常会需定义函数的接口，例如</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">interface GetParam &#123;</span><br><span class="line">(key:string):string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> getParam:GetParam = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> config = &#123;</span><br><span class="line">        config1:<span class="string">'config1'</span>,</span><br><span class="line">        config2:<span class="string">'config2'</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> config[key];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但有时候我们需要我们的方法，根据我们传入的参数，来返回不同的类型,例如我们可以这样子</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">interface</span> GetParam &#123;</span><br><span class="line">  (key:<span class="built_in">string</span>|<span class="built_in">string</span>[]):<span class="built_in">string</span>|<span class="built_in">string</span>[];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> getParam:GetParam = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> config = &#123;</span><br><span class="line">    config1:<span class="string">'config1'</span>,</span><br><span class="line">    config2:<span class="string">'config2'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> config[key];</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result:<span class="built_in">string</span>[] = [];</span><br><span class="line">    key.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      result.push(config[item]);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样写会存在一个问题，就是我们在使用这个方法的时候，我们是明确知道传入字符串的时候返回的是字符串，传入数组的时候返回的是数组。<br>但是这样写接口我们调用的时候ide并不能准确的帮我们识别类型。我们可能需要这样去调用方法才能让ide做类型推断。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> config1 = getParam(<span class="string">'config1'</span>) <span class="keyword">as</span> <span class="built_in">string</span>;</span><br></pre></td></tr></table></figure>
+<p>为了应对这种情况，我们可以使用ts 的函数重载，虽然这不是正真意义上的重载，但是能够帮助ide更好的去做类型推断。</p>
+<p>我们只需要把接口改成这样就可以了</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> GetParam &#123;</span><br><span class="line">  (key:<span class="built_in">string</span>):<span class="built_in">string</span>;</span><br><span class="line">  (keys:<span class="built_in">string</span>[]):<span class="built_in">string</span>[];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> getParam:GetParam = <span class="function"><span class="keyword">function</span>(<span class="params">key:<span class="built_in">string</span>|<span class="built_in">string</span>[]</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> config = &#123;</span><br><span class="line">    config1:<span class="string">'config1'</span>,</span><br><span class="line">    config2:<span class="string">'config2'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> config[key];</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result:<span class="built_in">string</span>[] = [];</span><br><span class="line">    key.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      result.push(config[item]);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> config1 = getParam(<span class="string">'config1'</span>);</span><br></pre></td></tr></table></figure>
+<p>这样当我们传入参数为字符串的时候，ide就能自动的帮我们推断出返回的值是字符串。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>vue生命周期</title>
+    <url>/chayaBlog/2018/03/26/vue%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    <content><![CDATA[<p>在 vue 的官方文档中，我们可以看到 vue 的整个生命。</p>
+<p><img src="https://cn.vuejs.org/images/lifecycle.png" alt="01"></p>
+<p>vue 主要给我们提供了如下八个钩子：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestory、destoryed</p>
+<p>首先我们先粗略的了解一下，vue 初始化的时候会做哪些事情。</p>
+<ul>
+<li>挂载生命周期钩子</li>
+<li>解析 data 属性，将 data 属性转化为 Observer</li>
+<li>解析模板，编译模板</li>
+<li>挂载节点</li>
+</ul>
+<h2 id="各生命周期的含义"><a href="#各生命周期的含义" class="headerlink" title="各生命周期的含义"></a>各生命周期的含义</h2><h3 id="beforeCreate"><a href="#beforeCreate" class="headerlink" title="beforeCreate"></a>beforeCreate</h3><p>在 <code>beforeCreate</code> 的时候，<code>vue</code> 只是将各生命周期注册的方法挂载到对应的钩子上，此时还未对 <code>data</code> 中的元素做初始化</p>
+<h3 id="created"><a href="#created" class="headerlink" title="created"></a>created</h3><p>这个阶段主要完成了将<code>data</code>转化为<code>Observer</code>,此时还未对模板进行编译</p>
+<h3 id="beforeMount"><a href="#beforeMount" class="headerlink" title="beforeMount"></a>beforeMount</h3><p>这个阶段主要做了两个事</p>
+<ol>
+<li>检查vue配置，即new Vue{}里面的el项是否存在，有就继续检查template项。没有则等到手动绑定调用vm.$mount()</li>
+<li>检查配置中的template项，如果没有template进行填充被绑定区域，则被绑定区域的el对象的outerHTML（即整个#app DOM对象，包括<div id="”app”">和</div>标签）都作为被填充对象替换掉填充区域</li>
+</ol>
+<p>此时模板还未进行编译。</p>
+<h3 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h3><p>这个阶段完成了对模板的编译，并完成了元素的挂载。</p>
+<h3 id="beforeUpdate"><a href="#beforeUpdate" class="headerlink" title="beforeUpdate"></a>beforeUpdate</h3><p>数据改变时，会进入这个钩子</p>
+<h3 id="updated"><a href="#updated" class="headerlink" title="updated"></a>updated</h3><p>组件更新之后，会进入这个钩子</p>
+<h3 id="beforeDestory"><a href="#beforeDestory" class="headerlink" title="beforeDestory"></a>beforeDestory</h3><p>组件销毁前调用</p>
+<h3 id="destoryed"><a href="#destoryed" class="headerlink" title="destoryed"></a>destoryed</h3><p>组件销毁后调用</p>
+<h2 id="父子组件的加载顺序"><a href="#父子组件的加载顺序" class="headerlink" title="父子组件的加载顺序"></a>父子组件的加载顺序</h2><p>vue 在编译模板的时候，最先读进去的是根元素，然后一层一层的递归进子模板。</p>
+<p>编译完成之后，在从子组件开始一层一层向外挂载。</p>
+<p>总的来说就是，从创建到编译，是从父到子，从编译到挂载，是由子到父。</p>
+<h2 id="nextTick"><a href="#nextTick" class="headerlink" title="$nextTick"></a>$nextTick</h2><p>在 vue 中，数据更新的时候并不会立刻去更新视图，而是会先将数据放入队列中异步的去更新视图。通过 <code>$nextTick</code> 我们就可以在视图更新之后再去调用方法了。</p>
+]]></content>
+      <categories>
+        <category>vue</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Web 安全之 xss和csrf攻击</title>
+    <url>/chayaBlog/2018/08/01/xss%E5%92%8Ccsrf%E6%94%BB%E5%87%BB/</url>
+    <content><![CDATA[<p>xss 和 csrf 可以说是最常见的攻击手段，面试也很大概率会问到这两个东西，下面我们可以了解一下他们是什么。</p>
+<h2 id="xss"><a href="#xss" class="headerlink" title="xss"></a>xss</h2><p>xss 也叫跨站脚本攻击。是一种非常常见的攻击手段，我们可以把它看做是一个html注入攻击。和我们长听到的sql注入非常的类似。</p>
+<h3 id="常见的-xss-攻击方式。"><a href="#常见的-xss-攻击方式。" class="headerlink" title="常见的 xss 攻击方式。"></a>常见的 xss 攻击方式。</h3><h4 id="通过-url-注入"><a href="#通过-url-注入" class="headerlink" title="通过 url 注入"></a>通过 url 注入</h4><p>比方说A网站有个内容是通过url中的参数来显示的，并且没有对其做任何的xss防范，那么攻击者就可以通过url将攻击脚本注入到网页中，然后将带有攻击脚本的url进行特殊处理，然后将处理后的url发给第三者完成攻击</p>
+<h4 id="通过一些表单输入做注入"><a href="#通过一些表单输入做注入" class="headerlink" title="通过一些表单输入做注入"></a>通过一些表单输入做注入</h4><p>最常见得就是富文本评论，因为需要保持html的原样，所以就很容易被人注入攻击脚本，当其他用户访问了被注入攻击脚本的页面的时候就会被攻击。</p>
+<h3 id="防御方式"><a href="#防御方式" class="headerlink" title="防御方式"></a>防御方式</h3><p>对xss的防御思路，主要有两种，可以看我们具体的需求来决定使用哪一种。</p>
+<h4 id="http-only"><a href="#http-only" class="headerlink" title="http-only"></a>http-only</h4><p>这个东西主要针对的是cookie，在 xss 注入的时候可能会有js盗取cookie，我们可以将 cookie 设置为http-only,这样 js 就会无法操作cookie，不过这也仅仅防范了这一种可能性，还是无法防御其他手段的 xss 攻击</p>
+<h4 id="设置黑名单"><a href="#设置黑名单" class="headerlink" title="设置黑名单"></a>设置黑名单</h4><p>通过设置黑名单，将一些特殊的字段进行删除或者转译来达到防御的手段，比方说 <code>&lt;script&gt;</code>，黑名单的实现比较简单，但是 xss 攻击的花样非常的多，我们很难知道所有的攻击手段，很有可能会造成攻击漏洞。</p>
+<h4 id="设置白名单"><a href="#设置白名单" class="headerlink" title="设置白名单"></a>设置白名单</h4><p>白名单的思路也很简单，我们根据我们的需求设置允许使用的标签和属性，然后把不在白名单中的标签或者属性都去掉，在实现上会比黑名单复杂一点，需要把进行防御的内容转为树状结构进行遍历然后处理掉白名单以为的标签和属性。</p>
+<h4 id="CSP-Content-Security-Policy"><a href="#CSP-Content-Security-Policy" class="headerlink" title="CSP (Content Security Policy)"></a>CSP (Content Security Policy)</h4><p>内容安全策略，用于指定哪些内容可以被执行。通过设置 <code>Content-Security-Policy</code> 响应头我们可以设置哪些内容是可以执行的。</p>
+<p>csp 本质上也是一个白名单，我们通过配置告诉浏览器哪些内容是可以安全执行的。</p>
+<p>具体的配置我们可以去 MDN 上查看 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid/default-src" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid/default-src</a></p>
+<p>相关知识可以看看阮老师的这篇文章 <a href="http://www.ruanyifeng.com/blog/2016/09/csp.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2016/09/csp.html</a></p>
+<h2 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h2><p>csrf 也叫跨站请求伪造。攻击方式就是第三方的网站可以在用户不知情的情况下发送请求到被攻击的网站上。比方说网站A，我们有一个网站B会偷偷帮用户发请求到A，发送的时候浏览器会自动的挟带上A的cookie，而A又是对cookie做验证，这就导致了 csrf 攻击</p>
+<h3 id="防御方式-1"><a href="#防御方式-1" class="headerlink" title="防御方式"></a>防御方式</h3><h4 id="设置-cookie-的-sameSite"><a href="#设置-cookie-的-sameSite" class="headerlink" title="设置 cookie 的 sameSite"></a>设置 <code>cookie</code> 的 <code>sameSite</code></h4><p><code>sameSite</code> 可以禁止来自第三方网站的请求携带 cookie，他有两个值</p>
+<ul>
+<li><code>Strict</code> 禁止一切请求携带 cookie</li>
+<li><code>Lax</code> 允许一部分请求携带 cookie，比方说链接</li>
+</ul>
+<p>不过目前这还是一个试验箱的属性，只有部分浏览器支持这个值。</p>
+<h4 id="增加验证"><a href="#增加验证" class="headerlink" title="增加验证"></a>增加验证</h4><p>验证的方式有很多，可以有如下几种</p>
+<ul>
+<li>验证码，不过验证码可能会带来比较不好的用户体验</li>
+<li>token，在表单或者请求头中增加一个token做验证</li>
+<li>referer验证，referer需要在后端进行，这个单词其实拼写错误的，原本应该是referrer，我们可以通过referer来判断请求是否来源于当前网站，如果不是则判定为非法请求</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Web安全</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>动态规划</title>
+    <url>/chayaBlog/2018/12/04/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/</url>
+    <content><![CDATA[<p>最近刷 leetcode 遇到了一道题目，没有什么头绪，看了答案说是需要用到动态规划，<br>刚好对动态规划也没有学习过，就去查阅了一些相关的文章，这里记录一下心得和体会。<br>分享一下我看的这篇文章，感觉整体上讲的还是挺不错的，由浅入深(<a href="http://www.hawstein.com/posts/dp-novice-to-advanced.html)[http://www.hawstein.com/posts/dp-novice-to-advanced.html]。" target="_blank" rel="noopener">http://www.hawstein.com/posts/dp-novice-to-advanced.html)[http://www.hawstein.com/posts/dp-novice-to-advanced.html]。</a></p>
+<p>这里我还是用三段式来学习一个新的知识。</p>
+<h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>动态规划是一种思想，并没有一种具体的实现方式，它在我们求解一些问题的时候可以给我们提供一个思路。动态规划需要我们学会如何拆分问题。<br>通常这些问题会具有以下特征：每一个阶段的决策会影响到后面的决策，</p>
+<h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>为什么要用动态规划结果就很显而易见了，因为我们需要一种较为高效的方式来寻找到最优解。</p>
+<h2 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h2><p>要用好这一种思想，最重要的就是要学会如何拆分问题，当我们把问题拆分出来了，整个解决思路就自然而然的寻找到了。</p>
+<p>动态规划最终要做的就是找到状态定义和状态转移方程。</p>
+<p>这里拿一个简答的动态规划的题目做例子。有三种硬币，1，3，5 元，最少需要多少硬币能够达到总数n元</p>
+<h3 id="1、状态定义"><a href="#1、状态定义" class="headerlink" title="1、状态定义"></a>1、状态定义</h3><p>计算机的本质是一个状态机，内存里存储的所有数据构成了当前的状态，CPU只能利用当前的状态计算出下一个状态。</p>
+<p>我们可以设n元需要的最少硬币数为d(n),这就可以看做是一个状态, 显然 d(0) = 0, d(1) = 1,</p>
+<p>d(2) 可以被转化成 d(1) + 1 = 2</p>
+<p>d(3) 可以被转化成 d(3 - 1) + 1 = d(2) + 1 = 3  和 d(3 - 3) + 1 = d(0) + 1 = 1, 显然后者更小</p>
+<p>d(4) 可以使被转化成 d(4 - 1) + 1 = d(3) + 1 = 2 和 d(4 - 3) + 1 = d(1) + 1 = 2, 两者一样大</p>
+<p>d(5) 可以被转化成 d(5 - 5) + 1 = d(0) + 1 = 1、d(5 - 3) + 1 = d(2) + 1 = 3、d(5 - 1) + 1 = d(5) + 1 = 3,显然1最小</p>
+<h3 id="2、状态转移方程"><a href="#2、状态转移方程" class="headerlink" title="2、状态转移方程"></a>2、状态转移方程</h3><p>我们可以把 d(n) 看做是 d(n) = min(d(n - Vi) + 1); n - Vi &gt;= 0; Vi = [1, 3, 5];</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>d(n)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>总的来说，动态规划需要我们找到问题的子问题，再从子问题找到状态转移方程，最后找到解决的方法</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>js事件代理</title>
+    <url>/chayaBlog/2018/03/20/%E4%BA%8B%E4%BB%B6%E4%BB%A3%E7%90%86/</url>
+    <content><![CDATA[<p>前端面试中，事件代理也是我们经常会遇到的一个问题，下面我们来聊一下事件代理的原理。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>比如说我们想个一个列表中的每一项绑定一个点击事件，如果我们一个一个去给每一项绑定事件，则会导致多次操纵dom，效率也比较低，如果添加一个新的选项的话，还得再给这个选项绑定事件。</p>
+<p>事件代理，其实就是将事件绑定在父元素上，然后通过父元素的点击事件来判断点击的是不是子元素</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;ul id=&quot;test&quot;&gt;</span><br><span class="line">    &lt;li&gt;1&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;2&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;3&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;4&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var ul = document.getElementById(&apos;test&apos;)</span><br><span class="line">    ul.addEventListener(&apos;click&apos;, function (event) &#123;</span><br><span class="line">        var target = event.target</span><br><span class="line">        if (target.tagName.toUpperCase() === &apos;LI&apos;) &#123;</span><br><span class="line">            console.log(target.innerText)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>我们通过绑定父元素的点击事件，通过获取 <code>event.target</code> 可以知道当前点击的元素，在 IE 6-8中不支持该属性，有一个 <code>srcElement</code> 等价于这里 <code>target</code></p>
+<h3 id="currentTarget"><a href="#currentTarget" class="headerlink" title="currentTarget"></a>currentTarget</h3><p>如果我们打印出 <code>event</code> 可以看到里面有一个 <code>currentTarget</code> 属性，并且这个属性为 null，那么这个属性有什么用呢。</p>
+<p>这里我们可以这样试一下</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"test"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>4<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'test'</span>)</span></span><br><span class="line"><span class="javascript">    ul.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event)</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event.currentTarget)</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以发现<code>event.currentTarget</code>打印出来的是 ul这个节点。看 mdn 的文档可知道，这个属性是指向当前事件被绑定的元素上</p>
+<p>在js中<code>console.log(obj)</code>打印对象的时候，是对对象的一个引用，如果对象的属性后面被改变了，打印出来的对象也是会发生改变的，所以造成了前面打印 <code>event</code> 的时候发现他的<code>currentTarget</code>为null</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>http 304原理</title>
+    <url>/chayaBlog/2018/03/20/%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<p>http 常见的状态码有很多，200，302，303，304，403，500等，其中要数304在面试中最常被问到。初学者碰到304，可能只是知道他是用于缓存，却并不知道其中的原理。下面我们来了解一下304整个的运行机制。</p>
+<h2 id="缓存运行机制"><a href="#缓存运行机制" class="headerlink" title="缓存运行机制"></a>缓存运行机制</h2><p>首先我们先思考一个问题，浏览器如何判断一个资源是否需要缓存？</p>
+<p>可能你已经知道了，就是用请求头来控制的。</p>
+<h3 id="通知缓存"><a href="#通知缓存" class="headerlink" title="通知缓存"></a>通知缓存</h3><p>在 http1.1 中我们通过请求头中的 <code>Cache-Control</code> 来告诉浏览器缓存机制。</p>
+<p>作为响应头其中可选的值有：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public</td>
+<td>表示任何情况下都得缓存该资源</td>
+</tr>
+<tr>
+<td>Private=[=”field-name”]</td>
+<td>表明返回报文中全部或部分仅开放给某些用户作缓存（服务器指定的，如代理服务器等），其他用户则不能缓存这些数据</td>
+</tr>
+<tr>
+<td>no-cache</td>
+<td>不直接使用缓存，要向服务器发起新鲜度校验</td>
+</tr>
+<tr>
+<td>no-store</td>
+<td>所有内容不会被缓存</td>
+</tr>
+<tr>
+<td>no-transform</td>
+<td>告知客户端缓存文件时不得对实体数据做任何改变</td>
+</tr>
+<tr>
+<td>only-if-cached</td>
+<td>告知代理服务器，如果客户端需要的数据，代理服务器有，代理服务器不用想原服务器发送请求</td>
+</tr>
+<tr>
+<td>must-revalidate</td>
+<td>资源一定是向员服务器去验证请求，若请求失败会返回504</td>
+</tr>
+<tr>
+<td>proxy-revalidate</td>
+<td>与must-revalidate类似</td>
+</tr>
+<tr>
+<td>max-age=delta-seconds</td>
+<td>告知客户端在 delta-seconds 内资源是新鲜的，不用向服务器发起请求</td>
+</tr>
+<tr>
+<td>s-maxage=delta-seconds</td>
+<td>和max-age一样，但仅应用于共享缓存（如代理）</td>
+</tr>
+<tr>
+<td>cache-extension</td>
+<td>自定义拓展值</td>
+</tr>
+</tbody>
+</table>
+<p>其中常用的主要是 max-age。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Cache-Control: max-age=100</span><br></pre></td></tr></table></figure>
+<p>这个请求头的意思是告诉浏览器该资源在100秒内都是新鲜的，如果未过期，则不用向服务器发送请求，直接读取缓存，在 chrome 下我们可以看到表现为 200 from cache，若过期了，则会重新像服务器发起请求。</p>
+<h3 id="缓存验证"><a href="#缓存验证" class="headerlink" title="缓存验证"></a>缓存验证</h3><p>现在我们已经知道了如何通知浏览器做缓存了，但是这里还有一个问题，缓存到期了，浏览器重新请求资源，但是如果资源在这段时间并没有发生修改，又重新把资源发送了一遍，如果资源又比较大，这就造成很大的宽带和时间的浪费。</p>
+<p>304 就是用来告诉浏览器，资源还没更新过，我就不传过去了，你直接用缓存就可以了。</p>
+<p>接着问题又来了，如何验证资源是否被修改过呢。</p>
+<p>http 1.1 新增了几个首部字段来解决这个问题。</p>
+<h4 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a>Last-Modified</h4><p>服务器将资源返回给浏览器的时候，会将资源的最后修改时间加在请求头上返回给浏览器。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Last-Modified: Thu, 01 Jan 1970 00:00:00 GMT</span><br></pre></td></tr></table></figure>
+<p>浏览器接收之后，会在下一次的请求把信息附带上，到服务器去做检查，若与服务器的修改时间一直，则说明资源没有被修改过，直接返回304即可。</p>
+<p>浏览器会通过<code>if-modified-since</code>将信息发送给服务器<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if-modified-since: Sun, 18 Mar 2018 13:01:31 GMT</span><br></pre></td></tr></table></figure></p>
+<p>Last-Modified 也可能会出现一个问题，如果服务器上，一个资源被修改了，但是实质上内容根本没有发生变化，也会重新发送整个资源给浏览器。</p>
+<h4 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a>ETag</h4><p>为了解决上面这个问题，Http1.1还加入了ETag这个首部。服务器通过某种算法，给资源计算出一个唯一的表示符，并在响应头上返回给浏览器。</p>
+<p>浏览器会在下一次请求的时候，通过<code>If-None-Match</code>将信息发送给服务器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If-None-Match: &quot;sdfsfedc8-2132&quot;</span><br></pre></td></tr></table></figure>
+<p>如果匹配上了则直接返回304即可，没匹配上则需要重新发送资源。</p>
+<blockquote>
+<p>需要注意的是，如果这两个字段被同时使用了，需要他们两个同时验证通过才会返回304，如果其中一个没验证通过，都会重新发送资源</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>http</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>发布订阅模式</title>
+    <url>/chayaBlog/2018/03/11/%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p>目前非常流行的 vue 的底层，其实用的就是发布订阅模式。要学习vue的原理的话，很有必要先学习一下这个设计模式。</p>
+<h3 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h3><p>在观察者模式中一般有两个对象发布者和订阅者，订阅者从发布者那里订阅消息，发布者发布消息通知所有订阅消息的对象。当订阅者订阅发布者的时候，发布者会把订阅者添加到自己的订阅者列表中。</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Publisher</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.observers = [];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">发布者添加订阅对象</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line">Publisher.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">observer</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.observers.push(observer);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">发布者通知订阅者</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line">Publisher.prototype.notify = <span class="function"><span class="keyword">function</span>(<span class="params">context</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.observers.forEach(<span class="function">(<span class="params">observer</span>)=&gt;</span>&#123;</span><br><span class="line">        observer.update(context)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Observer</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observer.prototype.update=<span class="function"><span class="keyword">function</span>(<span class="params">context</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(context)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    订阅发布者</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line">Observer.prototype.subscribe=<span class="function"><span class="keyword">function</span>(<span class="params">publisher</span>)</span>&#123;</span><br><span class="line">    publisher.add(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> publisher = <span class="keyword">new</span> Publisher();</span><br><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> Observer();</span><br><span class="line"></span><br><span class="line">observer.subscribe(publisher);</span><br><span class="line">publisher.notify(<span class="string">'事件发布'</span>);</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>弹性布局</title>
+    <url>/chayaBlog/2018/03/21/%E5%BC%B9%E6%80%A7%E5%B8%83%E5%B1%80/</url>
+    <content><![CDATA[<p>布局的方案有很多，目前最常见的要数 Flex 布局了</p>
+<h2 id="Flex-布局"><a href="#Flex-布局" class="headerlink" title="Flex 布局"></a>Flex 布局</h2><p>写弹性布局的基本步骤如下</p>
+<h3 id="指定-flex-容器"><a href="#指定-flex-容器" class="headerlink" title="指定 flex 容器"></a>指定 flex 容器</h3><p>首先我们要指定一个元素为 flex 容器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">.box &#123;</span><br><span class="line">    display:flex;</span><br><span class="line">    display:-webkit-flex;/* Safari  */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>设置 flex 布局之后，子元素的 float、clear、vertical-align 都将失效</p>
+</blockquote>
+<h3 id="设置容器的属性"><a href="#设置容器的属性" class="headerlink" title="设置容器的属性"></a>设置容器的属性</h3><p>主要有如下六个属性</p>
+<ul>
+<li>flex-direction</li>
+<li>flex-wrap</li>
+<li>flex-flow</li>
+<li>justify-content</li>
+<li>align-items</li>
+<li>align-content</li>
+</ul>
+<h4 id="flex-direction"><a href="#flex-direction" class="headerlink" title="flex-direction"></a>flex-direction</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">row（默认值）：水平方向排列，从左边开始排列。</span><br><span class="line">row-reverse：水平方向排列，从右开始排列。</span><br><span class="line">column：垂直方向排列，从上往下排。</span><br><span class="line">column-reverse：垂直方向排列，从上往下排。</span><br></pre></td></tr></table></figure>
+<h3 id="flex-wrap"><a href="#flex-wrap" class="headerlink" title="flex-wrap"></a>flex-wrap</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nowrap（默认值）:不换行</span><br><span class="line">wrap：换行，第一行在最上面</span><br><span class="line">wrap-reverse：换行，第一行在最下面</span><br></pre></td></tr></table></figure>
+<h3 id="flex-flow"><a href="#flex-flow" class="headerlink" title="flex-flow"></a>flex-flow</h3><p>就是前flex-direction 和 flex-wrap的简写</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flex-flow:flex-direction flex-wrap;</span><br></pre></td></tr></table></figure>
+<h3 id="justify-content"><a href="#justify-content" class="headerlink" title="justify-content"></a>justify-content</h3><p>定义水平对齐方式对齐方式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">flex-start（默认值）：左对齐</span><br><span class="line">flex-end：右对齐</span><br><span class="line">center： 居中</span><br><span class="line">space-between：两端对齐，子元素之间的间隔都相等。</span><br><span class="line">space-around：每个子元素两侧的间隔相等。所以，子元素之间的间隔比子元素与边框的间隔大一倍。</span><br></pre></td></tr></table></figure>
+<h3 id="align-items"><a href="#align-items" class="headerlink" title="align-items"></a>align-items</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flex-start：上对齐。</span><br><span class="line">flex-end：下对齐。</span><br><span class="line">center：居中对齐。</span><br><span class="line">baseline: 子元素的第一行文字的基线对齐。</span><br><span class="line">stretch（默认值）：如果子元素未设置高度或设为auto，将占满整个容器的高度。</span><br></pre></td></tr></table></figure>
+<h3 id="居中对齐实现"><a href="#居中对齐实现" class="headerlink" title="居中对齐实现"></a>居中对齐实现</h3><p>在面试中我们经常会被问道如何实现一个居中对齐，有了上面的知识，我们就可以很容易的实现一个居中对齐。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line">    .box &#123;</span><br><span class="line">        display: flex;</span><br><span class="line">        align-items:center;</span><br><span class="line">        justify-content: center;</span><br><span class="line">        height: 100%;</span><br><span class="line">    &#125;</span><br><span class="line">    .center&#123;</span><br><span class="line">        width: 200px;</span><br><span class="line">        height: 200px;</span><br><span class="line">        background-color: red;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"center"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="设置子元素的属性"><a href="#设置子元素的属性" class="headerlink" title="设置子元素的属性"></a>设置子元素的属性</h3><h4 id="order"><a href="#order" class="headerlink" title="order"></a>order</h4><p>排列的时候，order的值越小，排列越靠前，默认为 0 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">order:1;</span><br></pre></td></tr></table></figure>
+<h4 id="flex-grow"><a href="#flex-grow" class="headerlink" title="flex-grow"></a>flex-grow</h4><p>此属性主要用于当空间未被占满的时候。</p>
+<p>默认为0，此时空间未被占满子元素会被放大。</p>
+<p>如果设置了值，比如说<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.children1&#123;</span><br><span class="line">    flex-grow:1;</span><br><span class="line">&#125;</span><br><span class="line">.children2&#123;</span><br><span class="line">    flex-grow:2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么 children2占据 <strong>剩余空间</strong> 比children1多一倍</p>
+<h4 id="flex-shrink"><a href="#flex-shrink" class="headerlink" title="flex-shrink"></a>flex-shrink</h4><p>主要用于当空间不足的时候。</p>
+<p>默认为1，即如果空间不足，改子元素将缩小</p>
+<p>如果设置了此值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.children1&#123;</span><br><span class="line">    flex-shrink:1;</span><br><span class="line">&#125;</span><br><span class="line">.children2&#123;</span><br><span class="line">    flex-shrink:0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时，如果空间不足，chilrend2 不会被缩小，children1 都会被等比例缩小</p>
+<h3 id="align-self"><a href="#align-self" class="headerlink" title="align-self"></a>align-self</h3><p>可以单独设置子元素的对齐方式，会覆盖掉父有元素的align-items，<br>取值同 <code>align-items</code></p>
+]]></content>
+      <categories>
+        <category>CSS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>快速理解js继承原理</title>
+    <url>/chayaBlog/2018/03/10/%E5%BF%AB%E9%80%9F%E7%90%86%E8%A7%A3js%E7%BB%A7%E6%89%BF%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="JS继承原理"><a href="#JS继承原理" class="headerlink" title="JS继承原理"></a>JS继承原理</h2><p>js 的继承是通过原型链来实现的</p>
+<h3 id="什么是原型链呢？"><a href="#什么是原型链呢？" class="headerlink" title="什么是原型链呢？"></a>什么是原型链呢？</h3><p>首先说一下 <code>prototype</code> 属性，在js中所有的方法都会有一个<code>prototype</code>属性,这个属性就是方法的原型对象</p>
+<p>比方说：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">function Animal()&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=function()&#123;</span><br><span class="line">    console.log(&apos;run&apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var cat = new Animal()</span><br></pre></td></tr></table></figure>
+<p>当我们声明 Animal 这个方法的时候， js引擎会赋予Animal一个原型对象，打印出来可以看到</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">console.log(Animal.prototype)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    constructor:这个指向 Animal这个方法,</span><br><span class="line">    __proto__:这个指向Object.prototype</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">**/</span><br></pre></td></tr></table></figure>
+<p>在我们构造实例的时候,cat的<code>__proto__</code> 会指向 Animal 的 <code>prototype</code>, js引擎 在访问对象的属性的时候会先查看当前对象是否这个属性，如果没有则会查看改对象的 <code>__proto__</code> 是否有这个属性，访问会沿着原型链访问下去直到找到属性或者 <code>__proto__</code>为null为止。</p>
+<h3 id="如何实现继承"><a href="#如何实现继承" class="headerlink" title="如何实现继承"></a>如何实现继承</h3><p>这里只讲通用的一种继承的写法</p>
+<p>这是父类：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function Animal(name)&#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=function()&#123;</span><br><span class="line">    console.log(this.name + &apos; is run&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>子类的写法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function Cat(name)&#123;</span><br><span class="line"></span><br><span class="line">    // 这里通过调用父类并把this绑定到父类上</span><br><span class="line">    Animal.call(this,name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(()=&gt;&#123;</span><br><span class="line">    // 这里其实本质要做的就是让Cat.prototype.__proto__=Animal.prototype</span><br><span class="line">    // Cat.prototype =Object.create(Animal.prototype) 相当于做了如下的工作</span><br><span class="line">    // var a = &#123;&#125;;a.__proto__=Animal.prototype;</span><br><span class="line">    // Cat.prototype = a;</span><br><span class="line"></span><br><span class="line">    Cat.prototype = Object.create(Animal.prototype)</span><br><span class="line">    Cat.prototype.constructor = Cat</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<h3 id="ES6-的写法："><a href="#ES6-的写法：" class="headerlink" title="ES6 的写法："></a>ES6 的写法：</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Class Animal&#123;</span><br><span class="line">    constructor(name)&#123;</span><br><span class="line">        this.name=name</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    run()&#123;</span><br><span class="line">        console.log(this.name + &apos; is run&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class Cat extends Animal&#123;</span><br><span class="line">    constructor(name)&#123;</span><br><span class="line">        // ES6要求子类构造函数中必须要调用这个方法，这个方式是用来调用父类的constructor的</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实es6的写法本质上上面的语法糖，使用之后代码对代码的可读性有了明显的提高，但是我们还是需要知道JS继承的原理是怎样的。</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>js 数组元素与数组长度</title>
+    <url>/chayaBlog/2018/03/23/%E6%95%B0%E7%BB%84%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h2 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h2><p>在 js 中我们可以用如下的方法创建数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>) <span class="comment">// [empty*3]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr3 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>,<span class="number">2</span>) <span class="comment">// [1,2]</span></span><br></pre></td></tr></table></figure>
+<p>第一种是我们常用的一种创建数组的方法</p>
+<p>第二种则会生成一个length为3的数组对象，我们访问 arr2[0] 返回的是 undefined</p>
+<p>这里我们需要注意一点的是，arr2 不会初始化 arr2[0],arr2[1],arr[2],这句话是什么意思呢，看看下面这个例子你就明白了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="literal">undefined</span>,<span class="literal">undefined</span>,<span class="literal">undefined</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr2); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 和 new Arry(3) 效果是一样的，注意这里是四个逗号</span></span><br><span class="line"><span class="keyword">var</span> arr3 = [,,,,]</span><br></pre></td></tr></table></figure>
+<h2 id="修改数组"><a href="#修改数组" class="headerlink" title="修改数组"></a>修改数组</h2><p>通常我们在修改数组的时候都是这样子修改</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [];</span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">arr.push(<span class="number">2</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr);[<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p>我们还可以这样操作</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line">arr[<span class="number">10</span>] = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr);<span class="comment">//  [1, 2, 3, empty × 7, 10]</span></span><br></pre></td></tr></table></figure>
+<p>这里会导致和<code>new Array(10)</code>的结果有点类似</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p><code>arr[10] = 10</code> 虽然会让数组的长度增加，但实际上却未真正的增加了数组的元素。</p>
+<h3 id="数组的方法"><a href="#数组的方法" class="headerlink" title="数组的方法"></a>数组的方法</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 0，1</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 啥都没输出</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="literal">undefined</span>,,]</span><br><span class="line"><span class="built_in">console</span>.log(arr.filter(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;));<span class="comment">// [1,2,3,undefined]</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>快速理解 js 模块规范</title>
+    <url>/chayaBlog/2018/03/13/%E5%BF%AB%E9%80%9F%E7%90%86%E8%A7%A3-js-%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[<p>随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。</p>
+<p>说道前端模块规范，我们耳熟能详的就这三种 <code>CommonJS</code>, <code>AMD</code>, <code>CMD</code></p>
+<h3 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h3><p>首先说一下<code>CommonJS</code>,  node.js 的模块系统就是参照 <code>CommonJS</code> 规范实现的。在<code>CommonJS</code> 中有一个全局性的方法<code>require(path)</code>,我们通过方法加载需要的模块。</p>
+<p>具体的用法如下：</p>
+<p>声明模块：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// test.js</span></span><br><span class="line"></span><br><span class="line">exports.test = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'test'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>引用模块：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="built_in">require</span>(<span class="string">'test'</span>);</span><br></pre></td></tr></table></figure>
+<p><code>CommonJS</code> 规范中，<code>require()</code> 用来引入外部模块，<code>exports</code> ·对象用于导出当前模块的方法或变量，作为唯一的到出口，<code>module</code> 对象就代表模块本身。</p>
+<p><code>CommonJS</code> 主要用在了服务端，因为服务端加载，读取模块都是在本地加载，如果浏览器中使用，比方说上面的代码，网盘，我们在加载 test 模块的时候必须等待他加载完才能继续执行后面的代码，这在服务端没什么问题，但在浏览器中，我们需要把模块下载下来，才能去执行后面的代码，在等待的过程中，浏览器处于“假死”的状态。</p>
+<p>为了能够异步的加载模块，于是 AMD 规范就诞生了。</p>
+<h3 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h3><p>最常用的RequireJS就是实现了AMD规范。</p>
+<p>require.js加载的模块，采用AMD规范。也就是说，模块必须按照AMD的规定来写。</p>
+<p>如果这个模块还依赖其他模块，那么define()函数的第一个参数，必须是一个数组，指明该模块的依赖性。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">define([<span class="string">'dep1'</span>,<span class="string">'dep2'</span>],<span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">dep1,dep2</span></span></span><br><span class="line"><span class="function"><span class="params"></span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>加载模块，与 CommonJS 不同的是需要在require中填入回调函数，第一个参数指明需要加载的模块</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">　<span class="built_in">require</span>([<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>], <span class="function"><span class="keyword">function</span> (<span class="params">$, _, Backbone</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">　　　　<span class="comment">// some code here</span></span><br><span class="line"></span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><p>玉伯写的 seajs 就是遵循CMD规范写的</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require,exports,module</span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>他与 AMD 存在着一定的区别。</p>
+<p>比方说我们需要在运行代码的时候先后加载两个模块：</p>
+<p><strong>AMD</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">require</span>([<span class="string">'block1'</span>,<span class="string">'block2'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">block1,block2</span>)</span>&#123;</span><br><span class="line">    block1.start();</span><br><span class="line">    block1.end();</span><br><span class="line">    </span><br><span class="line">    block2.start();</span><br><span class="line">    block2.end();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>AMD 虽然实现了异步加载，但是在开始的时候就把所有依赖写出来，可能不太符合我们平时书写的一个逻辑顺序，是否能够像 commonJS那样用的时候require，而且还是支持异步加载后再执行呢。</p>
+<p>CMD 就是支持的</p>
+<p><strong>CMD</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> block1 = <span class="built_in">require</span>(<span class="string">'block1'</span>);</span><br><span class="line">    </span><br><span class="line">    block1.start();</span><br><span class="line">    block1.end();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> block2 = <span class="built_in">require</span>(<span class="string">'block2'</span>);</span><br><span class="line">    block2.start();</span><br><span class="line">    block2.end();</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>CMD 只有当代码执行到 <code>require</code>的时候才会去异步的加载模块，不会像AMD一开始就把需要的模块都加载好才开始执行。</p>
+<p>AMD依赖前置，js可以方便知道依赖模块是谁，立即加载；而CMD就近依赖，需要使用把模块变为字符串解析一遍才知道依赖了那些模块，这也是很多人诟病CMD的一点，牺牲性能来带来开发的便利性，实际上解析模块用的时间短到可以忽略。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>个人认为，在实际的开发中，大多还是用 AMD 规范的，使用 AMD 规范你能够更清楚的看到 模块之间的依赖关系，能够更符合程序员的思维方式。博主暂时也还没有用过 CMD 规范。</p>
+<p>ES6 中的 <code>import</code> webpack 也是将其转化为 AMD 规范的。</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>JS 类型判断</title>
+    <url>/chayaBlog/2020/02/24/JS%E7%B1%BB%E5%9E%8B%E5%88%A4%E6%96%AD/</url>
+    <content><![CDATA[<h2 id="JS类型判断"><a href="#JS类型判断" class="headerlink" title="JS类型判断"></a>JS类型判断</h2><h4 id="js7种数据类型"><a href="#js7种数据类型" class="headerlink" title="js7种数据类型"></a>js7种数据类型</h4><blockquote>
+<p><strong>基本类型：</strong> Boolean、Number、String、Undefined、Null、Symbol</p>
+<p><strong>引用类型：</strong> Object</p>
+</blockquote>
+<p><strong>基本类型</strong>也称为简单类型，由于其占据空间固定，是简单的数据段，为了便于提升变量查询速度，将其存储在栈中，即按值访问。</p>
+<p><strong>引用类型</strong>也称为复杂类型，由于其值的大小会改变，所以不能将其存放在栈中，否则会降低变量查询速度，因此，其值存储在堆(heap)中，而存储在变量处的值，是一个指针，指向存储对象的内存处，即按址访问。引用类型除 Object 外，还包括 Function 、Array、RegExp、Date 等。</p>
+<h3 id="数据类型判断的4种方法"><a href="#数据类型判断的4种方法" class="headerlink" title="数据类型判断的4种方法"></a>数据类型判断的4种方法</h3><ul>
+<li><h4 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h4></li>
+</ul>
+<blockquote>
+<p>typeof 是一个操作符，其右侧跟一个一元表达式，并返回这个表达式的数据类型。返回的结果用该类型的字符串(全小写字母)形式表示，包括以下 7 种：number、boolean、symbol、string、object、undefined、function 等。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="string">''</span>; <span class="comment">// string 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="number">1</span>; <span class="comment">// number 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="built_in">Symbol</span>(); <span class="comment">// symbol 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">true</span>; <span class="comment">//boolean 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>; <span class="comment">//undefined 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span>; <span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> [] ; <span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Function</span>(); <span class="comment">// function 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">RegExp</span>(); <span class="comment">//object 无效</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>对于基本类型，除 null 以外，均可以返回正确的结果。</p>
+</li>
+<li><p>对于引用类型，除 function 以外，一律返回 object 类型。</p>
+</li>
+</ol>
+<ul>
+<li><h4 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h4></li>
+</ul>
+<blockquote>
+<p>instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回 true,否则返回 false。 在这里需要特别注意的是：<strong>instanceof 检测的是原型</strong></p>
+</blockquote>
+<p>我们用一段伪代码来模拟其内部执行过程：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">instanceof</span>(A,B)=&gt;&#123;</span><br><span class="line">    <span class="keyword">return</span> A.__proto__ === B.prototype;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">[] <span class="keyword">instanceof</span> <span class="built_in">Array</span>; <span class="comment">// true</span></span><br><span class="line">&#123;&#125; <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>() <span class="keyword">instanceof</span> <span class="built_in">Date</span>;<span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"><span class="keyword">new</span> Person() <span class="keyword">instanceof</span> Person;</span><br><span class="line"></span><br><span class="line">[] <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>() <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> Person <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>instanceof 能够判断出 [ ] 是Array的实例，但它认为 [ ] 也是Object的实例</p>
+<p>[ ].<strong>proto</strong>  指向 Array.prototype，而 Array.prototype.<strong>proto</strong> 又指向了Object.prototype，最终 Object.prototype.<strong>proto</strong> 指向了null，标志着原型链的结束。因此，[]、Array、Object 就在内部形成了一条原型链</p>
+<p><strong>instanceof 只能用来判断两个对象是否属于实例关系， 而不能判断一个对象实例具体属于哪种类型。</strong></p>
+<p>针对数组的这个问题，ES5 提供了 <strong>Array.isArray()</strong> 方法 。</p>
+<ul>
+<li><h4 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a>constructor</h4></li>
+</ul>
+<p>当一个函数 F被定义时，JS引擎会为F添加 prototype 原型，然后再在 prototype上添加一个 constructor 属性，并让其指向 F 的引用。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="string">''</span>.constructor === <span class="built_in">String</span>; <span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">1</span>).constructor === <span class="built_in">Number</span>; <span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Function</span>().constructor === <span class="built_in">Function</span>; <span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>().constructor === <span class="built_in">Date</span>; <span class="comment">// true</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Error</span>().constructor === <span class="built_in">Error</span>; <span class="comment">// true</span></span><br><span class="line">[].constructor === <span class="built_in">Array</span>; <span class="comment">// true</span></span><br><span class="line">(&#123;&#125;).constructor ===<span class="built_in">Object</span>; <span class="comment">// true</span></span><br><span class="line"><span class="built_in">document</span>.constructor === HTMLDocument; <span class="comment">// true</span></span><br><span class="line"><span class="built_in">window</span>.constructor === Window; <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>null 和 undefined 是无效的对象，因此是不会有 constructor 存在的，这两种类型的数据需要通过其他方式来判断。</p>
+</li>
+<li><p>函数的 constructor 是不稳定的，这个主要体现在自定义对象上，当开发者重写 prototype 后，原有的 constructor 引用会丢失，constructor 会默认为 Object</p>
+</li>
+</ol>
+<ul>
+<li><h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h4></li>
+</ul>
+<blockquote>
+<p>toString() 是 Object 的原型方法，调用该方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型。</p>
+<p>对于 Object 对象，直接调用 toString()  就能返回 [object Object] 。而对于其他对象，则需要通过 call / apply 来调用才能返回正确的类型信息。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">''</span>);   <span class="comment">// "[object String]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>);    <span class="comment">// "[object Number]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>); <span class="comment">// "[object Boolean]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>()); <span class="comment">// "[object Symbol]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>); <span class="comment">// "[object Undefined]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>); <span class="comment">// "[object Null]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()); <span class="comment">// "[object Function]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()); <span class="comment">// "[object Date]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]); <span class="comment">// "[object Array]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()); <span class="comment">// "[object RegExp]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()); <span class="comment">// "[object Error]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>); <span class="comment">// "[object HTMLDocument]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>); <span class="comment">// "[object global]" window 是全局对象 global 的引用</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>浏览器如何验证证书的</title>
+    <url>/chayaBlog/2018/04/22/%E6%B5%8F%E8%A7%88%E5%99%A8%E9%AA%8C%E8%AF%81CA%E8%AF%81%E4%B9%A6/</url>
+    <content><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="CA"><a href="#CA" class="headerlink" title="CA"></a>CA</h3><p>首先CA是Certificate Authority的缩写，也叫“证书授权中心”。<br>它是负责管理和签发证书的第三方机构，就好比例子里面的中介——C 公司。<br>一般来说，CA必须是所有行业和所有公众都信任的、认可的。因此它必须具有足够的权威性。就好比A、B两公司都必须信任C公司，才会找 C 公司作为公章的中介。</p>
+<h3 id="CA-证书"><a href="#CA-证书" class="headerlink" title="CA 证书"></a>CA 证书</h3><p> 顾名思义，就是CA颁发的证书。</p>
+<p> 浏览器中默认有得到认证的根证书，使用https的网站需要让浏览器信任自己的证书就需要去申请这些机构的证书</p>
+<h2 id="浏览如何验证证书的真伪呢？"><a href="#浏览如何验证证书的真伪呢？" class="headerlink" title="浏览如何验证证书的真伪呢？"></a>浏览如何验证证书的真伪呢？</h2><p> 首先我们需要了解一下CA是如何给我们发证书的。</p>
+<p> 1.向CA申请证书<br> 2.CA认证了你的信息之后同意给你颁布证书，生成证书信息，生成证书的指纹用于后面验证证书的真伪<br> 3.使用私钥对指纹进行加密生成数字签名，常用的算法有RSA公钥体制<br> 4.将证书颁发网站，生成的证书会指向给他颁发证书的CA</p>
+<p> 了解完CA证书的生成之后我们就可以看一下浏览器如何验证证书的了。</p>
+<p> 1.浏览器拿到证书之后会找到证书所对应的CA<br> 2.浏览器取出CA中的公钥，使用公钥对证书的签名进行解密<br> 3.将解密的结果与证书指纹做对比，如果对比一致则说明真书是真的<br> 4.浏览器提取出证书中的公钥使用</p>
+]]></content>
+      <categories>
+        <category>HTTPS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>BFC</title>
+    <url>/chayaBlog/2020/03/13/css/BFC/</url>
+    <content><![CDATA[<p>BFC(Block Formatting Context)是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。</p>
+<h3 id="触发条件："><a href="#触发条件：" class="headerlink" title="触发条件："></a>触发条件：</h3><ul>
+<li>根元素(<html>)</html></li>
+<li>position : absolute , fixed;</li>
+<li>overflow !== visible</li>
+<li>float !== none</li>
+<li>display : flow-root, inline-block,  table, inline-table, table-cell, table-caption, table-row, table-row-group, table-header-group, table-footer-group</li>
+<li>display : flex, inline-flex, grid, inline-grid 的直接子元素</li>
+</ul>
+<h3 id="规则："><a href="#规则：" class="headerlink" title="规则："></a>规则：</h3><ul>
+<li>属于同一个BFC的两个相邻的Box垂直排列</li>
+<li>属于同一个BFC的两个相邻的Box的外边距会合并(Mastering Margin Collapsing)</li>
+<li>BFC 中子元素的margin box的左边与包含块(BFC)border box的左边相接触（子元素absolute除外）</li>
+<li>BFC的区域不会与float元素区域重叠</li>
+<li>计算BFC的高度时，浮动子元素也参与计算</li>
+<li>文字层不会被浮动层覆盖，环绕与周围</li>
+</ul>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a>应用：</h3><ul>
+<li>让浮动内容和周围的内容等高<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">    background-color: rgb(224, 206, 247);</span><br><span class="line">    border: 5px solid rebeccapurple;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.float &#123;</span><br><span class="line">    float: left;</span><br><span class="line">    width: 200px;</span><br><span class="line">    height: 150px;</span><br><span class="line">    background-color: white;</span><br><span class="line">    border:1px solid black;</span><br><span class="line">    padding: 10px;</span><br><span class="line">&#125;      </span><br><span class="line">&lt;div class=&quot;box&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;float&quot;&gt;I am a floated box!&lt;/div&gt;</span><br><span class="line">    &lt;p&gt;I am content inside the container.&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  效果： <img src="../../images/bfc1.png" alt="bfc"></p>
+<p>  解决方案：设置 overflow: auto 创建一个新的BFC来包含这个浮动<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">   background-color: rgb(224, 206, 247);</span><br><span class="line">   border: 5px solid rebeccapurple;</span><br><span class="line">   overflow: auto; // 创建BFC</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>  效果： <img src="../../images/bfc2.png" alt="bfc"></p>
+<ul>
+<li>解决外边距合并</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.yellow, .pink-inner &#123;</span><br><span class="line">  height: 50px;</span><br><span class="line">  margin: 10px 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.yellow &#123;</span><br><span class="line">  background: yellow;</span><br><span class="line">&#125;</span><br><span class="line">.pink-inner&#123;</span><br><span class="line">  background:pink;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  效果（yellow inner 和 pink inner 的边距为10px，不是20px）：<br>  <img src="../../images/bfc3.png" alt="bfc"></p>
+<p>  解决方案： 设置display: flow-root 创建一个新的BFC<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.pink-outer &#123;</span><br><span class="line">  display: flow-root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>  效果（yellow inner 和 pink inner 的边距为20px）：<br>  <img src="../../images/bfc4.png" alt="bfc"></p>
+]]></content>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flex 布局</title>
+    <url>/chayaBlog/2020/01/10/css/Flex%E5%B8%83%E5%B1%80/</url>
+    <content><![CDATA[<h3 id="Flex布局"><a href="#Flex布局" class="headerlink" title="Flex布局"></a>Flex布局</h3><p><strong>需要注意的是：当时设置 flex 布局之后，子元素的 float、clear、vertical-align 的属性将会失效。</strong></p>
+<h2 id="Flex-容器："><a href="#Flex-容器：" class="headerlink" title="Flex 容器："></a>Flex 容器：</h2><p>有下面六种属性可以设置在容器上，它们分别是：</p>
+<ol>
+<li><strong>flex-direction</strong>（决定主轴的方向）</li>
+<li><strong>flex-wrap</strong>（决定容器内项目是否可换行）</li>
+<li>flex-flow</li>
+<li><strong>justify-content</strong>（主轴的对齐方式）</li>
+<li><strong>align-items</strong>（交叉轴上的对齐方式）</li>
+<li>align-content</li>
+</ol>
+<ul>
+<li><h4 id="flex-direction-决定主轴的方向-即项目的排列方向"><a href="#flex-direction-决定主轴的方向-即项目的排列方向" class="headerlink" title="flex-direction:  决定主轴的方向(即项目的排列方向)"></a>flex-direction:  决定主轴的方向(即项目的排列方向)</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">flex-direction</span>: row | row-reverse | column | column-reverse;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-wrap-决定容器内项目是否可换行"><a href="#flex-wrap-决定容器内项目是否可换行" class="headerlink" title="flex-wrap: 决定容器内项目是否可换行"></a>flex-wrap: 决定容器内项目是否可换行</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">flex-wrap</span>: nowrap | wrap | wrap-reverse;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-flow-flex-direction-和-flex-wrap-的简写形式"><a href="#flex-flow-flex-direction-和-flex-wrap-的简写形式" class="headerlink" title="flex-flow: flex-direction 和 flex-wrap 的简写形式"></a>flex-flow: flex-direction 和 flex-wrap 的简写形式</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line"> <span class="attribute">flex-flow</span>: &lt;flex-direction&gt; || &lt;flex-wrap&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="justify-content：定义了项目在主轴的对齐方式"><a href="#justify-content：定义了项目在主轴的对齐方式" class="headerlink" title="justify-content：定义了项目在主轴的对齐方式"></a>justify-content：定义了项目在主轴的对齐方式</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">justify-content</span>: flex-start | flex-end | center | space-between |     space-around;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="align-items-定义了项目在交叉轴上的对齐方式"><a href="#align-items-定义了项目在交叉轴上的对齐方式" class="headerlink" title="align-items: 定义了项目在交叉轴上的对齐方式"></a>align-items: 定义了项目在交叉轴上的对齐方式</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line"> <span class="attribute">align-items</span>: flex-start | flex-end | center | baseline | stretch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="align-content-定义了多根轴线的对齐方式，如果项目只有一根轴线，那么该属性将不起作用"><a href="#align-content-定义了多根轴线的对齐方式，如果项目只有一根轴线，那么该属性将不起作用" class="headerlink" title="align-content: 定义了多根轴线的对齐方式，如果项目只有一根轴线，那么该属性将不起作用"></a>align-content: 定义了多根轴线的对齐方式，如果项目只有一根轴线，那么该属性将不起作用</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">align-content</span>: flex-start | flex-end | center | space-between | space-around | stretch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Flex-Item-属性："><a href="#Flex-Item-属性：" class="headerlink" title="Flex Item 属性："></a>Flex Item 属性：</h2><p>有六种属性可运用在 item 项目上：</p>
+<ol>
+<li><strong>order</strong>（容器中的排列顺序）</li>
+<li><strong>flex-grow</strong> （项目的放大比例）</li>
+<li><strong>flex-shrink</strong>（项目的缩小比例）</li>
+<li><strong>flex-basis</strong>（项目占据的主轴空间）</li>
+<li><strong>flex</strong></li>
+<li><strong>align-self</strong>（单个项目的对齐方式）</li>
+</ol>
+<ul>
+<li><h4 id="order-定义项目在容器中的排列顺序，数值越小，排列越靠前，默认值为-0"><a href="#order-定义项目在容器中的排列顺序，数值越小，排列越靠前，默认值为-0" class="headerlink" title="order: 定义项目在容器中的排列顺序，数值越小，排列越靠前，默认值为 0"></a>order: 定义项目在容器中的排列顺序，数值越小，排列越靠前，默认值为 0</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">    <span class="attribute">order</span>: &lt;number&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-grow-定义项目的放大比例"><a href="#flex-grow-定义项目的放大比例" class="headerlink" title="flex-grow: 定义项目的放大比例"></a>flex-grow: 定义项目的放大比例</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">    <span class="attribute">flex-grow</span>: &lt;number&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-shrink-定义了项目的缩小比例"><a href="#flex-shrink-定义了项目的缩小比例" class="headerlink" title="flex-shrink: 定义了项目的缩小比例"></a>flex-shrink: 定义了项目的缩小比例</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">    <span class="attribute">flex-shrink</span>: &lt;number&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-basis-定义了在分配多余空间之前，项目占据的主轴空间，浏览器根据这个属性，计算主轴是否有多余空间"><a href="#flex-basis-定义了在分配多余空间之前，项目占据的主轴空间，浏览器根据这个属性，计算主轴是否有多余空间" class="headerlink" title="flex-basis: 定义了在分配多余空间之前，项目占据的主轴空间，浏览器根据这个属性，计算主轴是否有多余空间"></a>flex-basis: 定义了在分配多余空间之前，项目占据的主轴空间，浏览器根据这个属性，计算主轴是否有多余空间</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">    <span class="attribute">flex-basis</span>: &lt;length&gt; | auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="flex-flex-grow-flex-shrink-和-flex-basis的简写"><a href="#flex-flex-grow-flex-shrink-和-flex-basis的简写" class="headerlink" title="flex: flex-grow, flex-shrink 和 flex-basis的简写"></a>flex: flex-grow, flex-shrink 和 flex-basis的简写</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span>&#123;</span><br><span class="line">    <span class="attribute">flex</span>: none | [ &lt;<span class="string">'flex-grow'</span>&gt; &lt;<span class="string">'flex-shrink'</span>&gt;? || &lt;<span class="string">'flex-basis'</span>&gt; ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有关快捷值：auto (1 1 auto) 和 none (0 0 auto)</p>
+<ul>
+<li><h4 id="align-self-允许单个项目有与其他项目不一样的对齐方式"><a href="#align-self-允许单个项目有与其他项目不一样的对齐方式" class="headerlink" title="align-self: 允许单个项目有与其他项目不一样的对齐方式"></a>align-self: 允许单个项目有与其他项目不一样的对齐方式</h4></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">     <span class="attribute">align-self</span>: auto | flex-start | flex-end | center | baseline | stretch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>CSS</tag>
+      </tags>
+  </entry>
+</search>
