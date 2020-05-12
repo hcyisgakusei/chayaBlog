@@ -232,6 +232,233 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/08/15/tools/搭建私有 npm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2019/08/15/tools/搭建私有 npm/" itemprop="url">搭建私有NPM</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-15T00:00:00+08:00">
+                2019-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>目前有以下两种推荐方案：</p>
+<h2 id="使用-verdaccio"><a href="#使用-verdaccio" class="headerlink" title="使用 verdaccio"></a>使用 <code>verdaccio</code></h2><p><a href="https://github.com/verdaccio/verdaccio" target="_blank" rel="noopener">verdaccio</a>: A lightweight private npm proxy registry</p>
+<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><p>在服务器上全局安装 <code>verdaccio</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g verdaccio</span><br><span class="line">$ verdaccio</span><br><span class="line">warn --- config file - /home/.config/verdaccio/config.yaml </span><br><span class="line">warn --- http address - http://localhost:4873/ - verdaccio/3.0.0</span><br></pre></td></tr></table></figure>
+<h3 id="Nginx-setting"><a href="#Nginx-setting" class="headerlink" title="Nginx setting"></a>Nginx setting</h3><p>为了不和其他的 <code>Nginx</code>配置冲突，我们将 <code>verdaccio</code> 的默认端口指向服务器的子目录 <code>/verdaccio/</code> 下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen       80;</span><br><span class="line">  server_name  concierge11.klook.io;</span><br><span class="line"></span><br><span class="line">  location ~ ^/verdaccio/(.*)$ &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:4873/$1;</span><br><span class="line">    proxy_set_header Host            $host:$server_port;</span><br><span class="line">    proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时我们还需要修改 <code>verdaccio</code> 的配置文件 <code>~/.config/verdaccio/config.yaml</code>，更多<a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/verdaccio.org/docs/en/configuration%5D(https:/verdaccio.org/docs/en/configuration" target="_blank" rel="noopener">配置参考</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url_prefix:  /verdaccio/</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>~/.config/verdaccio/storage</code> ：储存发布和缓存的包，会缓存下载的包</li>
+<li><code>~/.config/verdaccio/htpasswd</code> ：储存注册用户的账号名和密码</li>
+</ul>
+<h3 id="Keeping-verdaccio-running-forever"><a href="#Keeping-verdaccio-running-forever" class="headerlink" title="Keeping verdaccio running forever"></a>Keeping verdaccio running forever</h3><p>You can use node package called <a href="https://github.com/nodejitsu/forever" target="_blank" rel="noopener">&#39;forever&#39;</a> to keep <code>verdaccio</code> running all the time.</p>
+<p>First install <code>forever</code> globally:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g forever</span><br></pre></td></tr></table></figure>
+<p>Make sure you&#39;ve run <code>verdaccio</code> at least once to generate the config file and write down the created admin user. You can then use the following command to start <code>verdaccio</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ forever start `which verdaccio`</span><br></pre></td></tr></table></figure>
+<p>You can check the documentation for more information on how to use forever.</p>
+<p>Surviving server restarts</p>
+<p>You can use <code>crontab</code> and <code>forever</code> together to start <code>verdaccio</code> after a server reboot. When you&#39;re logged in as the <code>verdaccio</code> user do the following:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ crontab -e</span><br></pre></td></tr></table></figure>
+<p>This might ask you to choose an editor. Pick your favorite and proceed. Add the following entry to the file:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot /usr/bin/forever start /usr/lib/node_modules/verdaccio/bin/verdaccio</span><br></pre></td></tr></table></figure>
+<p>The locations may vary depending on your server setup. If you want to know where your files are you can use the &#39;which&#39; command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ which forever</span><br><span class="line">$ which verdaccio</span><br></pre></td></tr></table></figure>
+<h3 id="本地配置-registry"><a href="#本地配置-registry" class="headerlink" title="本地配置 registry"></a>本地配置 registry</h3><p>推荐安装 <a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/github.com/Pana/nrm%5D(https:/github.com/Pana/nrm" target="_blank" rel="noopener">nrm</a>) 来管理 registry</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g nrm</span><br><span class="line">$ nrm add knpm http://concierge11.klook.io/verdaccio/</span><br><span class="line">$ nrm use knpm</span><br></pre></td></tr></table></figure>
+<h3 id="发布和安装私有包"><a href="#发布和安装私有包" class="headerlink" title="发布和安装私有包"></a>发布和安装私有包</h3><blockquote>
+<p>发布私有包时，强烈建议修改 <code>package.json</code> 中的包名，带上 scope <code>@klook</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 修改包名 @klook/utils</span><br><span class="line">$ npm publish </span><br><span class="line">$ npm install @vue/cli</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="使用-cnpmjs-org"><a href="#使用-cnpmjs-org" class="headerlink" title="使用 cnpmjs.org"></a>使用 <code>cnpmjs.org</code></h2><p><a href="https://github.com/cnpm/cnpmjs.org" target="_blank" rel="noopener">cnpmjs.org</a>: Private npm registry and web for Enterprise, base on <a href="http://koajs.com/" target="_blank" rel="noopener">koa</a>, MySQL and <a href="https://github.com/cnpm/cnpmjs.org/wiki/NFS-Guide" target="_blank" rel="noopener">Simple Store Service</a>.</p>
+<h3 id="Dependencies"><a href="#Dependencies" class="headerlink" title="Dependencies"></a>Dependencies</h3><ul>
+<li>Node &gt;= 6.11.3</li>
+<li>MySQL &gt;= 0.5.0, include <code>mysqld</code> and <code>mysql</code> cli</li>
+<li><a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/github.com/cnpm/cnpmjs.org/wiki/NFS-Guide%5D(https:/github.com/cnpm/cnpmjs.org/wiki/NFS-Guide" target="_blank" rel="noopener">Simple File Store Service, like qiniu, aliyun-oss, tfs, upyun</a>)</li>
+</ul>
+<h3 id="Install-1"><a href="#Install-1" class="headerlink" title="Install"></a>Install</h3><ol>
+<li>Get the Code</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># clone from github</span><br><span class="line">$ git clone git://github.com/cnpm/cnpmjs.org.git $HOME/cnpmjs.org</span><br><span class="line">$ cd $HOME/cnpmjs.org</span><br></pre></td></tr></table></figure>
+<p>Install <code>cnpmjs.org</code> and <code>cnpm</code> from npm</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g --build-from-source cnpmjs.org cnpm sqlite3</span><br></pre></td></tr></table></figure>
+<p>If you&#39;re in China, maybe you should use China mirror</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g --build-from-source \</span><br><span class="line">  --registry=https://registry.npm.taobao.org \</span><br><span class="line">  --disturl=https://npm.taobao.org/mirrors/node \</span><br><span class="line">  cnpmjs.org cnpm sqlite3</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>mysql</code> 数据库操作：</li>
+</ol>
+<p>a. 创建数据库 <code>klook-npm</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database klook-npm</span><br></pre></td></tr></table></figure>
+<p>b. 创建表：<a href="https://github.com/cnpm/cnpmjs.org/blob/master/docs/db.sql" target="_blank" rel="noopener">Get all the sqls here</a></p>
+<p><a href="http://www.ifepoland.com/lilip/p/10109557.html" target="_blank" rel="noopener">mysql 8.0 创建 table 时报错:【MYSQL】MYSQL报错解决方法： Warning: (3719, &quot;&#39;utf8&#39; is currently an alias for the character set UTF8MB3, but will be an alias for UTF8M B4 in a future release.&quot;</a></p>
+<p><a href="[https://img.jogiter.cn//tech/db%28mysql8.0%29.sql](https://img.jogiter.cn//tech/db%28mysql8.0%29.sql">点击下载修复版 SQL</a></p>
+<ol>
+<li>Edit Your Own Config File</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd $HOME/cnpmjs.org</span><br><span class="line">$ vim config/index.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  debug: false,</span><br><span class="line">  enableCluster: true, // enable cluster mode</span><br><span class="line">  enablePrivate: true, // enable private mode, only admin can publish, other use just can sync package from source npm</span><br><span class="line">  database: &#123;</span><br><span class="line">      db: &apos;klook-npm&apos;,</span><br><span class="line">      username: &apos;root&apos;,</span><br><span class="line">      password: &apos;password&apos;,</span><br><span class="line"></span><br><span class="line">      // the sql dialect of the database</span><br><span class="line">      // - currently supported: &apos;mysql&apos;, &apos;sqlite&apos;, &apos;postgres&apos;, &apos;mariadb&apos;</span><br><span class="line">      dialect: &apos;mysql&apos;,</span><br><span class="line"></span><br><span class="line">      // custom host; default: 127.0.0.1</span><br><span class="line">      host: &apos;l-testing-contains-main-56.cbw4mscvt9bw.ap-southeast-1.rds.amazonaws.com&apos;,</span><br><span class="line"></span><br><span class="line">      // custom port; default: 3306</span><br><span class="line">      port: 3306,</span><br><span class="line"></span><br><span class="line">      ssl: &#123;</span><br><span class="line">          ca: path.join(dataDir, &apos;certs/mysql-test.pem&apos;)</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      // use pooling in order to reduce db connection overload and to increase speed</span><br><span class="line">      // currently only for mysql and postgresql (since v1.5.0)</span><br><span class="line">      pool: &#123;</span><br><span class="line">        maxConnections: 10,</span><br><span class="line">        minConnections: 0,</span><br><span class="line">        maxIdleTime: 30000</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      dialectOptions: &#123;</span><br><span class="line">        trace: true,</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      // the storage engine for &apos;sqlite&apos;</span><br><span class="line">      // default store into ~/.cnpmjs.org/data.sqlite</span><br><span class="line">      storage: path.join(dataDir, &apos;data.sqlite&apos;),</span><br><span class="line"></span><br><span class="line">      logging: !!process.env.SQL_DEBUG,</span><br><span class="line">  &#125;,</span><br><span class="line">  admins: &#123;</span><br><span class="line">    admin: &apos;admin@cnpmjs.org&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  // registry scopes, if don&apos;t set, means do not support scopes</span><br><span class="line">  scopes: [ &apos;@knpm&apos;, &apos;@knpmtest&apos;, &apos;@knpm-test&apos; ],</span><br><span class="line">  // &apos;none&apos;: 永不同步，只管理私有用户上传的包，其它源包会直接从源站获取</span><br><span class="line">  // &apos;exist&apos;: 定时同步已经存在于数据库的包</span><br><span class="line">  // &apos;all&apos;: 定时同步所有源站的</span><br><span class="line">  syncModel: &apos;none&apos;// &apos;none&apos;, &apos;all&apos;, &apos;exist&apos;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注意这里的 <code>mysql</code> 的连接使用测试环境的 <code>mysql</code>，采用 <code>ssl</code> 的方式进行连接，因此还需要添加 <code>ssl</code> 配置。</p>
+<p>详细配置参考<a href="https://medoc.000webhostapp.com/2018/04/19/npm%E7%A7%81%E5%BA%93%E6%90%AD%E5%BB%BA-cnpm-js/" target="_blank" rel="noopener">配置字段参考</a></p>
+<ol>
+<li>添加 <code>ssl</code> 文件，同时将 <code>key</code> 内容拷贝到 <code>~/.cnpmjs.org/certs/mysql-test.pem</code> 文件。具体的 <code>key</code> 请咨询测试同事。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/.cnpmjs.org/</span><br><span class="line">$ mkdir certs</span><br><span class="line">$ touch mysql-test.pem</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>~/.cnpmjs.org/nfs</code> ：默认储存发布和缓存的包，可设置不缓存下载的包。具体请参考配置参考。</li>
+</ul>
+<ol>
+<li>开启服务</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/cnpmjs.org/</span><br><span class="line">$ npm run start</span><br></pre></td></tr></table></figure>
+<p><code>registry</code>：<a href="http://localhost:7001/" target="_blank" rel="noopener">http://localhost:7001</a>  <code>web</code>：<a href="http://localhost:7002/" target="_blank" rel="noopener">http://localhost:7002</a></p>
+<p>配置 <code>Nginx</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd /etc/nginx/</span><br><span class="line">$ vim nginx.conf</span><br></pre></td></tr></table></figure>
+<p><code>Nginx</code> 设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen       80;</span><br><span class="line">  server_name  concierge11.klook.io;</span><br><span class="line"></span><br><span class="line">  location ~ ^/knpm/(.*)$ &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:7001/$1;</span><br><span class="line">    proxy_set_header Host            $host:$server_port;</span><br><span class="line">    proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">  &#125;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:7002/;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header Host  $http_host;</span><br><span class="line">    proxy_set_header X-Nginx-Proxy true;</span><br><span class="line">    proxy_http_version 1.1;</span><br><span class="line">    proxy_set_header Connection &quot;&quot;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>本地环境设置 <code>registry</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cnpm set registry http://concierge11.klook.io/knpm/</span><br></pre></td></tr></table></figure>
+<p>发布和安装包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cnpm login</span><br><span class="line">$ cnpm publish</span><br><span class="line">$ cnpm install</span><br></pre></td></tr></table></figure>
+<ol>
+<li>个性化配置 <code>npm</code> ，详细请阅读项目源码~</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/cnpmjs.org/</span><br></pre></td></tr></table></figure>
+<h2 id="difference"><a href="#difference" class="headerlink" title="difference"></a>difference</h2><ul>
+<li>verdaccio<ul>
+<li>安装简单，不需要数据库支持</li>
+<li>设置 <code>registry</code> 后通过 <code>npm</code> 来进行包管理</li>
+<li>可配置性低；服务器会储存所有的包，包括发布的私语包和下载的包</li>
+<li>定制化页面需要修改全局安装的源码</li>
+</ul>
+</li>
+<li>cnpmjs.org<ul>
+<li>安装复杂，需要安装 <code>mysql</code></li>
+<li>设置 <code>registry</code> 后通过 <code>cnpm</code> 来进行包管理</li>
+<li>高度可配置；支持服务器只存储发布的私有包</li>
+<li>定制化页面需要修改部署安装的源码</li>
+</ul>
+</li>
+</ul>
+<h2 id="Readings"><a href="#Readings" class="headerlink" title="Readings"></a>Readings</h2><ul>
+<li><a href="https://verdaccio.org/docs/en/installation" target="_blank" rel="noopener">verdaccio 安装</a></li>
+<li><a href="https://github.com/cnpm/cnpmjs.org/wiki/Deploy-a-private-npm-registry-in-5-minutes" target="_blank" rel="noopener">Deploy a private npm registry in 5 minutes</a></li>
+<li><a href="https://github.com/jaywcjlove/handbook/blob/master/CentOS/%E5%9C%A85%E5%88%86%E9%92%9F%E5%86%85%E6%90%AD%E5%BB%BA%E4%BC%81%E4%B8%9A%E5%86%85%E9%83%A8%E7%A7%81%E6%9C%89npm%E4%BB%93%E5%BA%93.md" target="_blank" rel="noopener">在5分钟内搭建企业内部私有npm仓库</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/03/26/vue/vue生命周期/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -850,6 +1077,179 @@
 <p>我们只需要把接口改成这样就可以了</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GetParam &#123;</span><br><span class="line">  (key:<span class="built_in">string</span>):<span class="built_in">string</span>;</span><br><span class="line">  (keys:<span class="built_in">string</span>[]):<span class="built_in">string</span>[];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> getParam:GetParam = <span class="function"><span class="keyword">function</span>(<span class="params">key:<span class="built_in">string</span>|<span class="built_in">string</span>[]</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> config = &#123;</span><br><span class="line">    config1:<span class="string">'config1'</span>,</span><br><span class="line">    config2:<span class="string">'config2'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> config[key];</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result:<span class="built_in">string</span>[] = [];</span><br><span class="line">    key.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      result.push(config[item]);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> config1 = getParam(<span class="string">'config1'</span>);</span><br></pre></td></tr></table></figure>
 <p>这样当我们传入参数为字符串的时候，ide就能自动的帮我们推断出返回的值是字符串。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/10/13/js/模块规范/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/10/13/js/模块规范/" itemprop="url">快速理解 js 模块规范</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-13T00:00:00+08:00">
+                2018-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。</p>
+<p>说道前端模块规范，我们耳熟能详的就这三种 <code>CommonJS</code>, <code>AMD</code>, <code>CMD</code></p>
+<h3 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h3><p>Node.js是commonJS规范的主要实践者，它有四个重要的环境变量为模块化的实现提供支持：<code>module</code>、<code>exports</code>、<code>require</code>、<code>global</code>。实际使用时，用<code>module.exports</code>定义当前模块对外输出的接口（不推荐直接用<code>exports</code>），用<code>require</code>加载模块。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义模块math.js</span></span><br><span class="line"><span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="comment">//在这里写上需要向外暴露的函数、变量</span></span><br><span class="line">  add: add,</span><br><span class="line">  basicNum: basicNum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用自定义的模块时，参数包含路径，可省略.js</span></span><br><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'./math'</span>);</span><br><span class="line">math.add(<span class="number">2</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用核心模块时，不需要带路径</span></span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line">http.createService(...).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>commonJS用同步的方式加载模块。在服务端，模块文件都存在本地磁盘，读取非常快，所以这样做不会有问题。但是在浏览器端，限于网络原因，更合理的方案是使用异步加载。</p>
+<h3 id="AMD和require-js"><a href="#AMD和require-js" class="headerlink" title="AMD和require.js"></a>AMD和require.js</h3><p>AMD规范采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。这里介绍用require.js实现AMD规范的模块化：用<code>require.config()</code>指定引用路径等，用<code>define()</code>定义模块，用<code>require()</code>加载模块。</p>
+<p>首先我们需要引入require.js文件和一个入口文件main.js。main.js中配置<code>require.config()</code>并规定项目中用到的基础模块。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 网页中引入require.js及main.js **/</span></span><br><span class="line">&lt;script src=<span class="string">"js/require.js"</span> data-main=<span class="string">"js/main"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span>** main.js 入口文件/主模块 **<span class="regexp">/</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 首先用config()指定各模块路径和引用名</span></span><br><span class="line"><span class="regexp">require.config(&#123;</span></span><br><span class="line"><span class="regexp">  baseUrl: "js/</span>lib<span class="string">",</span></span><br><span class="line"><span class="string">  paths: &#123;</span></span><br><span class="line"><span class="string">    "</span>jquery<span class="string">": "</span>jquery.min<span class="string">",  //实际路径为js/lib/jquery.min.js</span></span><br><span class="line"><span class="string">    "</span>underscore<span class="string">": "</span>underscore.min<span class="string">",</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;);</span></span><br><span class="line"><span class="string">// 执行基本操作</span></span><br><span class="line"><span class="string">require(["</span>jquery<span class="string">","</span>underscore<span class="string">"],function($,_)&#123;</span></span><br><span class="line"><span class="string">  // some code here</span></span><br><span class="line"><span class="string">&#125;);</span></span><br></pre></td></tr></table></figure>
+<p>引用模块的时候，我们将模块名放在<code>[]</code>中作为<code>reqiure()</code>的第一参数；如果我们定义的模块本身也依赖其他模块,那就需要将它们放在<code>[]</code>中作为<code>define()</code>的第一参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义math.js模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        add: add,</span><br><span class="line">        basicNum :basicNum</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 定义一个依赖underscore.js的模块</span></span><br><span class="line">define([<span class="string">'underscore'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">_</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> classify = <span class="function"><span class="keyword">function</span>(<span class="params">list</span>)</span>&#123;</span><br><span class="line">    _.countBy(list,<span class="function"><span class="keyword">function</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> num &gt; <span class="number">30</span> ? <span class="string">'old'</span> : <span class="string">'young'</span>;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    classify :classify</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用模块，将模块放在[]内</span></span><br><span class="line"><span class="built_in">require</span>([<span class="string">'jquery'</span>, <span class="string">'math'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">$, math</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = math.add(<span class="number">10</span>,<span class="number">20</span>);</span><br><span class="line">  $(<span class="string">"#sum"</span>).html(sum);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="CMD和sea-js"><a href="#CMD和sea-js" class="headerlink" title="CMD和sea.js"></a>CMD和sea.js</h3><p>require.js在申明依赖的模块时会在第一之间加载并执行模块内的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>], <span class="function"><span class="keyword">function</span>(<span class="params">a, b, c, d, e, f</span>) </span>&#123; </span><br><span class="line">    <span class="comment">// 等于在最前面声明并初始化了要用到的所有模块</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">      <span class="comment">// 即便没用到某个模块 b，但 b 还是提前执行了</span></span><br><span class="line">      b.foo()</span><br><span class="line">    &#125; </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>CMD是另一种js模块化方案，它与AMD很类似，不同点在于：AMD 推崇依赖前置、提前执行，CMD推崇依赖就近、延迟执行。此规范其实是在sea.js推广过程中产生的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** AMD写法 **/</span></span><br><span class="line">define([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>], <span class="function"><span class="keyword">function</span>(<span class="params">a, b, c, d, e, f</span>) </span>&#123; </span><br><span class="line">     <span class="comment">// 等于在最前面声明并初始化了要用到的所有模块</span></span><br><span class="line">    a.doSomething();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">        <span class="comment">// 即便没用到某个模块 b，但 b 还是提前执行了</span></span><br><span class="line">        b.doSomething()</span><br><span class="line">    &#125; </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** CMD写法 **/</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a'</span>); <span class="comment">//在需要时申明</span></span><br><span class="line">    a.doSomething();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'./b'</span>);</span><br><span class="line">        b.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** sea.js **/</span></span><br><span class="line"><span class="comment">// 定义模块 math.js</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $ = <span class="built_in">require</span>(<span class="string">'jquery.js'</span>);</span><br><span class="line">    <span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">    exports.add = add;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 加载模块</span></span><br><span class="line">seajs.use([<span class="string">'math.js'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">math</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> sum = math.add(<span class="number">1</span> , <span class="number">2</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="ES6-Module"><a href="#ES6-Module" class="headerlink" title="ES6 Module"></a>ES6 Module</h3><p>ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，旨在成为浏览器和服务器通用的模块解决方案。其模块功能主要由两个命令构成：<code>export</code>和<code>import</code>。<code>export</code>命令用于规定模块的对外接口，<code>import</code>命令用于输入其他模块提供的功能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 定义模块 math.js **/</span></span><br><span class="line"><span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> &#123; basicNum, add &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 引用模块 **/</span></span><br><span class="line"><span class="keyword">import</span> &#123; basicNum, add &#125; <span class="keyword">from</span> <span class="string">'./math'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    ele.textContent = add(<span class="number">99</span> , basicNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上例所示，使用<code>import</code>命令的时候，用户需要知道所要加载的变量名或函数名。其实ES6还提供了<code>export default</code>命令，为模块指定默认输出，对应的<code>import</code>语句不需要使用大括号。这也更趋近于ADM的引用写法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** export default **/</span></span><br><span class="line"><span class="comment">//定义输出</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123; basicNum, add &#125;;</span><br><span class="line"><span class="comment">//引入</span></span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">from</span> <span class="string">'./math'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    ele.textContent = math.add(<span class="number">99</span> , math.basicNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ES6的模块不是对象，<code>import</code>命令会被 JavaScript 引擎静态分析，在编译时就引入模块代码，而不是在代码运行时加载，所以无法实现条件加载。也正因为这个，使得静态分析成为可能。</p>
+<h3 id="ES6-模块与-CommonJS-模块的差异"><a href="#ES6-模块与-CommonJS-模块的差异" class="headerlink" title="ES6 模块与 CommonJS 模块的差异"></a>ES6 模块与 CommonJS 模块的差异</h3><h5 id="1-CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用。"><a href="#1-CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用。" class="headerlink" title="1.  CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。"></a>1.  CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。</h5><ul>
+<li><p>CommonJS 模块输出的是值的拷贝，也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。</p>
+</li>
+<li><p>ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令<code>import</code>，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的原始值变了，<code>impor</code>t加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块.</p>
+</li>
+</ul>
+<h5 id="2-CommonJS-模块是运行时加载，ES6-模块是编译时输出接口。"><a href="#2-CommonJS-模块是运行时加载，ES6-模块是编译时输出接口。" class="headerlink" title="2. CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。"></a>2. CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。</h5><ul>
+<li><p>运行时加载: CommonJS 模块就是对象；即在输入时是先加载整个模块，生成一个对象，然后再从这个对象上面读取方法，这种加载称为“运行时加载”。</p>
+</li>
+<li><p>译编译时加载:ES6 模块不是对象，而是通过 <code>export</code> 命令显式指定输出的代码，<code>import</code>时采用静态命令的形式。即在<code>import</code>时可以指定加载某个输出值，而不是加载整个模块，这种加载称为“编译时加载”。</p>
+</li>
+</ul>
+<p>CommonJS 加载的是一个对象（即<code>module.exports</code>属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。</p>
 
           
         
@@ -1520,325 +1920,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/20/js/事件代理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2018/03/20/js/事件代理/" itemprop="url">js事件代理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-20T00:00:00+08:00">
-                2018-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="事件代理"><a href="#事件代理" class="headerlink" title="事件代理"></a>事件代理</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>比如说我们想个一个列表中的每一项绑定一个点击事件，如果我们一个一个去给每一项绑定事件，则会导致多次操纵dom，效率也比较低，如果添加一个新的选项的话，还得再给这个选项绑定事件。</p>
-<p>事件代理，其实就是将事件绑定在父元素上，然后通过父元素的点击事件来判断点击的是不是子元素</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul id=&quot;test&quot;&gt;</span><br><span class="line">    &lt;li&gt;1&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;2&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;3&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;4&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var ul = document.getElementById(&apos;test&apos;)</span><br><span class="line">    ul.addEventListener(&apos;click&apos;, function (event) &#123;</span><br><span class="line">        var target = event.target</span><br><span class="line">        if (target.tagName.toUpperCase() === &apos;LI&apos;) &#123;</span><br><span class="line">            console.log(target.innerText)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>我们通过绑定父元素的点击事件，通过获取 <code>event.target</code> 可以知道当前点击的元素，在 IE 6-8中不支持该属性，有一个 <code>srcElement</code> 等价于这里 <code>target</code></p>
-<h3 id="currentTarget"><a href="#currentTarget" class="headerlink" title="currentTarget"></a>currentTarget</h3><p>如果我们打印出 <code>event</code> 可以看到里面有一个 <code>currentTarget</code> 属性，并且这个属性为 null，那么这个属性有什么用呢。</p>
-<p>这里我们可以这样试一下</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"test"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>4<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'test'</span>)</span></span><br><span class="line"><span class="javascript">    ul.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event)</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event.currentTarget)</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event.target)</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><code>event.currentTarget</code>打印出来的是ul节点。根据 mdn 的文档可知该属性是指向当前事件被绑定的元素上<br><code>event.target</code>打印出来的是所点击的li节点。根据 mdn 的文档可知该属性是指向触发事件的元素上</p>
-<p>在js中<code>console.log(obj)</code>打印对象的时候，是对对象的一个引用，如果对象的属性后面被改变了，打印出来的对象也是会发生改变的，所以造成了前面打印 <code>event</code> 的时候发现他的<code>currentTarget</code>为null</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/19/js/作用域与闭包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2018/03/19/js/作用域与闭包/" itemprop="url">js 作用域与闭包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-19T00:00:00+08:00">
-                2018-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在 <code>let</code> 和 <code>const</code> 出现之前，js 是没有会计作用域的， 在我们使用 <code>var</code> 定义变量的时候，是有可能会导致变量提升的。</p>
-<p><strong>比如</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
-<p>这段代码最后会输出2，这是因为var 导致了变量 i 的提升，在有了 let之后我们用let就不会有这个问题。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// error i is not defined</span></span><br></pre></td></tr></table></figure>
-<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h2><p>我们先看看这段代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(b)</span><br><span class="line">    &#125;</span><br><span class="line">    inner();</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line"><span class="built_in">console</span>.log(b)</span><br></pre></td></tr></table></figure>
-<p>上面这段代码会依次输出，1，2，error b is not defined，</p>
-<p>在js中函数是有自己的作用域的，函数内部定义的变量，外部是无法直接访问到的，只有函数内部才能够直接访问。</p>
-<p>函数内部在调用 <code>inner()</code> ，在访问 b 这个变量的时候，会先看自己的作用域中是否有这个变量，发现没有，然后再查找 test 的作用域，发现了这个变量，然后就输出这个变量。</p>
-<p>这里外部无法访问到test中的b，所以在函数执行完之后，b会被销毁掉。</p>
-<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>我们先来看一下代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countResult</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        count ++;</span><br><span class="line">        <span class="built_in">console</span>.log(cout)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> tmp = countResult();</span><br><span class="line"><span class="keyword">var</span> tmp2 = countResult();</span><br><span class="line">tmp(); <span class="comment">// 1</span></span><br><span class="line">tmp2(); <span class="comment">// 1</span></span><br><span class="line">tmp(); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
-<p>这里虽然我们无法直接访问到 <code>countResult</code> 中的变量count，但是我们通过返回的函数可以间接的访问到count，tmp保持着对count的引用，所以tmp 中的count不会被销毁，我们再新生成一个tmp2，可以发现，tmp和tmp2之间的作用域是不同的，他们都有自己单独的局部作用域。</p>
-<p>闭包的作用主要有两点：</p>
-<ol>
-<li>隔离作用域</li>
-<li>使局部变量能够常驻内存</li>
-</ol>
-<p>同样闭包带来的问题也非常明显：</p>
-<ol>
-<li>闭包会使得函数中的变量都被保存到内存中，导致内存消耗很大。在使用闭包的时候，退出函数之前，我们需要将一些不使用的局部变量全部删除。</li>
-</ol>
-<h2 id="js-的垃圾回收机制"><a href="#js-的垃圾回收机制" class="headerlink" title="js 的垃圾回收机制"></a>js 的垃圾回收机制</h2><h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><p>应有计数通过计算变量的引用数来回收垃圾，如果一个值的引用数为0则将其回收</p>
-<p>引用计数法会存在一个问题。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function test()&#123;</span><br><span class="line">    var a = &#123;&#125;;</span><br><span class="line">    var b= &#123;&#125;;</span><br><span class="line">    a.b=b;</span><br><span class="line">    b.a=a;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
-<p>test 中的 a和b互相引用了对方，但是这里执行完之后本该销毁这两个变量，如果使用引用计数法的话，就不会销毁这两个变量而导致内存泄露。</p>
-<h3 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h3><p>标记清除法是通过根节点向下访问，如果能访问到的都不会被清除，在浏览器中根节点就 <code>window</code>, 这样就避免了循环引用导致的内存泄露问题。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1889,7 +1970,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="JS,">
 
 
 
@@ -79,19 +79,18 @@
 
 
 
-<meta name="description" content="在 vue 的官方文档中，我们可以看到 vue 的整个生命。  vue 主要给我们提供了如下八个钩子：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestory、destoryed 首先我们先粗略的了解一下，vue 初始化的时候会做哪些事情。  挂载生命周期钩子 解析 data 属性，将 data 属性转化">
+<meta name="description" content="Attribute VS Property Attribute 是我们在 HTML 代码中看到的键值对，例如1&amp;lt;input id=&quot;name&quot; type=&quot;text&quot; value=&quot;test&quot; /&amp;gt;     上面代码中的 input 节点有三个 attribute，通过getAttribute可以获取对应的值:  id : name type : text value : test">
+<meta name="keywords" content="JS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vue生命周期">
-<meta property="og:url" content="https://hcyisgakusei.github.io/2019/03/26/vue/vue生命周期/index.html">
+<meta property="og:title" content="JS DOM  Attribute VS Property">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2019/11/26/js/Dom-Attribute-VS-Property/index.html">
 <meta property="og:site_name" content="HCY">
-<meta property="og:description" content="在 vue 的官方文档中，我们可以看到 vue 的整个生命。  vue 主要给我们提供了如下八个钩子：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestory、destoryed 首先我们先粗略的了解一下，vue 初始化的时候会做哪些事情。  挂载生命周期钩子 解析 data 属性，将 data 属性转化">
+<meta property="og:description" content="Attribute VS Property Attribute 是我们在 HTML 代码中看到的键值对，例如1&amp;lt;input id=&quot;name&quot; type=&quot;text&quot; value=&quot;test&quot; /&amp;gt;     上面代码中的 input 节点有三个 attribute，通过getAttribute可以获取对应的值:  id : name type : text value : test">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://cn.vuejs.org/images/lifecycle.png">
-<meta property="og:updated_time" content="2020-05-12T02:53:41.481Z">
+<meta property="og:updated_time" content="2020-05-12T16:20:36.761Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vue生命周期">
-<meta name="twitter:description" content="在 vue 的官方文档中，我们可以看到 vue 的整个生命。  vue 主要给我们提供了如下八个钩子：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestory、destoryed 首先我们先粗略的了解一下，vue 初始化的时候会做哪些事情。  挂载生命周期钩子 解析 data 属性，将 data 属性转化">
-<meta name="twitter:image" content="https://cn.vuejs.org/images/lifecycle.png">
+<meta name="twitter:title" content="JS DOM  Attribute VS Property">
+<meta name="twitter:description" content="Attribute VS Property Attribute 是我们在 HTML 代码中看到的键值对，例如1&amp;lt;input id=&quot;name&quot; type=&quot;text&quot; value=&quot;test&quot; /&amp;gt;     上面代码中的 input 节点有三个 attribute，通过getAttribute可以获取对应的值:  id : name type : text value : test">
 
 
 
@@ -121,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://hcyisgakusei.github.io/2019/03/26/vue/vue生命周期/">
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2019/11/26/js/Dom-Attribute-VS-Property/">
 
 
 
 
 
-  <title>vue生命周期 | HCY</title>
+  <title>JS DOM  Attribute VS Property | HCY</title>
   
 
 
@@ -234,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/03/26/vue/vue生命周期/">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/11/26/js/Dom-Attribute-VS-Property/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HCY">
@@ -251,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">vue生命周期</h1>
+          <h1 class="post-title" itemprop="name headline">JS DOM  Attribute VS Property</h1>
         
 
         <div class="post-meta">
@@ -263,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-26T21:42:01+08:00">
-                2019-03-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-26T00:00:00+08:00">
+                2019-11-26
               </time>
             
 
@@ -273,28 +272,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -323,33 +300,48 @@
       
 
       
-        <p>在 vue 的官方文档中，我们可以看到 vue 的整个生命。</p>
-<p><img src="https://cn.vuejs.org/images/lifecycle.png" alt="01"></p>
-<p>vue 主要给我们提供了如下八个钩子：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestory、destoryed</p>
-<p>首先我们先粗略的了解一下，vue 初始化的时候会做哪些事情。</p>
-<ul>
-<li>挂载生命周期钩子</li>
-<li>解析 data 属性，将 data 属性转化为 Observer</li>
-<li>解析模板，编译模板</li>
-<li>挂载节点</li>
+        <h3 id="Attribute-VS-Property"><a href="#Attribute-VS-Property" class="headerlink" title="Attribute VS Property"></a>Attribute VS Property</h3><ul>
+<li><h5 id="Attribute-是我们在-HTML-代码中看到的键值对，例如"><a href="#Attribute-是我们在-HTML-代码中看到的键值对，例如" class="headerlink" title="Attribute 是我们在 HTML 代码中看到的键值对，例如"></a>Attribute 是我们在 HTML 代码中看到的键值对，例如</h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h2 id="各生命周期的含义"><a href="#各生命周期的含义" class="headerlink" title="各生命周期的含义"></a>各生命周期的含义</h2><h3 id="beforeCreate"><a href="#beforeCreate" class="headerlink" title="beforeCreate"></a>beforeCreate</h3><p>在 <code>beforeCreate</code> 的时候，<code>vue</code> 只是将各生命周期注册的方法挂载到对应的钩子上，此时还未对 <code>data</code> 中的元素做初始化</p>
-<h3 id="created"><a href="#created" class="headerlink" title="created"></a>created</h3><p>这个阶段主要完成了将<code>data</code>转化为<code>Observer</code>,此时还未对模板进行编译</p>
-<h3 id="beforeMount"><a href="#beforeMount" class="headerlink" title="beforeMount"></a>beforeMount</h3><p>这个阶段主要做了两个事</p>
-<ol>
-<li>检查vue配置，即new Vue{}里面的el项是否存在，有就继续检查template项。没有则等到手动绑定调用vm.$mount()</li>
-<li>检查配置中的template项，如果没有template进行填充被绑定区域，则被绑定区域的el对象的outerHTML（即整个#app DOM对象，包括<div id="”app”">和</div>标签）都作为被填充对象替换掉填充区域</li>
-</ol>
-<p>此时模板还未进行编译。</p>
-<h3 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h3><p>这个阶段完成了对模板的编译，并完成了元素的挂载。</p>
-<h3 id="beforeUpdate"><a href="#beforeUpdate" class="headerlink" title="beforeUpdate"></a>beforeUpdate</h3><p>数据改变时，会进入这个钩子</p>
-<h3 id="updated"><a href="#updated" class="headerlink" title="updated"></a>updated</h3><p>组件更新之后，会进入这个钩子</p>
-<h3 id="beforeDestory"><a href="#beforeDestory" class="headerlink" title="beforeDestory"></a>beforeDestory</h3><p>组件销毁前调用</p>
-<h3 id="destoryed"><a href="#destoryed" class="headerlink" title="destoryed"></a>destoryed</h3><p>组件销毁后调用</p>
-<h2 id="父子组件的加载顺序"><a href="#父子组件的加载顺序" class="headerlink" title="父子组件的加载顺序"></a>父子组件的加载顺序</h2><p>vue 在编译模板的时候，最先读进去的是根元素，然后一层一层的递归进子模板。</p>
-<p>编译完成之后，在从子组件开始一层一层向外挂载。</p>
-<p>总的来说就是，从创建到编译，是从父到子，从编译到挂载，是由子到父。</p>
-<h2 id="nextTick"><a href="#nextTick" class="headerlink" title="$nextTick"></a>$nextTick</h2><p>在 vue 中，数据更新的时候并不会立刻去更新视图，而是会先将数据放入队列中异步的去更新视图。通过 <code>$nextTick</code> 我们就可以在视图更新之后再去调用方法了。</p>
+<p>  上面代码中的 input 节点有三个 attribute，通过<code>getAttribute</code>可以获取对应的值:</p>
+<ul>
+<li>id : name</li>
+<li>type : text</li>
+<li>value : test</li>
+</ul>
+<ul>
+<li><h5 id="Property-是-attribute对应的DOM节点的对象属性，例如"><a href="#Property-是-attribute对应的DOM节点的对象属性，例如" class="headerlink" title="Property 是 attribute对应的DOM节点的对象属性，例如"></a>Property 是 attribute对应的DOM节点的对象属性，例如</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTMLInputElement.id === <span class="string">'name'</span></span><br><span class="line">HTMLInputElement.type === <span class="string">'text'</span></span><br><span class="line">HTMLInputElement.value === <span class="string">'test'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="Attribute-和-Property-的区别"><a href="#Attribute-和-Property-的区别" class="headerlink" title="Attribute 和 Property 的区别"></a>Attribute 和 Property 的区别</h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"typo"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 页面加载之后，在input中输入 Jack --&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  注意这段代码中的 type 属性, 我们给的值是 <strong>typo</strong>, 这并不属于 input 支持的 type 种类.</p>
+<p>  上面这个 input 节点的 attribute 和 property:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// attribute still remains the original value</span></span><br><span class="line">input.getAttribute(<span class="string">'id'</span>) <span class="comment">// name</span></span><br><span class="line">input.getAttribute(<span class="string">'type'</span>) <span class="comment">// typo</span></span><br><span class="line">input.getAttribute(<span class="string">'value'</span>) <span class="comment">// test</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// property is a different story</span></span><br><span class="line">input.id <span class="comment">// name</span></span><br><span class="line">input.type <span class="comment">//  text</span></span><br><span class="line">input.value <span class="comment">// Jack</span></span><br></pre></td></tr></table></figure>
+<p>  可以看到, 在 attribute 中, 值仍然是 html 代码中的值. 而在 property 中, type 被自动修正为了 <strong>text</strong>, 而 value 随着用户改变 input 的输入, 也变更为了 <strong>Jack</strong></p>
+<p>  这就是 <strong>attribute</strong> 和 <strong>Property</strong> 间的区别:</p>
+<p>  a<strong>t</strong>tribute 会始终保持 html 代码中的<strong>初始值</strong>, 而 <strong>Property</strong> 是有可能变化的.</p>
+<p>  其实, 我们从这两个单词的名称也能看出些端倪:</p>
+<p>  <strong>attribute</strong> 从语义上, 更倾向于不可变更的</p>
+<p>  而 <strong>property</strong> 从语义上更倾向于在其生命周期中是可变的</p>
+<ul>
+<li><h5 id="Attribute可以自定义，但是Property不可以"><a href="#Attribute可以自定义，但是Property不可以" class="headerlink" title="Attribute可以自定义，但是Property不可以"></a>Attribute可以自定义，但是Property不可以</h5><p>在 html 中自定义 attribute:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"customInput"</span> <span class="attr">customeAttr</span>=<span class="string">"custome attribute value"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  获取自定义的属性:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input.getAttribute(<span class="string">'customAttr'</span>) <span class="comment">// custome attribute value</span></span><br><span class="line">input.customAttr <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<p>  能够成功的获取自定义的 attribute, 但是无法获取 property.</p>
+<p>  DOM 节点在初始化的时候会将<strong>html 规范</strong>中定义的 attribute 赋值到 property 上, 而自定义的 attribute 并不属于这个氛围内, 自然生成的 DOM 节点就没有这个 property.</p>
+<ul>
+<li><h5 id="一些补充"><a href="#一些补充" class="headerlink" title="一些补充"></a>一些补充</h5><p>需要注意, 有一些特殊的 attribute, 它们对应的 Property 名称会发生改变, 比如:</p>
+<ul>
+<li>for (attr) =&gt; htmlFor (prop)</li>
+<li>class (attr) =&gt; className (prop)</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -365,6 +357,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/chayaBlog/tags/JS/" rel="tag"># JS</a>
+          
+        </div>
+      
 
       
       
@@ -374,8 +372,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/chayaBlog/2019/03/20/网络/HTTP缓存/" rel="next" title="http 缓存">
-                <i class="fa fa-chevron-left"></i> http 缓存
+              <a href="/chayaBlog/2019/10/15/ts/TypeScript用法 /" rel="next" title="TypeScript 用法总结">
+                <i class="fa fa-chevron-left"></i> TypeScript 用法总结
               </a>
             
           </div>
@@ -384,8 +382,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/chayaBlog/2019/08/15/tools/搭建私有 npm/" rel="prev" title="搭建私有NPM">
-                搭建私有NPM <i class="fa fa-chevron-right"></i>
+              <a href="/chayaBlog/2020/01/10/css/Flex布局/" rel="prev" title="Flex 布局">
+                Flex 布局 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -518,7 +516,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#各生命周期的含义"><span class="nav-number">1.</span> <span class="nav-text">各生命周期的含义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#beforeCreate"><span class="nav-number">1.1.</span> <span class="nav-text">beforeCreate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#created"><span class="nav-number">1.2.</span> <span class="nav-text">created</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforeMount"><span class="nav-number">1.3.</span> <span class="nav-text">beforeMount</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mounted"><span class="nav-number">1.4.</span> <span class="nav-text">mounted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforeUpdate"><span class="nav-number">1.5.</span> <span class="nav-text">beforeUpdate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#updated"><span class="nav-number">1.6.</span> <span class="nav-text">updated</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforeDestory"><span class="nav-number">1.7.</span> <span class="nav-text">beforeDestory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#destoryed"><span class="nav-number">1.8.</span> <span class="nav-text">destoryed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#父子组件的加载顺序"><span class="nav-number">2.</span> <span class="nav-text">父子组件的加载顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nextTick"><span class="nav-number">3.</span> <span class="nav-text">$nextTick</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Attribute-VS-Property"><span class="nav-number">1.</span> <span class="nav-text">Attribute VS Property</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Attribute-是我们在-HTML-代码中看到的键值对，例如"><span class="nav-number">1.0.1.</span> <span class="nav-text">Attribute 是我们在 HTML 代码中看到的键值对，例如</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Property-是-attribute对应的DOM节点的对象属性，例如"><span class="nav-number">1.0.2.</span> <span class="nav-text">Property 是 attribute对应的DOM节点的对象属性，例如</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Attribute-和-Property-的区别"><span class="nav-number">1.0.3.</span> <span class="nav-text">Attribute 和 Property 的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Attribute可以自定义，但是Property不可以"><span class="nav-number">1.0.4.</span> <span class="nav-text">Attribute可以自定义，但是Property不可以</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一些补充"><span class="nav-number">1.0.5.</span> <span class="nav-text">一些补充</span></a></li></ol></li></ol></div>
             
 
           </div>

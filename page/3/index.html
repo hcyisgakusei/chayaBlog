@@ -232,6 +232,325 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/20/js/事件代理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/03/20/js/事件代理/" itemprop="url">js事件代理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-20T00:00:00+08:00">
+                2018-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="事件代理"><a href="#事件代理" class="headerlink" title="事件代理"></a>事件代理</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>比如说我们想个一个列表中的每一项绑定一个点击事件，如果我们一个一个去给每一项绑定事件，则会导致多次操纵dom，效率也比较低，如果添加一个新的选项的话，还得再给这个选项绑定事件。</p>
+<p>事件代理，其实就是将事件绑定在父元素上，然后通过父元素的点击事件来判断点击的是不是子元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul id=&quot;test&quot;&gt;</span><br><span class="line">    &lt;li&gt;1&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;2&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;3&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;4&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var ul = document.getElementById(&apos;test&apos;)</span><br><span class="line">    ul.addEventListener(&apos;click&apos;, function (event) &#123;</span><br><span class="line">        var target = event.target</span><br><span class="line">        if (target.tagName.toUpperCase() === &apos;LI&apos;) &#123;</span><br><span class="line">            console.log(target.innerText)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>我们通过绑定父元素的点击事件，通过获取 <code>event.target</code> 可以知道当前点击的元素，在 IE 6-8中不支持该属性，有一个 <code>srcElement</code> 等价于这里 <code>target</code></p>
+<h3 id="currentTarget"><a href="#currentTarget" class="headerlink" title="currentTarget"></a>currentTarget</h3><p>如果我们打印出 <code>event</code> 可以看到里面有一个 <code>currentTarget</code> 属性，并且这个属性为 null，那么这个属性有什么用呢。</p>
+<p>这里我们可以这样试一下</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"test"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>4<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'test'</span>)</span></span><br><span class="line"><span class="javascript">    ul.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event)</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event.currentTarget)</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(event.target)</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>event.currentTarget</code>打印出来的是ul节点。根据 mdn 的文档可知该属性是指向当前事件被绑定的元素上<br><code>event.target</code>打印出来的是所点击的li节点。根据 mdn 的文档可知该属性是指向触发事件的元素上</p>
+<p>在js中<code>console.log(obj)</code>打印对象的时候，是对对象的一个引用，如果对象的属性后面被改变了，打印出来的对象也是会发生改变的，所以造成了前面打印 <code>event</code> 的时候发现他的<code>currentTarget</code>为null</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/19/js/作用域与闭包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/03/19/js/作用域与闭包/" itemprop="url">js 作用域与闭包</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-19T00:00:00+08:00">
+                2018-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在 <code>let</code> 和 <code>const</code> 出现之前，js 是没有会计作用域的， 在我们使用 <code>var</code> 定义变量的时候，是有可能会导致变量提升的。</p>
+<p><strong>比如</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>这段代码最后会输出2，这是因为var 导致了变量 i 的提升，在有了 let之后我们用let就不会有这个问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">2</span>;i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(i);<span class="comment">// error i is not defined</span></span><br></pre></td></tr></table></figure>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h2><p>我们先看看这段代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(b)</span><br><span class="line">    &#125;</span><br><span class="line">    inner();</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line"><span class="built_in">console</span>.log(b)</span><br></pre></td></tr></table></figure>
+<p>上面这段代码会依次输出，1，2，error b is not defined，</p>
+<p>在js中函数是有自己的作用域的，函数内部定义的变量，外部是无法直接访问到的，只有函数内部才能够直接访问。</p>
+<p>函数内部在调用 <code>inner()</code> ，在访问 b 这个变量的时候，会先看自己的作用域中是否有这个变量，发现没有，然后再查找 test 的作用域，发现了这个变量，然后就输出这个变量。</p>
+<p>这里外部无法访问到test中的b，所以在函数执行完之后，b会被销毁掉。</p>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>我们先来看一下代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countResult</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        count ++;</span><br><span class="line">        <span class="built_in">console</span>.log(cout)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> tmp = countResult();</span><br><span class="line"><span class="keyword">var</span> tmp2 = countResult();</span><br><span class="line">tmp(); <span class="comment">// 1</span></span><br><span class="line">tmp2(); <span class="comment">// 1</span></span><br><span class="line">tmp(); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>这里虽然我们无法直接访问到 <code>countResult</code> 中的变量count，但是我们通过返回的函数可以间接的访问到count，tmp保持着对count的引用，所以tmp 中的count不会被销毁，我们再新生成一个tmp2，可以发现，tmp和tmp2之间的作用域是不同的，他们都有自己单独的局部作用域。</p>
+<p>闭包的作用主要有两点：</p>
+<ol>
+<li>隔离作用域</li>
+<li>使局部变量能够常驻内存</li>
+</ol>
+<p>同样闭包带来的问题也非常明显：</p>
+<ol>
+<li>闭包会使得函数中的变量都被保存到内存中，导致内存消耗很大。在使用闭包的时候，退出函数之前，我们需要将一些不使用的局部变量全部删除。</li>
+</ol>
+<h2 id="js-的垃圾回收机制"><a href="#js-的垃圾回收机制" class="headerlink" title="js 的垃圾回收机制"></a>js 的垃圾回收机制</h2><h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><p>应有计数通过计算变量的引用数来回收垃圾，如果一个值的引用数为0则将其回收</p>
+<p>引用计数法会存在一个问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function test()&#123;</span><br><span class="line">    var a = &#123;&#125;;</span><br><span class="line">    var b= &#123;&#125;;</span><br><span class="line">    a.b=b;</span><br><span class="line">    b.a=a;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>test 中的 a和b互相引用了对方，但是这里执行完之后本该销毁这两个变量，如果使用引用计数法的话，就不会销毁这两个变量而导致内存泄露。</p>
+<h3 id="标记清除法"><a href="#标记清除法" class="headerlink" title="标记清除法"></a>标记清除法</h3><p>标记清除法是通过根节点向下访问，如果能访问到的都不会被清除，在浏览器中根节点就 <code>window</code>, 这样就避免了循环引用导致的内存泄露问题。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/16/js/prototype-slice/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -336,178 +655,6 @@
 <p>相比于 <code>slice</code>，<code>from</code> 更强大一点，<code>from</code> 还可以将带有遍历器属性<code>[Symbol.iterator]</code>的对象转化为数组</p>
 <p>例如我们可以这样操作</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = &#123;&#125;</span><br><span class="line">test[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span> *(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(test);<span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/13/js/模块规范/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2018/03/13/js/模块规范/" itemprop="url">快速理解 js 模块规范</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-13T00:00:00+08:00">
-                2018-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。</p>
-<p>说道前端模块规范，我们耳熟能详的就这三种 <code>CommonJS</code>, <code>AMD</code>, <code>CMD</code></p>
-<h3 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h3><p>首先说一下<code>CommonJS</code>,  node.js 的模块系统就是参照 <code>CommonJS</code> 规范实现的。在<code>CommonJS</code> 中有一个全局性的方法<code>require(path)</code>,我们通过方法加载需要的模块。</p>
-<p>具体的用法如下：</p>
-<p>声明模块：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// test.js</span></span><br><span class="line"></span><br><span class="line">exports.test = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'test'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>引用模块：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="built_in">require</span>(<span class="string">'test'</span>);</span><br></pre></td></tr></table></figure>
-<p><code>CommonJS</code> 规范中，<code>require()</code> 用来引入外部模块，<code>exports</code> ·对象用于导出当前模块的方法或变量，作为唯一的到出口，<code>module</code> 对象就代表模块本身。</p>
-<p><code>CommonJS</code> 主要用在了服务端，因为服务端加载，读取模块都是在本地加载，如果浏览器中使用，比方说上面的代码，网盘，我们在加载 test 模块的时候必须等待他加载完才能继续执行后面的代码，这在服务端没什么问题，但在浏览器中，我们需要把模块下载下来，才能去执行后面的代码，在等待的过程中，浏览器处于“假死”的状态。</p>
-<p>为了能够异步的加载模块，于是 AMD 规范就诞生了。</p>
-<h3 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h3><p>最常用的RequireJS就是实现了AMD规范。</p>
-<p>require.js加载的模块，采用AMD规范。也就是说，模块必须按照AMD的规定来写。</p>
-<p>如果这个模块还依赖其他模块，那么define()函数的第一个参数，必须是一个数组，指明该模块的依赖性。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define([<span class="string">'dep1'</span>,<span class="string">'dep2'</span>],<span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">dep1,dep2</span></span></span><br><span class="line"><span class="function"><span class="params"></span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>加载模块，与 CommonJS 不同的是需要在require中填入回调函数，第一个参数指明需要加载的模块</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">　<span class="built_in">require</span>([<span class="string">'jquery'</span>, <span class="string">'underscore'</span>, <span class="string">'backbone'</span>], <span class="function"><span class="keyword">function</span> (<span class="params">$, _, Backbone</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">　　　　<span class="comment">// some code here</span></span><br><span class="line"></span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><p>玉伯写的 seajs 就是遵循CMD规范写的</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require,exports,module</span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>他与 AMD 存在着一定的区别。</p>
-<p>比方说我们需要在运行代码的时候先后加载两个模块：</p>
-<p><strong>AMD</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">require</span>([<span class="string">'block1'</span>,<span class="string">'block2'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">block1,block2</span>)</span>&#123;</span><br><span class="line">    block1.start();</span><br><span class="line">    block1.end();</span><br><span class="line">    </span><br><span class="line">    block2.start();</span><br><span class="line">    block2.end();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>AMD 虽然实现了异步加载，但是在开始的时候就把所有依赖写出来，可能不太符合我们平时书写的一个逻辑顺序，是否能够像 commonJS那样用的时候require，而且还是支持异步加载后再执行呢。</p>
-<p>CMD 就是支持的</p>
-<p><strong>CMD</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> block1 = <span class="built_in">require</span>(<span class="string">'block1'</span>);</span><br><span class="line">    </span><br><span class="line">    block1.start();</span><br><span class="line">    block1.end();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> block2 = <span class="built_in">require</span>(<span class="string">'block2'</span>);</span><br><span class="line">    block2.start();</span><br><span class="line">    block2.end();</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>CMD 只有当代码执行到 <code>require</code>的时候才会去异步的加载模块，不会像AMD一开始就把需要的模块都加载好才开始执行。</p>
-<p>AMD依赖前置，js可以方便知道依赖模块是谁，立即加载；而CMD就近依赖，需要使用把模块变为字符串解析一遍才知道依赖了那些模块，这也是很多人诟病CMD的一点，牺牲性能来带来开发的便利性，实际上解析模块用的时间短到可以忽略。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>个人认为，在实际的开发中，大多还是用 AMD 规范的，使用 AMD 规范你能够更清楚的看到 模块之间的依赖关系，能够更符合程序员的思维方式。博主暂时也还没有用过 CMD 规范。</p>
-<p>ES6 中的 <code>import</code> webpack 也是将其转化为 AMD 规范的。</p>
 
           
         
@@ -796,15 +943,16 @@
             <h2 id="JS继承原理"><a href="#JS继承原理" class="headerlink" title="JS继承原理"></a>JS继承原理</h2><p>js 的继承是通过原型链来实现的</p>
 <h3 id="什么是原型链呢？"><a href="#什么是原型链呢？" class="headerlink" title="什么是原型链呢？"></a>什么是原型链呢？</h3><p>首先说一下 <code>prototype</code> 属性，在js中所有的方法都会有一个<code>prototype</code>属性,这个属性就是方法的原型对象</p>
 <p>比方说：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function Animal()&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=function()&#123;</span><br><span class="line">    console.log(&apos;run&apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var cat = new Animal()</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'run'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> Animal()</span><br></pre></td></tr></table></figure>
 <p>当我们声明 Animal 这个方法的时候， js引擎会赋予Animal一个原型对象，打印出来可以看到</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">console.log(Animal.prototype)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    constructor:这个指向 Animal这个方法,</span><br><span class="line">    __proto__:这个指向Object.prototype</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">**/</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(Animal.prototype)</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    constructor:这个指向 Animal这个方法,</span></span><br><span class="line"><span class="comment">    __proto__:这个指向Object.prototype</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">**/</span></span><br></pre></td></tr></table></figure>
 <p>在我们构造实例的时候,cat的<code>__proto__</code> 会指向 Animal 的 <code>prototype</code>, js引擎 在访问对象的属性的时候会先查看当前对象是否这个属性，如果没有则会查看改对象的 <code>__proto__</code> 是否有这个属性，访问会沿着原型链访问下去直到找到属性或者 <code>__proto__</code>为null为止。</p>
 <h3 id="如何实现继承"><a href="#如何实现继承" class="headerlink" title="如何实现继承"></a>如何实现继承</h3><p>这里只讲通用的一种继承的写法</p>
-<p>这是父类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function Animal(name)&#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=function()&#123;</span><br><span class="line">    console.log(this.name + &apos; is run&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是父类：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>子类的写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Cat(name)&#123;</span><br><span class="line"></span><br><span class="line">    // 这里通过调用父类并把this绑定到父类上</span><br><span class="line">    Animal.call(this,name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(()=&gt;&#123;</span><br><span class="line">    // 这里其实本质要做的就是让Cat.prototype.__proto__=Animal.prototype</span><br><span class="line">    // Cat.prototype =Object.create(Animal.prototype) 相当于做了如下的工作</span><br><span class="line">    // var a = &#123;&#125;;a.__proto__=Animal.prototype;</span><br><span class="line">    // Cat.prototype = a;</span><br><span class="line"></span><br><span class="line">    Cat.prototype = Object.create(Animal.prototype)</span><br><span class="line">    Cat.prototype.constructor = Cat</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
-<h3 id="ES6-的写法："><a href="#ES6-的写法：" class="headerlink" title="ES6 的写法："></a>ES6 的写法：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Class Animal&#123;</span><br><span class="line">    constructor(name)&#123;</span><br><span class="line">        this.name=name</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    run()&#123;</span><br><span class="line">        console.log(this.name + &apos; is run&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class Cat extends Animal&#123;</span><br><span class="line">    constructor(name)&#123;</span><br><span class="line">        // ES6要求子类构造函数中必须要调用这个方法，这个方式是用来调用父类的constructor的</span><br><span class="line">        super(name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Cat</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 这里通过调用父类并把this绑定到父类上</span></span><br><span class="line">    Animal.call(<span class="keyword">this</span>,name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// 这里其实本质要做的就是让Cat.prototype.__proto__=Animal.prototype</span></span><br><span class="line">    <span class="comment">// Cat.prototype =Object.create(Animal.prototype) 相当于做了如下的工作</span></span><br><span class="line">    <span class="comment">// Cat.prototype.__proto__ = Animal.prototype;</span></span><br><span class="line"></span><br><span class="line">    Cat.prototype = <span class="built_in">Object</span>.create(Animal.prototype);</span><br><span class="line">    Cat.prototype.constructor = Cat;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<h3 id="ES6-的写法："><a href="#ES6-的写法：" class="headerlink" title="ES6 的写法："></a>ES6 的写法：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Class Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    run()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class Cat extends Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="comment">// ES6要求子类构造函数中必须要调用这个方法，这个方式是用来调用父类的constructor的</span></span><br><span class="line">        <span class="keyword">super</span>(name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>其实es6的写法本质上上面的语法糖，使用之后代码对代码的可读性有了明显的提高，但是我们还是需要知道JS继承的原理是怎样的。</p>
 
           
@@ -891,7 +1039,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
