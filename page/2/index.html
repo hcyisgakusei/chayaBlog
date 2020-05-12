@@ -232,6 +232,314 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/10/20/网络/HTTP区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2019/10/20/网络/HTTP区别/" itemprop="url">HTTP 区别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-20T21:21:32+08:00">
+                2019-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><h4 id="HTTP的基本优化"><a href="#HTTP的基本优化" class="headerlink" title="HTTP的基本优化"></a>HTTP的基本优化</h4><p>影响HTTP网络请求的主要因素有两个：<strong>带宽</strong> 和 <strong>延迟</strong></p>
+<ul>
+<li><p><strong>带宽：</strong> 现在网络基础建设使得带宽得到极大的提升，不再会担心带宽而影响网络</p>
+</li>
+<li><p><strong>延迟：</strong></p>
+<ul>
+<li><p><strong>浏览器阻塞：</strong> 浏览器对于同一个域名，同时只能有4个连接（不同浏览器内核会有差异），超过浏览器最大连接数限制，后续请求就会被阻塞。</p>
+</li>
+<li><p><strong>DNS查询：</strong> 浏览器需要知道目标服务器的IP才能进行连接。将域名解析成IP的系统就是DNS。这个通常可以通过利用DNS缓存来减少时间。</p>
+</li>
+<li><p><strong>建立连接：</strong> HTTP是基于TCP协议的，浏览器最快也只能在第三次握手时才能捎带HTTP请求报文，达到真正的请求连接，但是这些连接无法复用就会导致每次请求都要经历三次握手和慢启动。三次握手在高延迟的场景下的比较明显，慢启动则对文件类大请求影响较大。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="HTTP1-0-和-HTTP1-1区别"><a href="#HTTP1-0-和-HTTP1-1区别" class="headerlink" title="HTTP1.0 和 HTTP1.1区别"></a>HTTP1.0 和 HTTP1.1区别</h4><ol>
+<li><p><strong>缓存处理：</strong> 在HTTP1.0中主要使用header里的If-Modified-Since，Expires来做为缓存判断的标准，HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since，If-Match，If-None-Match等更多可供选择的缓存头来控制缓存策略。</p>
+</li>
+<li><p><strong>宽带优化以及网络连接的使用：</strong> HTTP1.0中，存在一些浪费带宽的现象，例如客户端只需要某个对象的一部分，而服务器却将整个对象都返回了，并且不支持断电续传功能，HTPP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。</p>
+</li>
+<li><p><strong>错误通知的管理：</strong> 在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。</p>
+</li>
+<li><p><strong>HOST头处理：</strong> 在HTTP1.0中认为每台服务器都绑定一个唯一的IP地址，因此，请求消息中的URL并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个IP地址。HTTP1.1的请求消息和响应消息都应支持HOST头域，且请求消息中如果没有HOST头域就会报错（400 Bad Request）</p>
+</li>
+<li><p><strong>长链接：</strong> HTTP1.1支持长连接（PersistentConnection）和请求的流水线（Pipelining）处理，在一个TCP连接上可以传送多个HTTP请求和响应，减少了建立和关闭连接的消耗和延迟，在HTTP1.1中默认开启Connection：keep-alive，一定程度上弥补了HTTP1.0每次请求都要创建连接的缺点。</p>
+</li>
+</ol>
+<h4 id="HTTP和HTTPS的区别"><a href="#HTTP和HTTPS的区别" class="headerlink" title="HTTP和HTTPS的区别"></a>HTTP和HTTPS的区别</h4><ol>
+<li><p>HTTPS需要到CA申请证书，一般免费证书很少，需要交费</p>
+</li>
+<li><p>HTTP协议运行在TCP之上，所有传输内容都是明文，HTTPS协议运行在SSL/TLS之上，SSL/TLS运行都在TCP之上，所有传输内容都是加密的。</p>
+</li>
+<li><p>HTTP和HTTPS使用的是完全不同的连接方式，用的端口也不同，前者是80，后者是443</p>
+</li>
+<li><p>HTTPS可以有效的防止运营商劫持，解决了防劫持的一个大问题。</p>
+</li>
+</ol>
+<h4 id="HTTP2-0和HTTP1-X相比的新特性"><a href="#HTTP2-0和HTTP1-X相比的新特性" class="headerlink" title="HTTP2.0和HTTP1.X相比的新特性"></a>HTTP2.0和HTTP1.X相比的新特性</h4><ol>
+<li><p><strong>新的二进制格式：</strong> HTTP1.x的解析是基于文本。基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认0和1的组合。基于这种考虑HTTP2.0的协议解析决定采用二进制格式，实现方便且健壮。</p>
+</li>
+<li><p><strong>多路复用：</strong> 即连接共享，即每一个request都是是用作连接共享机制的。一个request对应一个id，这样一个连接上可以有多个request，每个连接的request可以随机的混杂在一起，接收方可以根据request的 id将request再归属到各自不同的服务端请求里面。</p>
+</li>
+<li><p><strong>header压缩：</strong> HTTP1.x的header带有大量信息，而且每次都要重复发送，HTTP2.0使用encoder来减少需要传输的header大小，通讯双方各自cache一份header fields表，既避免了重复header的传输，又减小了需要传输的大小。</p>
+</li>
+<li><p><strong>服务端推送：</strong> HTTP2.0具有server push功能。</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/09/15/ts/TypeScript用法 /">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2019/09/15/ts/TypeScript用法 /" itemprop="url">TypeScript 用法总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-15T00:00:00+08:00">
+                2019-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="TypeScript-用法总结"><a href="#TypeScript-用法总结" class="headerlink" title="TypeScript 用法总结"></a>TypeScript 用法总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br></pre></td><td class="code"><pre><span class="line">// 范型</span><br><span class="line">interface Response&lt;T&gt; &#123;</span><br><span class="line">  success: boolean;</span><br><span class="line">  error: &#123;</span><br><span class="line">    code: string;</span><br><span class="line">    message: string;</span><br><span class="line">  &#125;;</span><br><span class="line">  result: T;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type ResponseA = Response&lt;&#123; name: string &#125;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const responseA: ResponseA = &#123;</span><br><span class="line">  success: true,</span><br><span class="line">  error: &#123;</span><br><span class="line">    &apos;code&apos;: &apos;&apos;,</span><br><span class="line">    &apos;message&apos;: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  result: &#123;</span><br><span class="line">    name: &apos;test&apos;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const responseB: Response&lt;&#123; age: number &#125;&gt; = &#123;</span><br><span class="line">  success: true,</span><br><span class="line">  error: &#123;</span><br><span class="line">    &apos;code&apos;: &apos;&apos;,</span><br><span class="line">    &apos;message&apos;: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  result: &#123;</span><br><span class="line">    age: 111</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// promise 和 范型</span><br><span class="line">const promiseA: Promise&lt;ResponseA&gt; = new Promise((resolve) =&gt; &#123;</span><br><span class="line">  resolve(responseA);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">promiseA.then((value) =&gt; &#123;</span><br><span class="line">  // value.result.name;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//TS 定义一个数组和对象 ( | &amp;&amp; &amp;)</span><br><span class="line"></span><br><span class="line">type TypeA = string | number;</span><br><span class="line"></span><br><span class="line">// 数组</span><br><span class="line">const arrayA: TypeA[]= [&apos;a&apos;, &apos;c&apos;, 1, 2];</span><br><span class="line">const arrayB: Array&lt;TypeA&gt;= [&apos;a&apos;, &apos;c&apos;, 1, 2];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const mixIn = &lt;T, N&gt;(a: T, b: N): T &amp; N =&gt; &#123;</span><br><span class="line">  return Object.assign(&#123;&#125;, a, b);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const objectA = &#123;name: &apos;A&apos;&#125;;</span><br><span class="line"></span><br><span class="line">const objectB = &#123;age: 12&#125;;</span><br><span class="line"></span><br><span class="line">const objectMixIn = mixIn(objectA, objectB);</span><br><span class="line">// objectMixIn.age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// ? &amp;&amp; !</span><br><span class="line">interface TestA &#123;</span><br><span class="line">  config?: &#123;</span><br><span class="line">    name: string</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const testA: TestA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">// testA.config.name;</span><br><span class="line"></span><br><span class="line">if (testA.config) &#123;</span><br><span class="line">  testA.config.name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">testA.config!.name;</span><br><span class="line"></span><br><span class="line">//  定义字典</span><br><span class="line">const objectMap: ObjectMap = &#123;</span><br><span class="line">  &apos;HKD&apos;: &apos;港币&apos;,</span><br><span class="line">  &apos;USD&apos;: &apos;美元&apos;,</span><br><span class="line">  &apos;TWD&apos;: &apos;台币&apos;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">interface ObjectMap &#123;</span><br><span class="line">  [currencyCode: string]: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 函数重载 （有返回值）</span><br><span class="line">function getInfo(param: string): &#123; name: string &#125;;</span><br><span class="line">function getInfo(param: number): &#123; age: number &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function getInfo(arg) &#123;</span><br><span class="line">  if (typeof arg === &apos;string&apos;) &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      name: arg</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  if (typeof arg === &apos;number&apos;) &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      age: arg</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getInfo(&apos;A&apos;).name;</span><br><span class="line"></span><br><span class="line">getInfo(10).age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//  函数重载复杂例子</span><br><span class="line"></span><br><span class="line">enum EventName &#123;</span><br><span class="line">  getNumber = &apos;getNumber&apos;,</span><br><span class="line">  getString = &apos;getString&apos;,</span><br><span class="line">  getString1 = &apos;getString&apos;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventEmit &#123;</span><br><span class="line">  (eventName: EventName.getNumber, params: number): void</span><br><span class="line">  </span><br><span class="line">  (eventName: EventName.getString, params: string): void</span><br><span class="line">  (eventName: EventName.getString, params: string): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventOn &#123;</span><br><span class="line">  (eventName: EventName.getNumber, callback: (params: number) =&gt; void): void</span><br><span class="line">  </span><br><span class="line">  (eventName: EventName.getString, callback: (params: string) =&gt; void): void</span><br><span class="line">  (eventName: EventName.getString, callback: (params: string) =&gt; void): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventBus &#123;</span><br><span class="line">  emit: EventEmit;</span><br><span class="line">  on: EventOn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import Vue from &apos;Vue&apos;;</span><br><span class="line"></span><br><span class="line">const eventBus: EventBus = new Vue();</span><br><span class="line"></span><br><span class="line">eventBus.emit(EventName.getString, &apos;&apos;);</span><br><span class="line"></span><br><span class="line">eventBus.emit(EventName.getNumber, 12);</span><br><span class="line"></span><br><span class="line">eventBus.on(EventName.getString, (res) =&gt; &#123;</span><br><span class="line">  console.log(res);</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 映射类型</span><br><span class="line">interface EventMaps &#123;</span><br><span class="line">  getNumber: number</span><br><span class="line">  getString: string,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventEmitT &#123;</span><br><span class="line">  &lt;T extends keyof EventMaps&gt;(eventName: T, params: EventMaps[T]): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventOnT &#123;</span><br><span class="line">  &lt;T extends keyof EventMaps&gt;(eventName: T, callback: (params: EventMaps[T]) =&gt; void): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventBusB &#123;</span><br><span class="line">  emit: EventEmitT</span><br><span class="line">  on: EventOnT</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const eventBusB: EventBusB = new Vue();</span><br><span class="line"></span><br><span class="line">eventBusB.emit(EventName.getString, &apos;test&apos;);</span><br><span class="line"></span><br><span class="line">eventBusB.on(EventName.getString, (res) =&gt; &#123;</span><br><span class="line">  console.log(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/08/15/tools/搭建私有 npm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1599,327 +1907,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/07/28/模块化/about-es6-module/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2018/07/28/模块化/about-es6-module/" itemprop="url">谈谈es6的模块化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-28T17:39:51+08:00">
-                2018-07-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 <code>import</code> 和 <code>export</code> 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。</p>
-<h2 id="需要注意的一些概念"><a href="#需要注意的一些概念" class="headerlink" title="需要注意的一些概念"></a>需要注意的一些概念</h2><ul>
-<li>首先，es6 的模块是基于文件的模块，在浏览器端还不支持 <code>import</code> 和 <code>export</code> 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。</li>
-<li>es6 的模块是单利的，也就是说，模块只有一个实例，每次我们 <code>import</code> 的时候，其实都是同一个对象。如果需要有多个模块实例的话，则需要通过 <code>export</code> 一个工厂方法来实现</li>
-</ul>
-<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>es6 模块主要就是两个新的关键字 <code>import</code> 和 <code>export</code></p>
-<h3 id="named-export-命名导出"><a href="#named-export-命名导出" class="headerlink" title="named export (命名导出)"></a>named export (命名导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> awesome = <span class="string">'awesome'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  test,</span><br><span class="line">  awesome</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>在模块内作用域都是局部的，只要没有 <code>export</code> 出去，外面就无法访问到。</p>
-<p>我们也可以在导出的时候给成员重命名 <code>export { test as try }</code>。</p>
-<h3 id="模块是单例的"><a href="#模块是单例的" class="headerlink" title="模块是单例的"></a>模块是单例的</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">let name = &apos;test&apos;;</span><br><span class="line">export &#123;name&#125;;</span><br><span class="line"></span><br><span class="line">// index.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">name = &apos;index change it&apos;;</span><br><span class="line"></span><br><span class="line">// getname.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">console.log(name); // index change it</span><br></pre></td></tr></table></figure>
-<p>当我们在 index.js 修改了从 test.js import 进来的 name，之后我们再在 getname.js 中 import 它，这时候我们就会发现这个值就被修改了。</p>
-<p>这是因为在 import 的时候，我们本质上可以看做是引了一个对变量的指针。虽然有这个特性，但是我们应该避免使用这个特性，<br>因为这会增大我们程序的复杂度，会使得程序变得难以维护，追踪变量在哪里被修改是非常麻烦的。</p>
-<h3 id="export-default-默认导出"><a href="#export-default-默认导出" class="headerlink" title="export default (默认导出)"></a>export default (默认导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="keyword">const</span> name = <span class="string">'test'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> name;</span><br></pre></td></tr></table></figure>
-<p>当文件中有默认导出的时候我们可以通过下面几种方式得到这个值</p>
-<ul>
-<li><p><code>import name from &#39;./test&#39;</code> 这个 name 也可以叫其他名字比方说<code>import test from &#39;./test&#39;</code> 这里 name 和 test 其实指的是同一个东西</p>
-</li>
-<li><p><code>import { default as name } from &#39;./test</code> 这里的 default 不能省略</p>
-</li>
-</ul>
-<h3 id="namespace-import-命名空间引入"><a href="#namespace-import-命名空间引入" class="headerlink" title="namespace import (命名空间引入)"></a>namespace import (命名空间引入)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> test <span class="keyword">from</span> <span class="string">'./test'</span></span><br><span class="line"><span class="built_in">console</span>.log(test.name);</span><br></pre></td></tr></table></figure>
-<p>es6 的设计理念是让我们按需引用，不过还是看具体的需要，如果引入的模块比较小的话，<br>我们还是可以通过使用命名空间引入的方式来进行引用。</p>
-<h3 id="import-立执行的函数"><a href="#import-立执行的函数" class="headerlink" title="import 立执行的函数"></a>import 立执行的函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'rxjs/operators/add'</span>;</span><br></pre></td></tr></table></figure>
-<p>有时候我们会看到一些类似于上面的用法，这些一般加载的是一些立执行的函数，一般我们也要避免使用这种，因为他会导致你的代码变得难以理解，后来的 rxjs6 也修改了这种用法</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/23/js/数组相关/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2018/03/23/js/数组相关/" itemprop="url">js 数组元素与数组长度</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-23T00:00:00+08:00">
-                2018-03-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h2><p>在 js 中我们可以用如下的方法创建数组</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>) <span class="comment">// [empty*3]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr3 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>,<span class="number">2</span>) <span class="comment">// [1,2]</span></span><br></pre></td></tr></table></figure>
-<p>第一种是我们常用的一种创建数组的方法</p>
-<p>第二种则会生成一个length为3的数组对象，我们访问 arr2[0] 返回的是 undefined</p>
-<p>这里我们需要注意一点的是，arr2 不会初始化 arr2[0],arr2[1],arr[2],这句话是什么意思呢，看看下面这个例子你就明白了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="literal">undefined</span>,<span class="literal">undefined</span>,<span class="literal">undefined</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr2); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 和 new Arry(3) 效果是一样的，注意这里是四个逗号</span></span><br><span class="line"><span class="keyword">var</span> arr3 = [,,,,]</span><br></pre></td></tr></table></figure>
-<h2 id="修改数组"><a href="#修改数组" class="headerlink" title="修改数组"></a>修改数组</h2><p>通常我们在修改数组的时候都是这样子修改</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [];</span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">arr.push(<span class="number">2</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr);[<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
-<p>我们还可以这样操作</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line">arr[<span class="number">10</span>] = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr);<span class="comment">//  [1, 2, 3, empty × 7, 10]</span></span><br></pre></td></tr></table></figure>
-<p>这里会导致和<code>new Array(10)</code>的结果有点类似</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-<p><code>arr[10] = 10</code> 虽然会让数组的长度增加，但实际上却未真正的增加了数组的元素。</p>
-<h3 id="数组的方法"><a href="#数组的方法" class="headerlink" title="数组的方法"></a>数组的方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 0，1</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 啥都没输出</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="literal">undefined</span>,,]</span><br><span class="line"><span class="built_in">console</span>.log(arr.filter(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;));<span class="comment">// [1,2,3,undefined]</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1970,7 +1957,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1981,7 +1968,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>

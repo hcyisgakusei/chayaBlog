@@ -232,6 +232,327 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/07/28/模块化/about-es6-module/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/07/28/模块化/about-es6-module/" itemprop="url">谈谈es6的模块化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-28T17:39:51+08:00">
+                2018-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如今模块化的编程方式，已经成为了每个前端程序员必须掌握的一门技术，es6 也带了 <code>import</code> 和 <code>export</code> 两个新语法，搞清楚他们的作用和用法也是我们所必须要学习的。</p>
+<h2 id="需要注意的一些概念"><a href="#需要注意的一些概念" class="headerlink" title="需要注意的一些概念"></a>需要注意的一些概念</h2><ul>
+<li>首先，es6 的模块是基于文件的模块，在浏览器端还不支持 <code>import</code> 和 <code>export</code> 语法，我们开发过程使用，也是需要通过打包工具将其编译为 es5 的语法才能使用。</li>
+<li>es6 的模块是单利的，也就是说，模块只有一个实例，每次我们 <code>import</code> 的时候，其实都是同一个对象。如果需要有多个模块实例的话，则需要通过 <code>export</code> 一个工厂方法来实现</li>
+</ul>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>es6 模块主要就是两个新的关键字 <code>import</code> 和 <code>export</code></p>
+<h3 id="named-export-命名导出"><a href="#named-export-命名导出" class="headerlink" title="named export (命名导出)"></a>named export (命名导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> awesome = <span class="string">'awesome'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  test,</span><br><span class="line">  awesome</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在模块内作用域都是局部的，只要没有 <code>export</code> 出去，外面就无法访问到。</p>
+<p>我们也可以在导出的时候给成员重命名 <code>export { test as try }</code>。</p>
+<h3 id="模块是单例的"><a href="#模块是单例的" class="headerlink" title="模块是单例的"></a>模块是单例的</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">let name = &apos;test&apos;;</span><br><span class="line">export &#123;name&#125;;</span><br><span class="line"></span><br><span class="line">// index.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">name = &apos;index change it&apos;;</span><br><span class="line"></span><br><span class="line">// getname.js</span><br><span class="line">import &#123; name &#125; from &apos;./test&apos;;</span><br><span class="line">console.log(name); // index change it</span><br></pre></td></tr></table></figure>
+<p>当我们在 index.js 修改了从 test.js import 进来的 name，之后我们再在 getname.js 中 import 它，这时候我们就会发现这个值就被修改了。</p>
+<p>这是因为在 import 的时候，我们本质上可以看做是引了一个对变量的指针。虽然有这个特性，但是我们应该避免使用这个特性，<br>因为这会增大我们程序的复杂度，会使得程序变得难以维护，追踪变量在哪里被修改是非常麻烦的。</p>
+<h3 id="export-default-默认导出"><a href="#export-default-默认导出" class="headerlink" title="export default (默认导出)"></a>export default (默认导出)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="keyword">const</span> name = <span class="string">'test'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> name;</span><br></pre></td></tr></table></figure>
+<p>当文件中有默认导出的时候我们可以通过下面几种方式得到这个值</p>
+<ul>
+<li><p><code>import name from &#39;./test&#39;</code> 这个 name 也可以叫其他名字比方说<code>import test from &#39;./test&#39;</code> 这里 name 和 test 其实指的是同一个东西</p>
+</li>
+<li><p><code>import { default as name } from &#39;./test</code> 这里的 default 不能省略</p>
+</li>
+</ul>
+<h3 id="namespace-import-命名空间引入"><a href="#namespace-import-命名空间引入" class="headerlink" title="namespace import (命名空间引入)"></a>namespace import (命名空间引入)</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> test <span class="keyword">from</span> <span class="string">'./test'</span></span><br><span class="line"><span class="built_in">console</span>.log(test.name);</span><br></pre></td></tr></table></figure>
+<p>es6 的设计理念是让我们按需引用，不过还是看具体的需要，如果引入的模块比较小的话，<br>我们还是可以通过使用命名空间引入的方式来进行引用。</p>
+<h3 id="import-立执行的函数"><a href="#import-立执行的函数" class="headerlink" title="import 立执行的函数"></a>import 立执行的函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'rxjs/operators/add'</span>;</span><br></pre></td></tr></table></figure>
+<p>有时候我们会看到一些类似于上面的用法，这些一般加载的是一些立执行的函数，一般我们也要避免使用这种，因为他会导致你的代码变得难以理解，后来的 rxjs6 也修改了这种用法</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/23/js/数组相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/03/23/js/数组相关/" itemprop="url">js 数组元素与数组长度</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-23T00:00:00+08:00">
+                2018-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h2><p>在 js 中我们可以用如下的方法创建数组</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>) <span class="comment">// [empty*3]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr3 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>,<span class="number">2</span>) <span class="comment">// [1,2]</span></span><br></pre></td></tr></table></figure>
+<p>第一种是我们常用的一种创建数组的方法</p>
+<p>第二种则会生成一个length为3的数组对象，我们访问 arr2[0] 返回的是 undefined</p>
+<p>这里我们需要注意一点的是，arr2 不会初始化 arr2[0],arr2[1],arr[2],这句话是什么意思呢，看看下面这个例子你就明白了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="literal">undefined</span>,<span class="literal">undefined</span>,<span class="literal">undefined</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">0</span> <span class="keyword">in</span> arr2); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 和 new Arry(3) 效果是一样的，注意这里是四个逗号</span></span><br><span class="line"><span class="keyword">var</span> arr3 = [,,,,]</span><br></pre></td></tr></table></figure>
+<h2 id="修改数组"><a href="#修改数组" class="headerlink" title="修改数组"></a>修改数组</h2><p>通常我们在修改数组的时候都是这样子修改</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [];</span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">arr.push(<span class="number">2</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr);[<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p>我们还可以这样操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line">arr[<span class="number">10</span>] = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr);<span class="comment">//  [1, 2, 3, empty × 7, 10]</span></span><br></pre></td></tr></table></figure>
+<p>这里会导致和<code>new Array(10)</code>的结果有点类似</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span> <span class="keyword">in</span> arr); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p><code>arr[10] = 10</code> 虽然会让数组的长度增加，但实际上却未真正的增加了数组的元素。</p>
+<h3 id="数组的方法"><a href="#数组的方法" class="headerlink" title="数组的方法"></a>数组的方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 0，1</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 啥都没输出</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> arr.keys())&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="literal">undefined</span>,,]</span><br><span class="line"><span class="built_in">console</span>.log(arr.filter(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;));<span class="comment">// [1,2,3,undefined]</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/03/20/js/事件代理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1039,7 +1360,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1050,7 +1371,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>

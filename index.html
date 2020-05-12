@@ -232,6 +232,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/12/js/LRU/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2020/05/12/js/LRU/" itemprop="url">LRU (最近最少使用) 缓存机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-12T00:00:00+08:00">
+                2020-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="LRU"><a href="#LRU" class="headerlink" title="LRU"></a>LRU</h3><p><strong>LRU (最近最少使用) 缓存机制</strong>。</p>
+<p>支持以下操作： 获取数据 get 和 写入数据 put 。<br>获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。<br>写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。<br>当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。</p>
+<p>示例:  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache = <span class="keyword">new</span> LRUCache( <span class="number">2</span> ); <span class="comment">// 缓存容量  </span></span><br><span class="line">cache.put(<span class="number">1</span>, <span class="number">1</span>);  </span><br><span class="line">cache.put(<span class="number">2</span>, <span class="number">2</span>);  </span><br><span class="line">cache.get(<span class="number">1</span>); <span class="comment">// 返回 1  </span></span><br><span class="line">cache.put(<span class="number">3</span>, <span class="number">3</span>); <span class="comment">// 该操作会使得密钥 2 作废  </span></span><br><span class="line">cache.get(<span class="number">2</span>); <span class="comment">// 返回 -1 (未找到)  </span></span><br><span class="line">cache.put(<span class="number">4</span>, <span class="number">4</span>); <span class="comment">// 该操作会使得密钥 1 作废  </span></span><br><span class="line">cache.get(<span class="number">1</span>); <span class="comment">// 返回 -1 (未找到)  </span></span><br><span class="line">cache.get(<span class="number">3</span>); <span class="comment">// 返回 3  </span></span><br><span class="line">cache.get(<span class="number">4</span>); <span class="comment">// 返回 4</span></span><br></pre></td></tr></table></figure>
+<p>通过ES6 的Map实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">capacity</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> LRUCache = <span class="function"><span class="keyword">function</span> (<span class="params">capacity</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">  <span class="keyword">this</span>.map = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">key</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LRUCache.prototype.get = <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>.map.has(key)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> value = <span class="keyword">this</span>.map.get(key);</span><br><span class="line">  <span class="keyword">this</span>.map.delete(key);</span><br><span class="line">  <span class="keyword">this</span>.map.set(key, value);</span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">key</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">value</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;void&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LRUCache.prototype.put = <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.map.has(key)) &#123;</span><br><span class="line">    <span class="keyword">this</span>.map.delete(key);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.map.size &gt;= <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">    <span class="keyword">this</span>.map.delete(<span class="keyword">this</span>.map.keys().next().value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>.map.set(key, value);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/08/ts/TypeScript3.7+新特性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1666,126 +1813,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/10/15/ts/TypeScript用法 /">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="HCY">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HCY">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2019/10/15/ts/TypeScript用法 /" itemprop="url">TypeScript 用法总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-15T00:00:00+08:00">
-                2019-10-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="TypeScript-用法总结"><a href="#TypeScript-用法总结" class="headerlink" title="TypeScript 用法总结"></a>TypeScript 用法总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br></pre></td><td class="code"><pre><span class="line">// 范型</span><br><span class="line">interface Response&lt;T&gt; &#123;</span><br><span class="line">  success: boolean;</span><br><span class="line">  error: &#123;</span><br><span class="line">    code: string;</span><br><span class="line">    message: string;</span><br><span class="line">  &#125;;</span><br><span class="line">  result: T;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type ResponseA = Response&lt;&#123; name: string &#125;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const responseA: ResponseA = &#123;</span><br><span class="line">  success: true,</span><br><span class="line">  error: &#123;</span><br><span class="line">    &apos;code&apos;: &apos;&apos;,</span><br><span class="line">    &apos;message&apos;: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  result: &#123;</span><br><span class="line">    name: &apos;test&apos;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const responseB: Response&lt;&#123; age: number &#125;&gt; = &#123;</span><br><span class="line">  success: true,</span><br><span class="line">  error: &#123;</span><br><span class="line">    &apos;code&apos;: &apos;&apos;,</span><br><span class="line">    &apos;message&apos;: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  result: &#123;</span><br><span class="line">    age: 111</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// promise 和 范型</span><br><span class="line">const promiseA: Promise&lt;ResponseA&gt; = new Promise((resolve) =&gt; &#123;</span><br><span class="line">  resolve(responseA);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">promiseA.then((value) =&gt; &#123;</span><br><span class="line">  // value.result.name;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//TS 定义一个数组和对象 ( | &amp;&amp; &amp;)</span><br><span class="line"></span><br><span class="line">type TypeA = string | number;</span><br><span class="line"></span><br><span class="line">// 数组</span><br><span class="line">const arrayA: TypeA[]= [&apos;a&apos;, &apos;c&apos;, 1, 2];</span><br><span class="line">const arrayB: Array&lt;TypeA&gt;= [&apos;a&apos;, &apos;c&apos;, 1, 2];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const mixIn = &lt;T, N&gt;(a: T, b: N): T &amp; N =&gt; &#123;</span><br><span class="line">  return Object.assign(&#123;&#125;, a, b);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const objectA = &#123;name: &apos;A&apos;&#125;;</span><br><span class="line"></span><br><span class="line">const objectB = &#123;age: 12&#125;;</span><br><span class="line"></span><br><span class="line">const objectMixIn = mixIn(objectA, objectB);</span><br><span class="line">// objectMixIn.age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// ? &amp;&amp; !</span><br><span class="line">interface TestA &#123;</span><br><span class="line">  config?: &#123;</span><br><span class="line">    name: string</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const testA: TestA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">// testA.config.name;</span><br><span class="line"></span><br><span class="line">if (testA.config) &#123;</span><br><span class="line">  testA.config.name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">testA.config!.name;</span><br><span class="line"></span><br><span class="line">//  定义字典</span><br><span class="line">const objectMap: ObjectMap = &#123;</span><br><span class="line">  &apos;HKD&apos;: &apos;港币&apos;,</span><br><span class="line">  &apos;USD&apos;: &apos;美元&apos;,</span><br><span class="line">  &apos;TWD&apos;: &apos;台币&apos;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">interface ObjectMap &#123;</span><br><span class="line">  [currencyCode: string]: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 函数重载 （有返回值）</span><br><span class="line">function getInfo(param: string): &#123; name: string &#125;;</span><br><span class="line">function getInfo(param: number): &#123; age: number &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function getInfo(arg) &#123;</span><br><span class="line">  if (typeof arg === &apos;string&apos;) &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      name: arg</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  if (typeof arg === &apos;number&apos;) &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      age: arg</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getInfo(&apos;A&apos;).name;</span><br><span class="line"></span><br><span class="line">getInfo(10).age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//  函数重载复杂例子</span><br><span class="line"></span><br><span class="line">enum EventName &#123;</span><br><span class="line">  getNumber = &apos;getNumber&apos;,</span><br><span class="line">  getString = &apos;getString&apos;,</span><br><span class="line">  getString1 = &apos;getString&apos;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventEmit &#123;</span><br><span class="line">  (eventName: EventName.getNumber, params: number): void</span><br><span class="line">  </span><br><span class="line">  (eventName: EventName.getString, params: string): void</span><br><span class="line">  (eventName: EventName.getString, params: string): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventOn &#123;</span><br><span class="line">  (eventName: EventName.getNumber, callback: (params: number) =&gt; void): void</span><br><span class="line">  </span><br><span class="line">  (eventName: EventName.getString, callback: (params: string) =&gt; void): void</span><br><span class="line">  (eventName: EventName.getString, callback: (params: string) =&gt; void): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventBus &#123;</span><br><span class="line">  emit: EventEmit;</span><br><span class="line">  on: EventOn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import Vue from &apos;Vue&apos;;</span><br><span class="line"></span><br><span class="line">const eventBus: EventBus = new Vue();</span><br><span class="line"></span><br><span class="line">eventBus.emit(EventName.getString, &apos;&apos;);</span><br><span class="line"></span><br><span class="line">eventBus.emit(EventName.getNumber, 12);</span><br><span class="line"></span><br><span class="line">eventBus.on(EventName.getString, (res) =&gt; &#123;</span><br><span class="line">  console.log(res);</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 映射类型</span><br><span class="line">interface EventMaps &#123;</span><br><span class="line">  getNumber: number</span><br><span class="line">  getString: string,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventEmitT &#123;</span><br><span class="line">  &lt;T extends keyof EventMaps&gt;(eventName: T, params: EventMaps[T]): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventOnT &#123;</span><br><span class="line">  &lt;T extends keyof EventMaps&gt;(eventName: T, callback: (params: EventMaps[T]) =&gt; void): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface EventBusB &#123;</span><br><span class="line">  emit: EventEmitT</span><br><span class="line">  on: EventOnT</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const eventBusB: EventBusB = new Vue();</span><br><span class="line"></span><br><span class="line">eventBusB.emit(EventName.getString, &apos;test&apos;);</span><br><span class="line"></span><br><span class="line">eventBusB.on(EventName.getString, (res) =&gt; &#123;</span><br><span class="line">  console.log(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1836,7 +1863,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1847,7 +1874,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
