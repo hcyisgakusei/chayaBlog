@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="BFC(Block Formatting Context)是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, in">
+<meta name="description" content="BFC(Block Formatting Context) 是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, i">
 <meta name="keywords" content="CSS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BFC">
 <meta property="og:url" content="https://hcyisgakusei.github.io/2020/03/13/css/BFC/index.html">
 <meta property="og:site_name" content="HCY">
-<meta property="og:description" content="BFC(Block Formatting Context)是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, in">
+<meta property="og:description" content="BFC(Block Formatting Context) 是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, i">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://hcyisgakusei.github.io/2020/03/13/images/bfc1.png">
-<meta property="og:image" content="https://hcyisgakusei.github.io/2020/03/13/images/bfc2.png">
-<meta property="og:image" content="https://hcyisgakusei.github.io/2020/03/13/images/bfc3.png">
-<meta property="og:image" content="https://hcyisgakusei.github.io/2020/03/13/images/bfc4.png">
-<meta property="og:updated_time" content="2020-05-11T16:21:50.622Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc4.png">
+<meta property="og:updated_time" content="2020-05-11T16:29:53.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BFC">
-<meta name="twitter:description" content="BFC(Block Formatting Context)是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, in">
-<meta name="twitter:image" content="https://hcyisgakusei.github.io/2020/03/13/images/bfc1.png">
+<meta name="twitter:description" content="BFC(Block Formatting Context) 是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。 触发条件： 根元素() position : absolute , fixed; overflow !== visible float !== none display : flow-root, inline-block,  table, i">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc1.png">
 
 
 
@@ -305,7 +305,7 @@
       
 
       
-        <p>BFC(Block Formatting Context)是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。</p>
+        <p><strong>BFC(Block Formatting Context)</strong> 是一个独立的渲染区域，让处于BFC内部的元素和外部的元素相互隔离，使内外元素的定位不会相互影响。</p>
 <h3 id="触发条件："><a href="#触发条件：" class="headerlink" title="触发条件："></a>触发条件：</h3><ul>
 <li>根元素(<html>)</html></li>
 <li>position : absolute , fixed;</li>
@@ -323,19 +323,21 @@
 <li>文字层不会被浮动层覆盖，环绕与周围</li>
 </ul>
 <h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a>应用：</h3><ul>
-<li>让浮动内容和周围的内容等高<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">    background-color: rgb(224, 206, 247);</span><br><span class="line">    border: 5px solid rebeccapurple;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.float &#123;</span><br><span class="line">    float: left;</span><br><span class="line">    width: 200px;</span><br><span class="line">    height: 150px;</span><br><span class="line">    background-color: white;</span><br><span class="line">    border:1px solid black;</span><br><span class="line">    padding: 10px;</span><br><span class="line">&#125;      </span><br><span class="line">&lt;div class=&quot;box&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;float&quot;&gt;I am a floated box!&lt;/div&gt;</span><br><span class="line">    &lt;p&gt;I am content inside the container.&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<li><p><strong>让浮动内容和周围的内容等高</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">    background-color: rgb(224, 206, 247);</span><br><span class="line">    border: 5px solid rebeccapurple;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.float &#123;</span><br><span class="line">    float: left;</span><br><span class="line">    width: 200px;</span><br><span class="line">    height: 150px;</span><br><span class="line">    background-color: white;</span><br><span class="line">    border:1px solid black;</span><br><span class="line">    padding: 10px;</span><br><span class="line">&#125;      </span><br><span class="line">&lt;div class=&quot;box&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;float&quot;&gt;I am a floated box!&lt;/div&gt;</span><br><span class="line">    &lt;p&gt;I am content inside the container.&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>效果： <img src="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc1.png" alt="bfc"><br>解决方案：设置 overflow: auto 创建一个新的BFC来包含这个浮动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">   background-color: rgb(224, 206, 247);</span><br><span class="line">   border: 5px solid rebeccapurple;</span><br><span class="line">   overflow: auto; // 创建BFC</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>效果： <img src="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc2.png" alt="bfc"></p>
 </li>
 </ul>
-<p>  效果： <img src="../../images/bfc1.png" alt="bfc"></p>
-<p>  解决方案：设置 overflow: auto 创建一个新的BFC来包含这个浮动<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">   background-color: rgb(224, 206, 247);</span><br><span class="line">   border: 5px solid rebeccapurple;</span><br><span class="line">   overflow: auto; // 创建BFC</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
-<p>  效果： <img src="../../images/bfc2.png" alt="bfc"></p>
 <ul>
-<li>解决外边距合并</li>
-</ul>
+<li><p><strong>解决外边距合并</strong> </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.yellow, .pink-inner &#123;</span><br><span class="line">  height: 50px;</span><br><span class="line">  margin: 10px 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.yellow &#123;</span><br><span class="line">  background: yellow;</span><br><span class="line">&#125;</span><br><span class="line">.pink-inner&#123;</span><br><span class="line">  background:pink;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  效果（yellow inner 和 pink inner 的边距为10px，不是20px）：<br>  <img src="../../images/bfc3.png" alt="bfc"></p>
-<p>  解决方案： 设置display: flow-root 创建一个新的BFC<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.pink-outer &#123;</span><br><span class="line">  display: flow-root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>  效果（yellow inner 和 pink inner 的边距为20px）：<br>  <img src="../../images/bfc4.png" alt="bfc"></p>
+<p>效果（yellow inner 和 pink inner 的边距为10px，不是20px）：<br><img src="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc3.png" alt="bfc"><br>解决方案： 设置display: flow-root 创建一个新的BFC</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.pink-outer &#123;</span><br><span class="line">  display: flow-root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果（yellow inner 和 pink inner 的边距为20px）：<br><img src="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/images/bfc4.png" alt="bfc"></p>
+</li>
+</ul>
 
       
     </div>
@@ -366,7 +368,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/chayaBlog/2020/02/24/JS类型判断/" rel="next" title="JS 类型判断">
+              <a href="/chayaBlog/2020/02/24/js/类型判断/" rel="next" title="JS 类型判断">
                 <i class="fa fa-chevron-left"></i> JS 类型判断
               </a>
             
@@ -375,6 +377,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chayaBlog/2020/04/15/算法/排序/" rel="prev" title="排序算法">
+                排序算法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -451,7 +457,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -462,7 +468,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -473,7 +479,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

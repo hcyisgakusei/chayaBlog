@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/chayaBlog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/chayaBlog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/chayaBlog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/chayaBlog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/chayaBlog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/chayaBlog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/chayaBlog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="TypeScript,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ts-playground 可选链（V3.7）可选链可以让我们的 TypeScript 代码可以在遇到null或undefined的时候立即停止当前的操作，转而运行之后的代码. // v3.7以前 123456const data: any = &amp;#123;&amp;#125;if (data &amp;amp;&amp;amp; data.customer &amp;amp;&amp;amp; data.customer.addres">
+<meta name="keywords" content="TypeScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 3.7+新特性">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2020/05/08/ts/TypeScript3.7+新特性/index.html">
+<meta property="og:site_name" content="HCY">
+<meta property="og:description" content="ts-playground 可选链（V3.7）可选链可以让我们的 TypeScript 代码可以在遇到null或undefined的时候立即停止当前的操作，转而运行之后的代码. // v3.7以前 123456const data: any = &amp;#123;&amp;#125;if (data &amp;amp;&amp;amp; data.customer &amp;amp;&amp;amp; data.customer.addres">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-12T03:24:44.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript 3.7+新特性">
+<meta name="twitter:description" content="ts-playground 可选链（V3.7）可选链可以让我们的 TypeScript 代码可以在遇到null或undefined的时候立即停止当前的操作，转而运行之后的代码. // v3.7以前 123456const data: any = &amp;#123;&amp;#125;if (data &amp;amp;&amp;amp; data.customer &amp;amp;&amp;amp; data.customer.addres">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/chayaBlog/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2020/05/08/ts/TypeScript3.7+新特性/">
+
+
+
+
+
+  <title>TypeScript 3.7+新特性 | HCY</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/chayaBlog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">HCY</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/chayaBlog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/chayaBlog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/08/ts/TypeScript3.7+新特性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript 3.7+新特性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-08T00:00:00+08:00">
+                2020-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://www.typescriptlang.org/play/?ts=3.6.3#" target="_blank" rel="noopener">ts-playground</a></p>
+<h3 id="可选链（V3-7）"><a href="#可选链（V3-7）" class="headerlink" title="可选链（V3.7）"></a><strong>可选链（V3.7）</strong></h3><p>可选链可以让我们的 TypeScript 代码可以在遇到null或undefined的时候立即停止当前的操作，转而运行之后的代码.</p>
+<p>// v3.7以前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const data: any = &#123;&#125;</span><br><span class="line">if (data &amp;&amp; data.customer &amp;&amp; data.customer.address) &#123;</span><br><span class="line">   const &#123;address&#125; = data.customer</span><br><span class="line">   const fullAddress = `$&#123;address.street&#125;, $&#123;address.city&#125;, $&#123;address.state&#125;$&#123;address.zipcode&#125;`</span><br><span class="line">   console.log(fullAddress)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>// v3.7</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// data access</span><br><span class="line">const data: any = &#123;&#125;</span><br><span class="line">const address = data?.customer?.address</span><br><span class="line">const fullAddress = `$&#123;address?.street&#125;, $&#123;address?.city&#125;, $&#123;address?.state&#125; $&#123;address?.zipcode&#125;`</span><br><span class="line">console.log(fullAddress)</span><br></pre></td></tr></table></figure>
+<p>// 也适用于数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const customers: any[] = []</span><br><span class="line">customers?.[0]?.[&apos;address&apos;]</span><br></pre></td></tr></table></figure>
+<p>// 检查方法是否已定义并调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const customer: any = &#123;&#125;</span><br><span class="line">customer.approve?.()</span><br></pre></td></tr></table></figure>
+<h3 id="空值合并（V3-7）"><a href="#空值合并（V3-7）" class="headerlink" title="空值合并（V3.7）"></a><strong>空值合并（V3.7）</strong></h3><p>空值合并运算符是 || 的替代方法，如果左侧是 null 或 undefined，则它返回右侧的表达式。这和 || 有什么不同？</p>
+<p>|| 本质上是 JavaScript 中的布尔 OR 运算符，我们尝试利用短路返回第一个非 false 值。这可能会产生意想不到的结果，因为当要求数字 0 或空字符串作为有效输入时，将会被视为 false。让我们用一个例子来说明：</p>
+<p>// 以前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const data = &#123;</span><br><span class="line">    inputString: &apos;&apos;,</span><br><span class="line">    number: 0,</span><br><span class="line">    rememberFlag: false</span><br><span class="line">&#125;</span><br><span class="line">passPhrase = data.inputString || &apos;Unknown&apos;  //不会接受 &quot;&quot; (空字符串)</span><br><span class="line">passCode =  data.number || &apos;-1111&apos; // 不会接受 0</span><br><span class="line">rememberMe = data.rememberFlag || true // 将会总是 true!!!</span><br></pre></td></tr></table></figure>
+<p>// 现在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const data = &#123;</span><br><span class="line">    inputString: &apos;&apos;,</span><br><span class="line">    number: 0,</span><br><span class="line">    rememberFlag: false</span><br><span class="line">&#125;</span><br><span class="line">let passPhrase = data.inputString ?? &apos;Unknown&apos;  //仅在 inputString 未定义时为 Unknown</span><br><span class="line">let passCode =  data.number ?? &apos;-1111&apos; // 0 可以通过</span><br><span class="line">let rememberMe = data.rememberFlag ?? true // false 是有效值</span><br><span class="line">console.log(passPhrase, passCode, rememberMe)</span><br><span class="line">// 通过这种方式可以明确地区分 undefined 与 false 的值。</span><br></pre></td></tr></table></figure>
+<h3 id="递归类型别名（V3-7）"><a href="#递归类型别名（V3-7）" class="headerlink" title="递归类型别名（V3.7）"></a><strong>递归类型别名（V3.7）</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type Json =</span><br><span class="line">    | string</span><br><span class="line">    | number</span><br><span class="line">    | boolean</span><br><span class="line">    | null</span><br><span class="line">    | &#123; [property: string]: Json &#125;</span><br><span class="line">    | Json[];</span><br></pre></td></tr></table></figure>
+<p>// 3.7之前：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type Json = | string | number | boolean | null | JsonObject | JsonArray; </span><br><span class="line">interface JsonObject &#123; [property: string]: Json; &#125; </span><br><span class="line">interface JsonArray extends Array&lt;Json&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="断言函数（V3-7）"><a href="#断言函数（V3-7）" class="headerlink" title="断言函数（V3.7）"></a><strong>断言函数（V3.7）</strong></h3><p>它们是一些特殊函数的集合。当一些非预期的事情发生的时候它们将抛出 error。它们被称为断言函数。例如，Node.js 为此有一个专门的函数assert。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert(someValue === 42);</span><br></pre></td></tr></table></figure>
+<p>在此示例中，如果someValue不等于42，assert则将抛出AssertionError。</p>
+<p>JavaScript中的断言通常用于防止传入不正确的类型。例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function multiply(x, y) &#123;</span><br><span class="line">    assert(typeof x === &quot;number&quot;);</span><br><span class="line">    assert(typeof y === &quot;number&quot;);</span><br><span class="line"></span><br><span class="line">    return x * y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不太好的是，在TypeScript中，这些检查永远无法正确编码。对于松散类型的代码，这意味着TypeScript的检查较少，而对于稍微保守的代码，则通常迫使用户使用类型断言。</p>
+<p>这里有可供选择的替代写法，可以让 TypeScript 分析出问题，不过并不方便。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function yell(str) &#123;</span><br><span class="line">  if (typeof str !== &apos;string&apos;) &#123;</span><br><span class="line">    throw new TypeError(&apos;str should have been a string.&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  // Error caught!</span><br><span class="line">  return str.toUppercase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TypeScript 3.7 引入了一个「断言签名（assertion signatures）」的新概念，用来模拟这些断言函数。</p>
+<p>第一种断言签名，模拟 Node 中的 assert 函数的功能。它确保在断言的范围内，断言条件必须为这个真。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function assert(condition: any, msg?: string): asserts condition &#123;</span><br><span class="line">    if (!condition) &#123;</span><br><span class="line">        throw new AssertionError(msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>asserts condition</code> 的意思是，如果 assert 函数有返回，传入 condition 的参数必须为真，因为如果不是这样，它肯定会抛出一个错误。这意味着，在剩下的作用域中（if 条件后）condition 必须为 truthy。</p>
+<p>举一个例子，用这个断言函数意味着我们可以实现捕获之前的 yell 示例的错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function yell(str) &#123;</span><br><span class="line">    assert(typeof str === &quot;string&quot;);</span><br><span class="line"></span><br><span class="line">    return str.toUppercase();</span><br><span class="line">    //         ~~~~~~~~~~~</span><br><span class="line">    // error: Property &apos;toUppercase&apos; does not exist on type &apos;string&apos;.</span><br><span class="line">    //        Did you mean &apos;toUpperCase&apos;?</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function assert(condition: any, msg?: string): asserts condition &#123;</span><br><span class="line">    if (!condition) &#123;</span><br><span class="line">        throw new AssertionError(msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外一种断言签名不是用来校验一个条件，而是告诉 TypeScript 某个变量或属性有不同的类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 这里 `asserts val is string` 确保在 `assertIsString` 在被调用之后, 任何传入的变量将被认为是一个 `string`.</span><br><span class="line">function assertIsString(val: any): asserts val is string &#123;</span><br><span class="line">    if (typeof val !== &quot;string&quot;) &#123;</span><br><span class="line">        throw new AssertionError(&quot;Not a string!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function yell(str: any) &#123;</span><br><span class="line">  assertIsString(str);</span><br><span class="line">  // Now TypeScript knows that &apos;str&apos; is a &apos;string&apos;.</span><br><span class="line"></span><br><span class="line">  return str.toUppercase();</span><br><span class="line">  //         ~~~~~~~~~~~</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="未调用函数检查（V3-7）"><a href="#未调用函数检查（V3-7）" class="headerlink" title="未调用函数检查（V3.7）"></a><strong>未调用函数检查（V3.7）</strong></h3><p>一个常见且危险的错误是忘记调用一个函数，特别是当函数具有零参数或用暗示它可能是属性而不是函数的方式名称时。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> interface User &#123;</span><br><span class="line">    isAdministrator(): boolean;</span><br><span class="line">    notify(): void;</span><br><span class="line">    doNotDisturb?(): boolean;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function doAdminThing(user: User) &#123;</span><br><span class="line">    if (user.isAdministrator) &#123;</span><br><span class="line">        // sudo();</span><br><span class="line">        // editTheConfiguration();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        throw new Error(&quot;User is not an admin&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="仅仅导入-导出声明-（v3-8"><a href="#仅仅导入-导出声明-（v3-8" class="headerlink" title="仅仅导入/导出声明 （v3.8)"></a><strong>仅仅导入/导出声明 （v3.8)</strong></h3><p>为了能让我们导入类型，TypeScript 重用了 JavaScript 导入语法。例如在下面的这个例子中，我们确保 JavaScript 的值 doThing 以及 TypeScript 类型 Options 一同被导入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// ./foo.ts</span><br><span class="line">interface Options &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export function doThing(options: Options) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ./bar.ts</span><br><span class="line">import &#123; doThing, Options &#125; from &apos;./foo.js&apos;;</span><br><span class="line"></span><br><span class="line">function doThingBetter(options: Options) &#123;</span><br><span class="line">  // do something twice as good</span><br><span class="line">  doThing(options);</span><br><span class="line">  doThing(options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这仅是因为一个被称之为「导入省略」的功能而起作用。当 TypeScript 输出一个 JavaScript 文件时，TypeScript 会识别出 <code>Options</code> 仅仅是当作了一个类型来使用，它将会删除 <code>Options</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// ./foo.js</span><br><span class="line">export function doThing(options) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ./bar.js</span><br><span class="line">import &#123; doThing &#125; from &apos;./foo.js&apos;;</span><br><span class="line"></span><br><span class="line">function doThingBetter(options) &#123;</span><br><span class="line">  // do something twice as good</span><br><span class="line">  doThing(options);</span><br><span class="line">  doThing(options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在通常情况下，这种行为都是比较好的。但是它会导致一些其他问题。在一些场景下，TypeScript 会混淆导出的究竟是一个类型还是一个值。比如在下面的例子中， 我们根本无法确定 <strong>MyThing</strong> 是否是一个类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &#123; MyThing &#125; from &apos;./some-module.js&apos;;</span><br><span class="line">export &#123; MyThing &#125;;</span><br></pre></td></tr></table></figure>
+<p>为了避免出现类似情况, TypeScript 3.8为仅类型导入和导出添加了新语法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import type &#123; SomeThing &#125; from &quot;./some-module.js&quot;;</span><br><span class="line">export type &#123; SomeThing &#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>import type</strong> 仅仅导入被用于类型注解或声明的声明语句，它总是会被完全删除，因此在运行时将不会留下任何代码。与此相似，<strong>export type</strong> 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。</p>
+<h3 id="ECMAScript-提案的私有字段-v3-8"><a href="#ECMAScript-提案的私有字段-v3-8" class="headerlink" title="ECMAScript 提案的私有字段 (v3.8)"></a><strong>ECMAScript 提案的私有字段 (v3.8)</strong></h3><p>TypeScript 3.8 支持在 ECMAScript 中处于 <a href="https://github.com/tc39/proposal-class-fields/" target="_blank" rel="noopener">stage-3</a> 中的私有字段。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Person &#123;</span><br><span class="line">    #name: string</span><br><span class="line"></span><br><span class="line">    constructor(name: string) &#123;</span><br><span class="line">        this.#name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    greet() &#123;</span><br><span class="line">        console.log(`Hello, my name is $&#123;this.#name&#125;!`);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let jeremy = new Person(&quot;Jeremy Bearimy&quot;);</span><br><span class="line"></span><br><span class="line">jeremy.#name</span><br><span class="line">//     ~~~~~</span><br><span class="line">// Property &apos;#name&apos; is not accessible outside class &apos;Person&apos;</span><br><span class="line">// because it has a private identifier.</span><br></pre></td></tr></table></figure>
+<p>和常规属性(这里特别比较 private 修饰符声明的比较)不同，私有字段(private fields)拥有下面这些特性。</p>
+<ul>
+<li>私有字段使用 # 字符做为开始，通常，我们也把这些称为私有名称。</li>
+<li>每个私有字段的名字，在被包含的类中，都是唯一的</li>
+<li>在 TypeScript 中，像 public 和 private 修饰符不能用于私有字段</li>
+<li>私有字段不能在所包含的类之外访问 —— 即使是对于 JavaScript 使用者来说也是如此。通常，我们把这种称为强隐私「hard privacy」。</li>
+</ul>
+<p><strong>除了能保存自己的私有这一属性以外，私有字段的另一个好处是我们刚才提到的唯一性。例如，常规属性声明易于在子类中被覆盖。而 private fields 是受保护的。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class C &#123;</span><br><span class="line">    foo = 10;</span><br><span class="line"></span><br><span class="line">    cHelper() &#123;</span><br><span class="line">        return this.foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class D extends C &#123;</span><br><span class="line">    foo = 20;</span><br><span class="line"></span><br><span class="line">    dHelper() &#123;</span><br><span class="line">        return this.foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let instance = new D();</span><br><span class="line">// &apos;this.foo&apos; refers to the same property on each instance.</span><br><span class="line">console.log(instance.cHelper()); // prints &apos;20&apos;</span><br><span class="line">console.log(instance.dHelper()); // prints &apos;20&apos;</span><br></pre></td></tr></table></figure>
+<p>使用私有字段时，你完全不必对此担心，因为每个私有字段，在所包含的类中，都是唯一的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class C &#123;</span><br><span class="line">    #foo = 10;</span><br><span class="line"></span><br><span class="line">    cHelper() &#123;</span><br><span class="line">        return this.#foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class D extends C &#123;</span><br><span class="line">    #foo = 20;</span><br><span class="line"></span><br><span class="line">    dHelper() &#123;</span><br><span class="line">        return this.#foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let instance = new D();</span><br><span class="line">// &apos;this.#foo&apos; refers to a different field within each class.</span><br><span class="line">console.log(instance.cHelper()); // prints &apos;10&apos;</span><br><span class="line">console.log(instance.dHelper()); // prints &apos;20&apos;</span><br></pre></td></tr></table></figure>
+<p>另外有一个值得注意的地方，访问一个有其他类型的私有字段，都将导致 TypeError。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Square &#123;</span><br><span class="line">    #sideLength: number;</span><br><span class="line"></span><br><span class="line">    constructor(sideLength: number) &#123;</span><br><span class="line">        this.#sideLength = sideLength;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    equals(other: any) &#123;</span><br><span class="line">        return this.#sideLength === other.#sideLength;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const a = new Square(100);</span><br><span class="line">const b = &#123; sideLength: 100 &#125;;</span><br><span class="line"></span><br><span class="line">// Boom!</span><br><span class="line">// TypeError: attempted to get private field on non-instance</span><br><span class="line">// This fails because &apos;b&apos; is not an instance of &apos;Square&apos;.</span><br><span class="line">console.log(a.equals(b));</span><br></pre></td></tr></table></figure>
+<p>该使用哪个</p>
+<p>在属性方面，TypeScript private 修饰符在编译后将会被删除 —— 因此，尽管有数据存在，但是在输出的 JavaScript 代码中没有关于该属性声明的任何编码。当涉及到属性时，TypeScript的private修饰符会并没有完全正确的执行，它的行为完全像普通属性一样，并且没有办法告诉它是使用private 修饰符并没有完全的生效。我们称之为 soft privacy, 我们依然可以通过 [&#39;foo&#39;] 这样的形式访问到。看下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class C &#123;</span><br><span class="line">    private foo = 10;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// This is an error at compile time,</span><br><span class="line">// but when TypeScript outputs .js files,</span><br><span class="line">// it&apos;ll run fine and print &apos;10&apos;.</span><br><span class="line">console.log(new C().foo);    // prints &apos;10&apos;</span><br><span class="line">//                  ~~~</span><br><span class="line">// error! Property &apos;foo&apos; is private and only accessible within class &apos;C&apos;.</span><br><span class="line"></span><br><span class="line">// TypeScript allows this at compile-time</span><br><span class="line">// as a &quot;work-around&quot; to avoid the error.</span><br><span class="line">console.log(new C()[&quot;foo&quot;]); // prints &apos;10&apos;</span><br></pre></td></tr></table></figure>
+<p>对比下面使用 # 私有字段，是完全访问不到的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class C &#123;</span><br><span class="line">    #foo = 10;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(new C().#foo); // SyntaxError</span><br><span class="line">//                  ~~~~</span><br><span class="line">// TypeScript reports an error *and*</span><br><span class="line">// this won&apos;t work at runtime!</span><br><span class="line"></span><br><span class="line">console.log(new C()[&quot;#foo&quot;]); // prints undefined</span><br><span class="line">//          ~~~~~~~~~~~~~~~</span><br><span class="line">// TypeScript reports an error under &apos;noImplicitAny&apos;,</span><br><span class="line">// and this prints &apos;undefined&apos;.</span><br></pre></td></tr></table></figure>
+<p><strong>TypeScript 只有在编译目标为 ECMAScript 2015（ES6）及其以上时，才能支持该私有字段，TypeScript 的 private 声明属性能在所有的编译目标下正常工作 —— 甚至是 ECMAScript 3。</strong></p>
+<h3 id="export-as-ns-语法使用"><a href="#export-as-ns-语法使用" class="headerlink" title="export * as ns 语法使用"></a><strong>export * as ns 语法使用</strong></h3><p>通常有一个入口点将另一个模块的所有成员集中并公开为一个变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import * as utilities from &quot;./utilities.js&quot;;</span><br><span class="line">export &#123; utilities &#125;;</span><br></pre></td></tr></table></figure>
+<p>这很普遍，以至于ECMAScript 2020添加了新语法来支持这种模式！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export * as utilities from &quot;./utilities.js&quot;;</span><br></pre></td></tr></table></figure>
+<p>TypeScript 3.8实现了此语法。当模块目标早于es2020时，TypeScript将按照第一个代码段的内容输出内容。</p>
+<h3 id="顶层-await-使用"><a href="#顶层-await-使用" class="headerlink" title="顶层 await 使用"></a><strong>顶层 await 使用</strong></h3><p><a href="https://es6.ruanyifeng.com/#docs/async#%E9%A1%B6%E5%B1%82-await" target="_blank" rel="noopener">顶层await</a></p>
+<p>通常我们使用 JavaScript 常会引入一个async 函数来使用 await.</p>
+<p>在 JavaScript中（以及其他大多数具有类似功能的语言）await 仅在 async 函数体内被允许。但是，对于 top await，我们可以 await 在模块的顶层使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">async function main() &#123;</span><br><span class="line">    const response = await fetch(&quot;...&quot;);</span><br><span class="line">    const greeting = await response.text();</span><br><span class="line">    console.log(greeting);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">    .catch(e =&gt; console.error(e))</span><br><span class="line">const response = await fetch(&quot;...&quot;);</span><br><span class="line">const greeting = await response.text();</span><br><span class="line">console.log(greeting);</span><br><span class="line"></span><br><span class="line">// Make sure we&apos;re a module</span><br><span class="line">export &#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>仅当目标编译器选项为es2017或更高版本时，才可以使用顶级await</code></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a><strong>参考文档</strong></h2><p><a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/" target="_blank" rel="noopener">Announcing TypeScript 3.7</a></p>
+<p><a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/" target="_blank" rel="noopener">Announcing TypeScript 3.8</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/chayaBlog/tags/TypeScript/" rel="tag"># TypeScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/chayaBlog/2020/04/24/算法/对称二叉树/" rel="next" title="判断两颗树是否对称">
+                <i class="fa fa-chevron-left"></i> 判断两颗树是否对称
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">HCY</p>
+              <p class="site-description motion-element" itemprop="description">HCY</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/chayaBlog/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/chayaBlog/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#可选链（V3-7）"><span class="nav-number">1.</span> <span class="nav-text">可选链（V3.7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空值合并（V3-7）"><span class="nav-number">2.</span> <span class="nav-text">空值合并（V3.7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递归类型别名（V3-7）"><span class="nav-number">3.</span> <span class="nav-text">递归类型别名（V3.7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#断言函数（V3-7）"><span class="nav-number">4.</span> <span class="nav-text">断言函数（V3.7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未调用函数检查（V3-7）"><span class="nav-number">5.</span> <span class="nav-text">未调用函数检查（V3.7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仅仅导入-导出声明-（v3-8"><span class="nav-number">6.</span> <span class="nav-text">仅仅导入/导出声明 （v3.8)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECMAScript-提案的私有字段-v3-8"><span class="nav-number">7.</span> <span class="nav-text">ECMAScript 提案的私有字段 (v3.8)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#export-as-ns-语法使用"><span class="nav-number">8.</span> <span class="nav-text">export * as ns 语法使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#顶层-await-使用"><span class="nav-number">9.</span> <span class="nav-text">顶层 await 使用</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number"></span> <span class="nav-text">参考文档</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HCY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/chayaBlog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

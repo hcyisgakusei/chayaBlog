@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/chayaBlog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/chayaBlog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/chayaBlog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/chayaBlog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/chayaBlog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/chayaBlog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/chayaBlog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="正则表达式1.贪婪匹配和惰性匹配1234567891011121314151617181920212223242526272829303132333435363738/** * 贪婪匹配和惰性匹配  * 正则使用量词&amp;#123; &amp;#125; 匹配的话是贪婪匹配的  尽可能多的匹配  * 惰性匹配  尽可能少的匹配  *///能匹配尽量多的次数   var reg = /\d&amp;#123;1,3&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2020/04/20/js/正则表达式/index.html">
+<meta property="og:site_name" content="HCY">
+<meta property="og:description" content="正则表达式1.贪婪匹配和惰性匹配1234567891011121314151617181920212223242526272829303132333435363738/** * 贪婪匹配和惰性匹配  * 正则使用量词&amp;#123; &amp;#125; 匹配的话是贪婪匹配的  尽可能多的匹配  * 惰性匹配  尽可能少的匹配  *///能匹配尽量多的次数   var reg = /\d&amp;#123;1,3&amp;#">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-12T03:15:56.756Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正则表达式">
+<meta name="twitter:description" content="正则表达式1.贪婪匹配和惰性匹配1234567891011121314151617181920212223242526272829303132333435363738/** * 贪婪匹配和惰性匹配  * 正则使用量词&amp;#123; &amp;#125; 匹配的话是贪婪匹配的  尽可能多的匹配  * 惰性匹配  尽可能少的匹配  *///能匹配尽量多的次数   var reg = /\d&amp;#123;1,3&amp;#">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/chayaBlog/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2020/04/20/js/正则表达式/">
+
+
+
+
+
+  <title>正则表达式 | HCY</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/chayaBlog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">HCY</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/chayaBlog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/chayaBlog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/04/20/js/正则表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">正则表达式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-20T00:00:00+08:00">
+                2020-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><p>1.贪婪匹配和惰性匹配<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 贪婪匹配和惰性匹配 </span></span><br><span class="line"><span class="comment"> * 正则使用量词&#123; &#125; 匹配的话是贪婪匹配的  尽可能多的匹配 </span></span><br><span class="line"><span class="comment"> * 惰性匹配  尽可能少的匹配 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//能匹配尽量多的次数   </span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/\d&#123;1,3&#125;/g</span>;</span><br><span class="line"><span class="comment">//console.log("123857823748".match(reg));</span></span><br><span class="line"><span class="comment">// [ '123', '857', '823', '748' ]</span></span><br><span class="line"><span class="comment">//d&#123;1&#125;  惰性匹配</span></span><br><span class="line"><span class="keyword">var</span> reg1 = <span class="regexp">/\d&#123;1,3&#125;?/g</span>;</span><br><span class="line"><span class="comment">//console.log("123".match(reg1));</span></span><br><span class="line"><span class="comment">// [ '1', '2', '3' ]</span></span><br><span class="line"><span class="comment">/**  量词后面加上？ 就表示惰性匹配 </span></span><br><span class="line"><span class="comment"> *   &#123;m,n&#125;?  </span></span><br><span class="line"><span class="comment"> *   &#123;m,&#125;?</span></span><br><span class="line"><span class="comment"> *   ??</span></span><br><span class="line"><span class="comment"> *   +?</span></span><br><span class="line"><span class="comment"> *   *?</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//以此类推直到匹配成功或不剩字符才停止。</span></span><br><span class="line"><span class="keyword">var</span> reg2 = <span class="regexp">/(\d&#123;1,2&#125;)(\d&#123;3,4&#125;)/g</span>;   <span class="comment">//贪婪模式  </span></span><br><span class="line"><span class="keyword">var</span> reg3 = <span class="regexp">/(\d&#123;1,2&#125;?)(\d&#123;3,4&#125;?)/g</span>;   <span class="comment">//惰性模式 </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//贪婪</span></span><br><span class="line"><span class="built_in">console</span>.log(motify(<span class="string">"1234563231"</span>,reg2));</span><br><span class="line"><span class="built_in">console</span>.log(motify(<span class="string">"12345"</span>,reg2));</span><br><span class="line"></span><br><span class="line"><span class="comment">//惰性</span></span><br><span class="line"><span class="built_in">console</span>.log(motify(<span class="string">"1234563"</span>,reg3));</span><br><span class="line"><span class="built_in">console</span>.log(motify(<span class="string">"1234"</span>,reg3));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">motify</span>(<span class="params">str,reg</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> str.replace(reg,(item,$<span class="number">1</span>,$<span class="number">2</span>)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item+<span class="string">"==&gt;"</span>+$<span class="number">1</span>+<span class="string">"~"</span>+$<span class="number">2</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>正则位置的匹配</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">/单词边界 \b   \B</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[string,string] hello wrold"</span>.replace(<span class="regexp">/\b/g</span>,<span class="string">"#"</span>));</span><br><span class="line"><span class="comment">//[#string#,#string#] #hello# #wrold#</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[string,string] hello wrold"</span>.replace(<span class="regexp">/\B/g</span>,<span class="string">"+"</span>));</span><br><span class="line"><span class="comment">//+[s+t+r+i+n+g,s+t+r+i+n+g]+ h+e+l+l+o w+r+o+l+d</span></span><br><span class="line"></span><br><span class="line">断言  (?=exp)  (?!exp)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>.replace(<span class="regexp">/(?=l)/g</span>,<span class="string">"&amp;"</span>));</span><br><span class="line"><span class="comment">//   he&amp;l&amp;lo</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>.replace(<span class="regexp">/(?!l)/g</span>,<span class="string">"-"</span>));</span><br><span class="line"><span class="comment">//   -h-ell-o-</span></span><br><span class="line"></span><br><span class="line">使用断言的场景 一般是对于位置的操作  </span><br><span class="line"><span class="comment">// ?=exp   右侧的位置能匹配exp  exp 右边的位置 </span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>.replace(<span class="regexp">/(?=l)/g</span>,<span class="string">"&amp;"</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// ?!exp   右侧的位置不能匹配exp</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>.replace(<span class="regexp">/(?!l)/g</span>,<span class="string">"-"</span>));</span><br><span class="line"></span><br><span class="line">千位分隔符表示法</span><br><span class="line"><span class="comment">// 如果要把"12345678"替换成"12,345,678"  </span></span><br><span class="line"><span class="comment">// 从后往前 每三位前面的位置加一个,   str.repalce(/(?=(\d&#123;3&#125;)+\b)/g,",")   </span></span><br><span class="line"><span class="comment">//console.log("123456789".replace(/(?=(\d&#123;3&#125;)+\b)/g,","));</span></span><br><span class="line"><span class="comment">// 不能匹配开头  "123456789"    </span></span><br><span class="line"> <span class="comment">//var reg1 =/(?!^)(?=(\d&#123;3&#125;)+$)/g;     </span></span><br><span class="line"><span class="comment">//console.log("123456789".replace(reg1,","));</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果是需要匹配 "12345678 123456"     </span></span><br><span class="line"><span class="keyword">var</span> reg2 =<span class="regexp">/(?!\b)(?=(\d&#123;3&#125;)+\b)/g</span>;</span><br><span class="line"><span class="comment">// var reg2 = /\B(?=(\d&#123;3&#125;)+\b)/g;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"123453 1234324234"</span>.replace(reg2,<span class="string">","</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">money</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="string">''</span>+num).replace(<span class="regexp">/(\d)(?=(\d&#123;3&#125;)+(?!\d))/g</span>, <span class="string">'$1,'</span>).replace(<span class="regexp">/$/g</span>,<span class="string">"¥"</span>);</span><br><span class="line">&#125;</span><br><span class="line"> <span class="built_in">console</span>.log(money(<span class="string">"312312321 38578374589"</span>));</span><br><span class="line"> <span class="built_in">console</span>.log(money(<span class="string">"123456789 74587374892347"</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//密码的校验 </span></span><br><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment"> *  密码长度6-12位，由数字、小写字符和大写字母组成，必须三种字符都包括</span></span><br><span class="line"><span class="comment"> *  前瞻断言 、后瞻断言(js不支持)</span></span><br><span class="line"><span class="comment"> *  顺序肯定环视 ：  (?=exp)  表示所在位置右侧能够匹配exp </span></span><br><span class="line"><span class="comment"> *  顺序否定环视 ：  (?!exp)  表示所在位置右侧不能匹配exp</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//必须包含数字 （?=.*[0-9])^[0-9a-zA-Z_]&#123;6,12&#125;$   </span></span><br><span class="line"> <span class="keyword">var</span> reg3 = <span class="regexp">/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])^[0-9a-zA-Z_]&#123;6,12&#125;$/g</span>;  </span><br><span class="line"> <span class="built_in">console</span>.log(reg5.test(<span class="string">"1AA23heh313"</span>));</span><br><span class="line"><span class="comment">//  console.log(reg3.test("123123123"));</span></span><br><span class="line"><span class="comment">//  console.log(reg3.test("dewwe23123"));</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">/**  </span></span><br><span class="line"><span class="comment">  * 密码长度6-12位，由数字、小写字符和大写字母组成，  但必须至少包括2种字符。</span></span><br><span class="line"><span class="comment">  * 同时包含数字和小写字母      (?=.*[0-9])(?=.*[a-z])</span></span><br><span class="line"><span class="comment">  * 同时包含数字和大写字母      (?=.*[0-9])(?=.*[A-Z])</span></span><br><span class="line"><span class="comment">  * 同时包含小写字母和大写字母   (?=.*[a-z])(?=.*[A-Z])</span></span><br><span class="line"><span class="comment">  * var reg = /((?=.*[0-9])(?=.*[a-z]))|(?=.*[0-9])(?=.*[A-Z])|((?=.*[a-z])(?=.*[A-Z])))/g;</span></span><br><span class="line"><span class="comment">  * 另一种想法 ：</span></span><br><span class="line"><span class="comment">  * 必须至少包括两种字符    所以不能只包含某种字符</span></span><br><span class="line"><span class="comment">  * var reg = /(?!^[0-9]&#123;6,12&#125;$)^[0-9A-Za-z]&#123;6,12&#125;$/  不能只包含数字  </span></span><br><span class="line"><span class="comment">  * </span></span><br><span class="line"><span class="comment">  * //最后：(?!^[0-9]&#123;6,12&#125;$)(?!^[a-z]&#123;6,12&#125;$)(?!^[A-Z]&#123;6,12&#125;$)^[0-9A-Za-z]&#123;6,12&#125;$/</span></span><br><span class="line"><span class="comment">  * </span></span><br><span class="line"><span class="comment">  */</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/chayaBlog/2020/04/15/算法/排序/" rel="next" title="排序算法">
+                <i class="fa fa-chevron-left"></i> 排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chayaBlog/2020/04/24/算法/对称二叉树/" rel="prev" title="判断两颗树是否对称">
+                判断两颗树是否对称 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">HCY</p>
+              <p class="site-description motion-element" itemprop="description">HCY</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/chayaBlog/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/chayaBlog/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">1.</span> <span class="nav-text">正则表达式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HCY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/chayaBlog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

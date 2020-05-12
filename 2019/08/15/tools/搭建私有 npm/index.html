@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/chayaBlog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/chayaBlog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/chayaBlog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/chayaBlog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/chayaBlog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/chayaBlog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/chayaBlog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="TOOLS,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="目前有以下两种推荐方案： 使用 verdaccioverdaccio: A lightweight private npm proxy registry Install在服务器上全局安装 verdaccio 1234$ npm install -g verdaccio$ verdacciowarn --- config file - /home/.config/verdaccio/config.y">
+<meta name="keywords" content="TOOLS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建私有NPM">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2019/08/15/tools/搭建私有 npm/index.html">
+<meta property="og:site_name" content="HCY">
+<meta property="og:description" content="目前有以下两种推荐方案： 使用 verdaccioverdaccio: A lightweight private npm proxy registry Install在服务器上全局安装 verdaccio 1234$ npm install -g verdaccio$ verdacciowarn --- config file - /home/.config/verdaccio/config.y">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-12T03:25:22.125Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="搭建私有NPM">
+<meta name="twitter:description" content="目前有以下两种推荐方案： 使用 verdaccioverdaccio: A lightweight private npm proxy registry Install在服务器上全局安装 verdaccio 1234$ npm install -g verdaccio$ verdacciowarn --- config file - /home/.config/verdaccio/config.y">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/chayaBlog/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2019/08/15/tools/搭建私有 npm/">
+
+
+
+
+
+  <title>搭建私有NPM | HCY</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/chayaBlog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">HCY</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/chayaBlog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/chayaBlog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/08/15/tools/搭建私有 npm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">搭建私有NPM</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-15T00:00:00+08:00">
+                2019-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>目前有以下两种推荐方案：</p>
+<h2 id="使用-verdaccio"><a href="#使用-verdaccio" class="headerlink" title="使用 verdaccio"></a>使用 <code>verdaccio</code></h2><p><a href="https://github.com/verdaccio/verdaccio" target="_blank" rel="noopener">verdaccio</a>: A lightweight private npm proxy registry</p>
+<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><p>在服务器上全局安装 <code>verdaccio</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g verdaccio</span><br><span class="line">$ verdaccio</span><br><span class="line">warn --- config file - /home/.config/verdaccio/config.yaml </span><br><span class="line">warn --- http address - http://localhost:4873/ - verdaccio/3.0.0</span><br></pre></td></tr></table></figure>
+<h3 id="Nginx-setting"><a href="#Nginx-setting" class="headerlink" title="Nginx setting"></a>Nginx setting</h3><p>为了不和其他的 <code>Nginx</code>配置冲突，我们将 <code>verdaccio</code> 的默认端口指向服务器的子目录 <code>/verdaccio/</code> 下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen       80;</span><br><span class="line">  server_name  concierge11.klook.io;</span><br><span class="line"></span><br><span class="line">  location ~ ^/verdaccio/(.*)$ &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:4873/$1;</span><br><span class="line">    proxy_set_header Host            $host:$server_port;</span><br><span class="line">    proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时我们还需要修改 <code>verdaccio</code> 的配置文件 <code>~/.config/verdaccio/config.yaml</code>，更多<a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/verdaccio.org/docs/en/configuration%5D(https:/verdaccio.org/docs/en/configuration" target="_blank" rel="noopener">配置参考</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url_prefix:  /verdaccio/</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>~/.config/verdaccio/storage</code> ：储存发布和缓存的包，会缓存下载的包</li>
+<li><code>~/.config/verdaccio/htpasswd</code> ：储存注册用户的账号名和密码</li>
+</ul>
+<h3 id="Keeping-verdaccio-running-forever"><a href="#Keeping-verdaccio-running-forever" class="headerlink" title="Keeping verdaccio running forever"></a>Keeping verdaccio running forever</h3><p>You can use node package called <a href="https://github.com/nodejitsu/forever" target="_blank" rel="noopener">&#39;forever&#39;</a> to keep <code>verdaccio</code> running all the time.</p>
+<p>First install <code>forever</code> globally:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g forever</span><br></pre></td></tr></table></figure>
+<p>Make sure you&#39;ve run <code>verdaccio</code> at least once to generate the config file and write down the created admin user. You can then use the following command to start <code>verdaccio</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ forever start `which verdaccio`</span><br></pre></td></tr></table></figure>
+<p>You can check the documentation for more information on how to use forever.</p>
+<p>Surviving server restarts</p>
+<p>You can use <code>crontab</code> and <code>forever</code> together to start <code>verdaccio</code> after a server reboot. When you&#39;re logged in as the <code>verdaccio</code> user do the following:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ crontab -e</span><br></pre></td></tr></table></figure>
+<p>This might ask you to choose an editor. Pick your favorite and proceed. Add the following entry to the file:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot /usr/bin/forever start /usr/lib/node_modules/verdaccio/bin/verdaccio</span><br></pre></td></tr></table></figure>
+<p>The locations may vary depending on your server setup. If you want to know where your files are you can use the &#39;which&#39; command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ which forever</span><br><span class="line">$ which verdaccio</span><br></pre></td></tr></table></figure>
+<h3 id="本地配置-registry"><a href="#本地配置-registry" class="headerlink" title="本地配置 registry"></a>本地配置 registry</h3><p>推荐安装 <a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/github.com/Pana/nrm%5D(https:/github.com/Pana/nrm" target="_blank" rel="noopener">nrm</a>) 来管理 registry</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g nrm</span><br><span class="line">$ nrm add knpm http://concierge11.klook.io/verdaccio/</span><br><span class="line">$ nrm use knpm</span><br></pre></td></tr></table></figure>
+<h3 id="发布和安装私有包"><a href="#发布和安装私有包" class="headerlink" title="发布和安装私有包"></a>发布和安装私有包</h3><blockquote>
+<p>发布私有包时，强烈建议修改 <code>package.json</code> 中的包名，带上 scope <code>@klook</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 修改包名 @klook/utils</span><br><span class="line">$ npm publish </span><br><span class="line">$ npm install @vue/cli</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="使用-cnpmjs-org"><a href="#使用-cnpmjs-org" class="headerlink" title="使用 cnpmjs.org"></a>使用 <code>cnpmjs.org</code></h2><p><a href="https://github.com/cnpm/cnpmjs.org" target="_blank" rel="noopener">cnpmjs.org</a>: Private npm registry and web for Enterprise, base on <a href="http://koajs.com/" target="_blank" rel="noopener">koa</a>, MySQL and <a href="https://github.com/cnpm/cnpmjs.org/wiki/NFS-Guide" target="_blank" rel="noopener">Simple Store Service</a>.</p>
+<h3 id="Dependencies"><a href="#Dependencies" class="headerlink" title="Dependencies"></a>Dependencies</h3><ul>
+<li>Node &gt;= 6.11.3</li>
+<li>MySQL &gt;= 0.5.0, include <code>mysqld</code> and <code>mysql</code> cli</li>
+<li><a href="https://bitbucket.org/jogiterding/mypro/src/3cc4c7f5f15f3817af3882bdf532aeacc4f660e2/%5Bhttps:/github.com/cnpm/cnpmjs.org/wiki/NFS-Guide%5D(https:/github.com/cnpm/cnpmjs.org/wiki/NFS-Guide" target="_blank" rel="noopener">Simple File Store Service, like qiniu, aliyun-oss, tfs, upyun</a>)</li>
+</ul>
+<h3 id="Install-1"><a href="#Install-1" class="headerlink" title="Install"></a>Install</h3><ol>
+<li>Get the Code</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># clone from github</span><br><span class="line">$ git clone git://github.com/cnpm/cnpmjs.org.git $HOME/cnpmjs.org</span><br><span class="line">$ cd $HOME/cnpmjs.org</span><br></pre></td></tr></table></figure>
+<p>Install <code>cnpmjs.org</code> and <code>cnpm</code> from npm</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g --build-from-source cnpmjs.org cnpm sqlite3</span><br></pre></td></tr></table></figure>
+<p>If you&#39;re in China, maybe you should use China mirror</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g --build-from-source \</span><br><span class="line">  --registry=https://registry.npm.taobao.org \</span><br><span class="line">  --disturl=https://npm.taobao.org/mirrors/node \</span><br><span class="line">  cnpmjs.org cnpm sqlite3</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>mysql</code> 数据库操作：</li>
+</ol>
+<p>a. 创建数据库 <code>klook-npm</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database klook-npm</span><br></pre></td></tr></table></figure>
+<p>b. 创建表：<a href="https://github.com/cnpm/cnpmjs.org/blob/master/docs/db.sql" target="_blank" rel="noopener">Get all the sqls here</a></p>
+<p><a href="http://www.ifepoland.com/lilip/p/10109557.html" target="_blank" rel="noopener">mysql 8.0 创建 table 时报错:【MYSQL】MYSQL报错解决方法： Warning: (3719, &quot;&#39;utf8&#39; is currently an alias for the character set UTF8MB3, but will be an alias for UTF8M B4 in a future release.&quot;</a></p>
+<p><a href="[https://img.jogiter.cn//tech/db%28mysql8.0%29.sql](https://img.jogiter.cn//tech/db%28mysql8.0%29.sql">点击下载修复版 SQL</a></p>
+<ol>
+<li>Edit Your Own Config File</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd $HOME/cnpmjs.org</span><br><span class="line">$ vim config/index.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  debug: false,</span><br><span class="line">  enableCluster: true, // enable cluster mode</span><br><span class="line">  enablePrivate: true, // enable private mode, only admin can publish, other use just can sync package from source npm</span><br><span class="line">  database: &#123;</span><br><span class="line">      db: &apos;klook-npm&apos;,</span><br><span class="line">      username: &apos;root&apos;,</span><br><span class="line">      password: &apos;password&apos;,</span><br><span class="line"></span><br><span class="line">      // the sql dialect of the database</span><br><span class="line">      // - currently supported: &apos;mysql&apos;, &apos;sqlite&apos;, &apos;postgres&apos;, &apos;mariadb&apos;</span><br><span class="line">      dialect: &apos;mysql&apos;,</span><br><span class="line"></span><br><span class="line">      // custom host; default: 127.0.0.1</span><br><span class="line">      host: &apos;l-testing-contains-main-56.cbw4mscvt9bw.ap-southeast-1.rds.amazonaws.com&apos;,</span><br><span class="line"></span><br><span class="line">      // custom port; default: 3306</span><br><span class="line">      port: 3306,</span><br><span class="line"></span><br><span class="line">      ssl: &#123;</span><br><span class="line">          ca: path.join(dataDir, &apos;certs/mysql-test.pem&apos;)</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      // use pooling in order to reduce db connection overload and to increase speed</span><br><span class="line">      // currently only for mysql and postgresql (since v1.5.0)</span><br><span class="line">      pool: &#123;</span><br><span class="line">        maxConnections: 10,</span><br><span class="line">        minConnections: 0,</span><br><span class="line">        maxIdleTime: 30000</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      dialectOptions: &#123;</span><br><span class="line">        trace: true,</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      // the storage engine for &apos;sqlite&apos;</span><br><span class="line">      // default store into ~/.cnpmjs.org/data.sqlite</span><br><span class="line">      storage: path.join(dataDir, &apos;data.sqlite&apos;),</span><br><span class="line"></span><br><span class="line">      logging: !!process.env.SQL_DEBUG,</span><br><span class="line">  &#125;,</span><br><span class="line">  admins: &#123;</span><br><span class="line">    admin: &apos;admin@cnpmjs.org&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  // registry scopes, if don&apos;t set, means do not support scopes</span><br><span class="line">  scopes: [ &apos;@knpm&apos;, &apos;@knpmtest&apos;, &apos;@knpm-test&apos; ],</span><br><span class="line">  // &apos;none&apos;: 永不同步，只管理私有用户上传的包，其它源包会直接从源站获取</span><br><span class="line">  // &apos;exist&apos;: 定时同步已经存在于数据库的包</span><br><span class="line">  // &apos;all&apos;: 定时同步所有源站的</span><br><span class="line">  syncModel: &apos;none&apos;// &apos;none&apos;, &apos;all&apos;, &apos;exist&apos;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注意这里的 <code>mysql</code> 的连接使用测试环境的 <code>mysql</code>，采用 <code>ssl</code> 的方式进行连接，因此还需要添加 <code>ssl</code> 配置。</p>
+<p>详细配置参考<a href="https://medoc.000webhostapp.com/2018/04/19/npm%E7%A7%81%E5%BA%93%E6%90%AD%E5%BB%BA-cnpm-js/" target="_blank" rel="noopener">配置字段参考</a></p>
+<ol>
+<li>添加 <code>ssl</code> 文件，同时将 <code>key</code> 内容拷贝到 <code>~/.cnpmjs.org/certs/mysql-test.pem</code> 文件。具体的 <code>key</code> 请咨询测试同事。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/.cnpmjs.org/</span><br><span class="line">$ mkdir certs</span><br><span class="line">$ touch mysql-test.pem</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>~/.cnpmjs.org/nfs</code> ：默认储存发布和缓存的包，可设置不缓存下载的包。具体请参考配置参考。</li>
+</ul>
+<ol>
+<li>开启服务</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/cnpmjs.org/</span><br><span class="line">$ npm run start</span><br></pre></td></tr></table></figure>
+<p><code>registry</code>：<a href="http://localhost:7001/" target="_blank" rel="noopener">http://localhost:7001</a>  <code>web</code>：<a href="http://localhost:7002/" target="_blank" rel="noopener">http://localhost:7002</a></p>
+<p>配置 <code>Nginx</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd /etc/nginx/</span><br><span class="line">$ vim nginx.conf</span><br></pre></td></tr></table></figure>
+<p><code>Nginx</code> 设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen       80;</span><br><span class="line">  server_name  concierge11.klook.io;</span><br><span class="line"></span><br><span class="line">  location ~ ^/knpm/(.*)$ &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:7001/$1;</span><br><span class="line">    proxy_set_header Host            $host:$server_port;</span><br><span class="line">    proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">  &#125;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:7002/;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header Host  $http_host;</span><br><span class="line">    proxy_set_header X-Nginx-Proxy true;</span><br><span class="line">    proxy_http_version 1.1;</span><br><span class="line">    proxy_set_header Connection &quot;&quot;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>本地环境设置 <code>registry</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cnpm set registry http://concierge11.klook.io/knpm/</span><br></pre></td></tr></table></figure>
+<p>发布和安装包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cnpm login</span><br><span class="line">$ cnpm publish</span><br><span class="line">$ cnpm install</span><br></pre></td></tr></table></figure>
+<ol>
+<li>个性化配置 <code>npm</code> ，详细请阅读项目源码~</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/cnpmjs.org/</span><br></pre></td></tr></table></figure>
+<h2 id="difference"><a href="#difference" class="headerlink" title="difference"></a>difference</h2><ul>
+<li>verdaccio<ul>
+<li>安装简单，不需要数据库支持</li>
+<li>设置 <code>registry</code> 后通过 <code>npm</code> 来进行包管理</li>
+<li>可配置性低；服务器会储存所有的包，包括发布的私语包和下载的包</li>
+<li>定制化页面需要修改全局安装的源码</li>
+</ul>
+</li>
+<li>cnpmjs.org<ul>
+<li>安装复杂，需要安装 <code>mysql</code></li>
+<li>设置 <code>registry</code> 后通过 <code>cnpm</code> 来进行包管理</li>
+<li>高度可配置；支持服务器只存储发布的私有包</li>
+<li>定制化页面需要修改部署安装的源码</li>
+</ul>
+</li>
+</ul>
+<h2 id="Readings"><a href="#Readings" class="headerlink" title="Readings"></a>Readings</h2><ul>
+<li><a href="https://verdaccio.org/docs/en/installation" target="_blank" rel="noopener">verdaccio 安装</a></li>
+<li><a href="https://github.com/cnpm/cnpmjs.org/wiki/Deploy-a-private-npm-registry-in-5-minutes" target="_blank" rel="noopener">Deploy a private npm registry in 5 minutes</a></li>
+<li><a href="https://github.com/jaywcjlove/handbook/blob/master/CentOS/%E5%9C%A85%E5%88%86%E9%92%9F%E5%86%85%E6%90%AD%E5%BB%BA%E4%BC%81%E4%B8%9A%E5%86%85%E9%83%A8%E7%A7%81%E6%9C%89npm%E4%BB%93%E5%BA%93.md" target="_blank" rel="noopener">在5分钟内搭建企业内部私有npm仓库</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/chayaBlog/tags/TOOLS/" rel="tag"># TOOLS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/chayaBlog/2019/03/26/vue/vue生命周期/" rel="next" title="vue生命周期">
+                <i class="fa fa-chevron-left"></i> vue生命周期
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chayaBlog/2019/10/15/ts/TypeScript用法 /" rel="prev" title="TypeScript 用法总结">
+                TypeScript 用法总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">HCY</p>
+              <p class="site-description motion-element" itemprop="description">HCY</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/chayaBlog/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/chayaBlog/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-verdaccio"><span class="nav-number">1.</span> <span class="nav-text">使用 verdaccio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Install"><span class="nav-number">1.1.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-setting"><span class="nav-number">1.2.</span> <span class="nav-text">Nginx setting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keeping-verdaccio-running-forever"><span class="nav-number">1.3.</span> <span class="nav-text">Keeping verdaccio running forever</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地配置-registry"><span class="nav-number">1.4.</span> <span class="nav-text">本地配置 registry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布和安装私有包"><span class="nav-number">1.5.</span> <span class="nav-text">发布和安装私有包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-cnpmjs-org"><span class="nav-number">2.</span> <span class="nav-text">使用 cnpmjs.org</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dependencies"><span class="nav-number">2.1.</span> <span class="nav-text">Dependencies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-1"><span class="nav-number">2.2.</span> <span class="nav-text">Install</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#difference"><span class="nav-number">3.</span> <span class="nav-text">difference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Readings"><span class="nav-number">4.</span> <span class="nav-text">Readings</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HCY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/chayaBlog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
