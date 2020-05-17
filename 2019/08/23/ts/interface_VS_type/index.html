@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/chayaBlog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/chayaBlog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/chayaBlog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/chayaBlog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/chayaBlog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/chayaBlog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/chayaBlog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="interface VS type相同点： 都可以描述一个对象或者函数 interface  12345678interface User &amp;#123;  name: string  age: number&amp;#125;interface SetUser &amp;#123;  (name: string, age: number): void;&amp;#125;    type 123456type User">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 用法总结">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2019/08/23/ts/interface_VS_type/index.html">
+<meta property="og:site_name" content="HCY">
+<meta property="og:description" content="interface VS type相同点： 都可以描述一个对象或者函数 interface  12345678interface User &amp;#123;  name: string  age: number&amp;#125;interface SetUser &amp;#123;  (name: string, age: number): void;&amp;#125;    type 123456type User">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-17T08:25:05.972Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript 用法总结">
+<meta name="twitter:description" content="interface VS type相同点： 都可以描述一个对象或者函数 interface  12345678interface User &amp;#123;  name: string  age: number&amp;#125;interface SetUser &amp;#123;  (name: string, age: number): void;&amp;#125;    type 123456type User">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/chayaBlog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2019/08/23/ts/interface_VS_type/">
+
+
+
+
+
+  <title>TypeScript 用法总结 | HCY</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/chayaBlog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">HCY</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/chayaBlog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/chayaBlog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/08/23/ts/interface_VS_type/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript 用法总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-23T00:00:00+08:00">
+                2019-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/TypeScript/" itemprop="url" rel="index">
+                    <span itemprop="name">TypeScript</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="interface-VS-type"><a href="#interface-VS-type" class="headerlink" title="interface VS type"></a>interface VS type</h3><h5 id="相同点："><a href="#相同点：" class="headerlink" title="相同点："></a>相同点：</h5><ul>
+<li><h5 id="都可以描述一个对象或者函数"><a href="#都可以描述一个对象或者函数" class="headerlink" title="都可以描述一个对象或者函数"></a><strong>都可以描述一个对象或者函数</strong></h5><ul>
+<li><strong>interface</strong></li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> User &#123;</span><br><span class="line">  name: <span class="built_in">string</span></span><br><span class="line">  age: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> SetUser &#123;</span><br><span class="line">  (name: <span class="built_in">string</span>, age: <span class="built_in">number</span>): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>type</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User = &#123;</span><br><span class="line">  name: <span class="built_in">string</span></span><br><span class="line">  age: <span class="built_in">number</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> SetUser = <span class="function">(<span class="params">name: <span class="built_in">string</span>, age: <span class="built_in">number</span></span>)=&gt;</span> <span class="built_in">void</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>都允许拓展（extends)</strong></p>
+<p>interface 和 type 都可以拓展，并且两者并不是相互独立的，也就是说 interface 可以 extends type, type 也可以 extends interface 。</p>
+<p><strong>虽然效果差不多，但是两者语法不同</strong>。</p>
+<ul>
+<li><p><strong>interface extends interface</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Name &#123;</span><br><span class="line"> name: <span class="built_in">string</span>;</span><br><span class="line"> &#125;</span><br><span class="line"><span class="keyword">interface</span> User <span class="keyword">extends</span> Name &#123;</span><br><span class="line"> age: <span class="built_in">number</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>type extends type</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Name = &#123; </span><br><span class="line"> name: <span class="built_in">string</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> User = Name &amp; &#123; age: <span class="built_in">number</span>  &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>interface extends type</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Name = &#123; </span><br><span class="line"> name: <span class="built_in">string</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> User <span class="keyword">extends</span> Name &#123; </span><br><span class="line"> age: <span class="built_in">number</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>type extends interface</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Name &#123; </span><br><span class="line">  name: <span class="built_in">string</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> User = Name &amp; &#123; </span><br><span class="line">  age: <span class="built_in">number</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h5><ul>
+<li><p><strong>type 可以而 interface 不行</strong></p>
+<ul>
+<li><p><strong>type 可以声明基本类型别名，联合类型，元组等类型</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本类型别名</span></span><br><span class="line"><span class="keyword">type</span> Name = <span class="built_in">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 联合类型</span></span><br><span class="line"><span class="keyword">interface</span> Dog &#123;</span><br><span class="line">    wong();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> Cat &#123;</span><br><span class="line">    miao();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Pet = Dog | Cat</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体定义数组每个位置的类型</span></span><br><span class="line"><span class="keyword">type</span> PetList = [Dog, Pet]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>type 语句中还可以使用 typeof 获取实例的 类型进行赋值</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当你想获取一个变量的类型时，使用 typeof</span></span><br><span class="line"><span class="keyword">let</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line"><span class="keyword">type</span> B = <span class="keyword">typeof</span> div</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>其他骚操作</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> StringOrNumber = <span class="built_in">string</span> | <span class="built_in">number</span>;  </span><br><span class="line"><span class="keyword">type</span> Text = <span class="built_in">string</span> | &#123; text: <span class="built_in">string</span> &#125;;  </span><br><span class="line"><span class="keyword">type</span> NameLookup = Dictionary&lt;<span class="built_in">string</span>, Person&gt;;  </span><br><span class="line"><span class="keyword">type</span> Callback&lt;T&gt; = <span class="function">(<span class="params">data: T</span>) =&gt;</span> <span class="built_in">void</span>;  </span><br><span class="line"><span class="keyword">type</span> Pair&lt;T&gt; = [T, T];  </span><br><span class="line"><span class="keyword">type</span> Coordinates = Pair&lt;<span class="built_in">number</span>&gt;;  </span><br><span class="line"><span class="keyword">type</span> Tree&lt;T&gt; = T | &#123; left: Tree&lt;T&gt;, right: Tree&lt;T&gt; &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>interface 可以而 type 不行</strong> </p>
+<ul>
+<li><p><strong>interface 能够声明合并</strong></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> User &#123;</span><br><span class="line">  name: <span class="built_in">string</span></span><br><span class="line">  age: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> User &#123;</span><br><span class="line">  sex: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">User 接口为 &#123;</span></span><br><span class="line"><span class="comment">  name: string</span></span><br><span class="line"><span class="comment">  age: number</span></span><br><span class="line"><span class="comment">  sex: string </span></span><br><span class="line"><span class="comment">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>一般来说，如果不清楚什么时候用interface/type，能用 interface 实现，就用 interface , 如果不能就用 type 。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/chayaBlog/2019/08/15/tools/搭建私有 npm/" rel="next" title="搭建私有NPM">
+                <i class="fa fa-chevron-left"></i> 搭建私有NPM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chayaBlog/2019/09/15/ts/TypeScript用法 /" rel="prev" title="TypeScript 用法总结">
+                TypeScript 用法总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">HCY</p>
+              <p class="site-description motion-element" itemprop="description">HCY</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/chayaBlog/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/chayaBlog/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#interface-VS-type"><span class="nav-number">1.</span> <span class="nav-text">interface VS type</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#相同点："><span class="nav-number">1.0.1.</span> <span class="nav-text">相同点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#都可以描述一个对象或者函数"><span class="nav-number">1.0.2.</span> <span class="nav-text">都可以描述一个对象或者函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#不同点"><span class="nav-number">1.0.3.</span> <span class="nav-text">不同点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">1.0.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HCY</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/chayaBlog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/chayaBlog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

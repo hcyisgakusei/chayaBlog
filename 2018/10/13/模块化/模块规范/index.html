@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next pisces use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="JS,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -80,14 +80,13 @@
 
 
 <meta name="description" content="随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。 说道前端模块规范，我们耳熟能详的就这三种 CommonJS, AMD, CMD CommonJSNode.js是commonJS规范的主要实践者，它有四个重要的环境变量为模块化的实现提供支持：module、exports、require、global。实际使用时，用module.exports定">
-<meta name="keywords" content="JS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="快速理解 js 模块规范">
-<meta property="og:url" content="https://hcyisgakusei.github.io/2018/10/13/js/模块规范/index.html">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2018/10/13/模块化/模块规范/index.html">
 <meta property="og:site_name" content="HCY">
 <meta property="og:description" content="随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。 说道前端模块规范，我们耳熟能详的就这三种 CommonJS, AMD, CMD CommonJSNode.js是commonJS规范的主要实践者，它有四个重要的环境变量为模块化的实现提供支持：module、exports、require、global。实际使用时，用module.exports定">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-12T16:04:03.699Z">
+<meta property="og:updated_time" content="2020-05-17T08:25:29.665Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="快速理解 js 模块规范">
 <meta name="twitter:description" content="随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。 说道前端模块规范，我们耳熟能详的就这三种 CommonJS, AMD, CMD CommonJSNode.js是commonJS规范的主要实践者，它有四个重要的环境变量为模块化的实现提供支持：module、exports、require、global。实际使用时，用module.exports定">
@@ -98,7 +97,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/chayaBlog/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -120,7 +119,7 @@
 
 
 
-  <link rel="canonical" href="https://hcyisgakusei.github.io/2018/10/13/js/模块规范/">
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2018/10/13/模块化/模块规范/">
 
 
 
@@ -233,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/10/13/js/模块规范/">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/10/13/模块化/模块规范/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HCY">
@@ -285,8 +284,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
+                  <a href="/chayaBlog/categories/模块化/" itemprop="url" rel="index">
+                    <span itemprop="name">模块化</span>
                   </a>
                 </span>
 
@@ -368,12 +367,6 @@
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/chayaBlog/tags/JS/" rel="tag"># JS</a>
-          
-        </div>
       
 
       
@@ -473,7 +466,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -484,21 +477,12 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
             
 
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">tags</span>
-                
-              </div>
             
 
           </nav>
@@ -566,7 +550,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -665,6 +649,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>

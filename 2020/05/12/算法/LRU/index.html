@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next pisces use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="算法,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -80,14 +80,13 @@
 
 
 <meta name="description" content="LRULRU (最近最少使用) 缓存机制。 支持以下操作： 获取数据 get 和 写入数据 put 。获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数">
-<meta name="keywords" content="算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LRU (最近最少使用) 缓存机制">
-<meta property="og:url" content="https://hcyisgakusei.github.io/2020/05/12/js/LRU/index.html">
+<meta property="og:url" content="https://hcyisgakusei.github.io/2020/05/12/算法/LRU/index.html">
 <meta property="og:site_name" content="HCY">
 <meta property="og:description" content="LRULRU (最近最少使用) 缓存机制。 支持以下操作： 获取数据 get 和 写入数据 put 。获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-12T16:46:12.504Z">
+<meta property="og:updated_time" content="2020-05-17T08:23:32.133Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LRU (最近最少使用) 缓存机制">
 <meta name="twitter:description" content="LRULRU (最近最少使用) 缓存机制。 支持以下操作： 获取数据 get 和 写入数据 put 。获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数">
@@ -98,7 +97,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/chayaBlog/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -120,7 +119,7 @@
 
 
 
-  <link rel="canonical" href="https://hcyisgakusei.github.io/2020/05/12/js/LRU/">
+  <link rel="canonical" href="https://hcyisgakusei.github.io/2020/05/12/算法/LRU/">
 
 
 
@@ -233,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/12/js/LRU/">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/12/算法/LRU/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HCY">
@@ -343,12 +342,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/chayaBlog/tags/算法/" rel="tag"># 算法</a>
-          
-        </div>
-      
 
       
       
@@ -443,7 +436,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -454,21 +447,12 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
             
 
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">tags</span>
-                
-              </div>
             
 
           </nav>
@@ -536,7 +520,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -635,6 +619,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/chayaBlog/js/src/scrollspy.js?v=5.1.4"></script>

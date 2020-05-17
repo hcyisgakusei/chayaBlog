@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next pisces use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -96,7 +96,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/chayaBlog/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -232,6 +232,320 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/09/10/网络/浏览器验证CA证书/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/09/10/网络/浏览器验证CA证书/" itemprop="url">浏览器验证CA证书</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-10T00:00:00+08:00">
+                2018-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/网络/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="CA"><a href="#CA" class="headerlink" title="CA"></a>CA</h3><p>首先CA是Certificate Authority的缩写，也叫“证书授权中心”。<br>它是负责管理和签发证书的第三方机构，就好比例子里面的中介——C 公司。<br>一般来说，CA必须是所有行业和所有公众都信任的、认可的。因此它必须具有足够的权威性。就好比A、B两公司都必须信任C公司，才会找 C 公司作为公章的中介。</p>
+<h3 id="CA-证书"><a href="#CA-证书" class="headerlink" title="CA 证书"></a>CA 证书</h3><p> 顾名思义，就是CA颁发的证书。</p>
+<p> 浏览器中默认有得到认证的根证书，使用https的网站需要让浏览器信任自己的证书就需要去申请这些机构的证书</p>
+<h2 id="浏览如何验证证书的真伪呢？"><a href="#浏览如何验证证书的真伪呢？" class="headerlink" title="浏览如何验证证书的真伪呢？"></a>浏览如何验证证书的真伪呢？</h2><p> 首先我们需要了解一下CA是如何给我们发证书的。</p>
+<p> 1.向CA申请证书<br> 2.CA认证了你的信息之后同意给你颁布证书，生成证书信息，生成证书的指纹用于后面验证证书的真伪<br> 3.使用私钥对指纹进行加密生成数字签名，常用的算法有RSA公钥体制<br> 4.将证书颁发网站，生成的证书会指向给他颁发证书的CA</p>
+<p> 了解完CA证书的生成之后我们就可以看一下浏览器如何验证证书的了。</p>
+<p> 1.浏览器拿到证书之后会找到证书所对应的CA<br> 2.浏览器取出CA中的公钥，使用公钥对证书的签名进行解密<br> 3.将解密的结果与证书指纹做对比，如果对比一致则说明真书是真的<br> 4.浏览器提取出证书中的公钥使用</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/08/01/网络/xss和csrf攻击/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HCY">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/chayaBlog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HCY">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/08/01/网络/xss和csrf攻击/" itemprop="url">Web 安全之 xss和csrf攻击</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-01T00:00:00+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/Web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>xss 和 csrf 可以说是最常见的攻击手段，面试也很大概率会问到这两个东西，下面我们可以了解一下他们是什么。</p>
+<h2 id="xss"><a href="#xss" class="headerlink" title="xss"></a>xss</h2><p>xss 也叫跨站脚本攻击。是一种非常常见的攻击手段，我们可以把它看做是一个html注入攻击。和我们长听到的sql注入非常的类似。</p>
+<h3 id="常见的-xss-攻击方式。"><a href="#常见的-xss-攻击方式。" class="headerlink" title="常见的 xss 攻击方式。"></a>常见的 xss 攻击方式。</h3><h4 id="通过-url-注入"><a href="#通过-url-注入" class="headerlink" title="通过 url 注入"></a>通过 url 注入</h4><p>比方说A网站有个内容是通过url中的参数来显示的，并且没有对其做任何的xss防范，那么攻击者就可以通过url将攻击脚本注入到网页中，然后将带有攻击脚本的url进行特殊处理，然后将处理后的url发给第三者完成攻击</p>
+<h4 id="通过一些表单输入做注入"><a href="#通过一些表单输入做注入" class="headerlink" title="通过一些表单输入做注入"></a>通过一些表单输入做注入</h4><p>最常见得就是富文本评论，因为需要保持html的原样，所以就很容易被人注入攻击脚本，当其他用户访问了被注入攻击脚本的页面的时候就会被攻击。</p>
+<h3 id="防御方式"><a href="#防御方式" class="headerlink" title="防御方式"></a>防御方式</h3><p>对xss的防御思路，主要有两种，可以看我们具体的需求来决定使用哪一种。</p>
+<h4 id="http-only"><a href="#http-only" class="headerlink" title="http-only"></a>http-only</h4><p>这个东西主要针对的是cookie，在 xss 注入的时候可能会有js盗取cookie，我们可以将 cookie 设置为http-only,这样 js 就会无法操作cookie，不过这也仅仅防范了这一种可能性，还是无法防御其他手段的 xss 攻击</p>
+<h4 id="设置黑名单"><a href="#设置黑名单" class="headerlink" title="设置黑名单"></a>设置黑名单</h4><p>通过设置黑名单，将一些特殊的字段进行删除或者转译来达到防御的手段，比方说 <code>&lt;script&gt;</code>，黑名单的实现比较简单，但是 xss 攻击的花样非常的多，我们很难知道所有的攻击手段，很有可能会造成攻击漏洞。</p>
+<h4 id="设置白名单"><a href="#设置白名单" class="headerlink" title="设置白名单"></a>设置白名单</h4><p>白名单的思路也很简单，我们根据我们的需求设置允许使用的标签和属性，然后把不在白名单中的标签或者属性都去掉，在实现上会比黑名单复杂一点，需要把进行防御的内容转为树状结构进行遍历然后处理掉白名单以为的标签和属性。</p>
+<h4 id="CSP-Content-Security-Policy"><a href="#CSP-Content-Security-Policy" class="headerlink" title="CSP (Content Security Policy)"></a>CSP (Content Security Policy)</h4><p>内容安全策略，用于指定哪些内容可以被执行。通过设置 <code>Content-Security-Policy</code> 响应头我们可以设置哪些内容是可以执行的。</p>
+<p>csp 本质上也是一个白名单，我们通过配置告诉浏览器哪些内容是可以安全执行的。</p>
+<p>具体的配置我们可以去 MDN 上查看 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid/default-src" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid/default-src</a></p>
+<p>相关知识可以看看阮老师的这篇文章 <a href="http://www.ruanyifeng.com/blog/2016/09/csp.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2016/09/csp.html</a></p>
+<h2 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h2><p>csrf 也叫跨站请求伪造。攻击方式就是第三方的网站可以在用户不知情的情况下发送请求到被攻击的网站上。比方说网站A，我们有一个网站B会偷偷帮用户发请求到A，发送的时候浏览器会自动的挟带上A的cookie，而A又是对cookie做验证，这就导致了 csrf 攻击</p>
+<h3 id="防御方式-1"><a href="#防御方式-1" class="headerlink" title="防御方式"></a>防御方式</h3><h4 id="设置-cookie-的-sameSite"><a href="#设置-cookie-的-sameSite" class="headerlink" title="设置 cookie 的 sameSite"></a>设置 <code>cookie</code> 的 <code>sameSite</code></h4><p><code>sameSite</code> 可以禁止来自第三方网站的请求携带 cookie，他有两个值</p>
+<ul>
+<li><code>Strict</code> 禁止一切请求携带 cookie</li>
+<li><code>Lax</code> 允许一部分请求携带 cookie，比方说链接</li>
+</ul>
+<p>不过目前这还是一个试验箱的属性，只有部分浏览器支持这个值。</p>
+<h4 id="增加验证"><a href="#增加验证" class="headerlink" title="增加验证"></a>增加验证</h4><p>验证的方式有很多，可以有如下几种</p>
+<ul>
+<li>验证码，不过验证码可能会带来比较不好的用户体验</li>
+<li>token，在表单或者请求头中增加一个token做验证</li>
+<li>referer验证，referer需要在后端进行，这个单词其实拼写错误的，原本应该是referrer，我们可以通过referer来判断请求是否来源于当前网站，如果不是则判定为非法请求</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/07/28/模块化/about-es6-module/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -263,7 +577,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-28T17:39:51+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-28T00:00:00+08:00">
                 2018-07-28
               </time>
             
@@ -286,8 +600,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
+                  <a href="/chayaBlog/categories/模块化/" itemprop="url" rel="index">
+                    <span itemprop="name">模块化</span>
                   </a>
                 </span>
 
@@ -1055,7 +1369,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T21:28:42+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T00:00:00+08:00">
                 2018-03-11
               </time>
             
@@ -1078,8 +1392,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
+                  <a href="/chayaBlog/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
                   </a>
                 </span>
 
@@ -1360,7 +1674,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1371,21 +1685,12 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/chayaBlog/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
             
 
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">tags</span>
-                
-              </div>
             
 
           </nav>
@@ -1437,7 +1742,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -1536,6 +1841,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/chayaBlog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/chayaBlog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 
