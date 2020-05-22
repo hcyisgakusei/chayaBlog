@@ -232,6 +232,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/10/13/模块化/模块规范/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="H.C.Y">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Chaya's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2018/10/13/模块化/模块规范/" itemprop="url">快速理解 js 模块规范</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T00:00:00+08:00">
+                2018-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/模块化/" itemprop="url" rel="index">
+                    <span itemprop="name">模块化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。</p>
+<p>说道前端模块规范，我们耳熟能详的就这三种 <code>CommonJS</code>, <code>AMD</code>, <code>CMD</code></p>
+<h3 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h3><p>Node.js是commonJS规范的主要实践者，它有四个重要的环境变量为模块化的实现提供支持：<code>module</code>、<code>exports</code>、<code>require</code>、<code>global</code>。实际使用时，用<code>module.exports</code>定义当前模块对外输出的接口（不推荐直接用<code>exports</code>），用<code>require</code>加载模块。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义模块math.js</span></span><br><span class="line"><span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="comment">//在这里写上需要向外暴露的函数、变量</span></span><br><span class="line">  add: add,</span><br><span class="line">  basicNum: basicNum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用自定义的模块时，参数包含路径，可省略.js</span></span><br><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'./math'</span>);</span><br><span class="line">math.add(<span class="number">2</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用核心模块时，不需要带路径</span></span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line">http.createService(...).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>commonJS用同步的方式加载模块。在服务端，模块文件都存在本地磁盘，读取非常快，所以这样做不会有问题。但是在浏览器端，限于网络原因，更合理的方案是使用异步加载。</p>
+<h3 id="AMD和require-js"><a href="#AMD和require-js" class="headerlink" title="AMD和require.js"></a>AMD和require.js</h3><p>AMD规范采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。这里介绍用require.js实现AMD规范的模块化：用<code>require.config()</code>指定引用路径等，用<code>define()</code>定义模块，用<code>require()</code>加载模块。</p>
+<p>首先我们需要引入require.js文件和一个入口文件main.js。main.js中配置<code>require.config()</code>并规定项目中用到的基础模块。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 网页中引入require.js及main.js **/</span></span><br><span class="line">&lt;script src=<span class="string">"js/require.js"</span> data-main=<span class="string">"js/main"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span>** main.js 入口文件/主模块 **<span class="regexp">/</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 首先用config()指定各模块路径和引用名</span></span><br><span class="line"><span class="regexp">require.config(&#123;</span></span><br><span class="line"><span class="regexp">  baseUrl: "js/</span>lib<span class="string">",</span></span><br><span class="line"><span class="string">  paths: &#123;</span></span><br><span class="line"><span class="string">    "</span>jquery<span class="string">": "</span>jquery.min<span class="string">",  //实际路径为js/lib/jquery.min.js</span></span><br><span class="line"><span class="string">    "</span>underscore<span class="string">": "</span>underscore.min<span class="string">",</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;);</span></span><br><span class="line"><span class="string">// 执行基本操作</span></span><br><span class="line"><span class="string">require(["</span>jquery<span class="string">","</span>underscore<span class="string">"],function($,_)&#123;</span></span><br><span class="line"><span class="string">  // some code here</span></span><br><span class="line"><span class="string">&#125;);</span></span><br></pre></td></tr></table></figure>
+<p>引用模块的时候，我们将模块名放在<code>[]</code>中作为<code>reqiure()</code>的第一参数；如果我们定义的模块本身也依赖其他模块,那就需要将它们放在<code>[]</code>中作为<code>define()</code>的第一参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义math.js模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        add: add,</span><br><span class="line">        basicNum :basicNum</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 定义一个依赖underscore.js的模块</span></span><br><span class="line">define([<span class="string">'underscore'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">_</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> classify = <span class="function"><span class="keyword">function</span>(<span class="params">list</span>)</span>&#123;</span><br><span class="line">    _.countBy(list,<span class="function"><span class="keyword">function</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> num &gt; <span class="number">30</span> ? <span class="string">'old'</span> : <span class="string">'young'</span>;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    classify :classify</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引用模块，将模块放在[]内</span></span><br><span class="line"><span class="built_in">require</span>([<span class="string">'jquery'</span>, <span class="string">'math'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">$, math</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = math.add(<span class="number">10</span>,<span class="number">20</span>);</span><br><span class="line">  $(<span class="string">"#sum"</span>).html(sum);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="CMD和sea-js"><a href="#CMD和sea-js" class="headerlink" title="CMD和sea.js"></a>CMD和sea.js</h3><p>require.js在申明依赖的模块时会在第一之间加载并执行模块内的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>], <span class="function"><span class="keyword">function</span>(<span class="params">a, b, c, d, e, f</span>) </span>&#123; </span><br><span class="line">    <span class="comment">// 等于在最前面声明并初始化了要用到的所有模块</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">      <span class="comment">// 即便没用到某个模块 b，但 b 还是提前执行了</span></span><br><span class="line">      b.foo()</span><br><span class="line">    &#125; </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>CMD是另一种js模块化方案，它与AMD很类似，不同点在于：AMD 推崇依赖前置、提前执行，CMD推崇依赖就近、延迟执行。此规范其实是在sea.js推广过程中产生的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** AMD写法 **/</span></span><br><span class="line">define([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>], <span class="function"><span class="keyword">function</span>(<span class="params">a, b, c, d, e, f</span>) </span>&#123; </span><br><span class="line">     <span class="comment">// 等于在最前面声明并初始化了要用到的所有模块</span></span><br><span class="line">    a.doSomething();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">        <span class="comment">// 即便没用到某个模块 b，但 b 还是提前执行了</span></span><br><span class="line">        b.doSomething()</span><br><span class="line">    &#125; </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** CMD写法 **/</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a'</span>); <span class="comment">//在需要时申明</span></span><br><span class="line">    a.doSomething();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'./b'</span>);</span><br><span class="line">        b.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** sea.js **/</span></span><br><span class="line"><span class="comment">// 定义模块 math.js</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $ = <span class="built_in">require</span>(<span class="string">'jquery.js'</span>);</span><br><span class="line">    <span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">    exports.add = add;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 加载模块</span></span><br><span class="line">seajs.use([<span class="string">'math.js'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">math</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> sum = math.add(<span class="number">1</span> , <span class="number">2</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="ES6-Module"><a href="#ES6-Module" class="headerlink" title="ES6 Module"></a>ES6 Module</h3><p>ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，旨在成为浏览器和服务器通用的模块解决方案。其模块功能主要由两个命令构成：<code>export</code>和<code>import</code>。<code>export</code>命令用于规定模块的对外接口，<code>import</code>命令用于输入其他模块提供的功能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 定义模块 math.js **/</span></span><br><span class="line"><span class="keyword">var</span> basicNum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> &#123; basicNum, add &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 引用模块 **/</span></span><br><span class="line"><span class="keyword">import</span> &#123; basicNum, add &#125; <span class="keyword">from</span> <span class="string">'./math'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    ele.textContent = add(<span class="number">99</span> , basicNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上例所示，使用<code>import</code>命令的时候，用户需要知道所要加载的变量名或函数名。其实ES6还提供了<code>export default</code>命令，为模块指定默认输出，对应的<code>import</code>语句不需要使用大括号。这也更趋近于ADM的引用写法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** export default **/</span></span><br><span class="line"><span class="comment">//定义输出</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123; basicNum, add &#125;;</span><br><span class="line"><span class="comment">//引入</span></span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">from</span> <span class="string">'./math'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    ele.textContent = math.add(<span class="number">99</span> , math.basicNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ES6的模块不是对象，<code>import</code>命令会被 JavaScript 引擎静态分析，在编译时就引入模块代码，而不是在代码运行时加载，所以无法实现条件加载。也正因为这个，使得静态分析成为可能。</p>
+<h3 id="ES6-模块与-CommonJS-模块的差异"><a href="#ES6-模块与-CommonJS-模块的差异" class="headerlink" title="ES6 模块与 CommonJS 模块的差异"></a>ES6 模块与 CommonJS 模块的差异</h3><h5 id="1-CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用。"><a href="#1-CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用。" class="headerlink" title="1.  CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。"></a>1.  CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。</h5><ul>
+<li><p>CommonJS 模块输出的是值的拷贝，也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。</p>
+</li>
+<li><p>ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令<code>import</code>，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的原始值变了，<code>impor</code>t加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块.</p>
+</li>
+</ul>
+<h5 id="2-CommonJS-模块是运行时加载，ES6-模块是编译时输出接口。"><a href="#2-CommonJS-模块是运行时加载，ES6-模块是编译时输出接口。" class="headerlink" title="2. CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。"></a>2. CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。</h5><ul>
+<li><p>运行时加载: CommonJS 模块就是对象；即在输入时是先加载整个模块，生成一个对象，然后再从这个对象上面读取方法，这种加载称为“运行时加载”。</p>
+</li>
+<li><p>译编译时加载:ES6 模块不是对象，而是通过 <code>export</code> 命令显式指定输出的代码，<code>import</code>时采用静态命令的形式。即在<code>import</code>时可以指定加载某个输出值，而不是加载整个模块，这种加载称为“编译时加载”。</p>
+</li>
+</ul>
+<p>CommonJS 加载的是一个对象（即<code>module.exports</code>属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2018/09/10/网络/浏览器验证CA证书/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1676,7 +1849,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -232,6 +232,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/17/算法/二叉树遍历/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="H.C.Y">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Chaya's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/chayaBlog/2020/05/17/算法/二叉树遍历/" itemprop="url">二叉树遍历</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-17T00:00:00+08:00">
+                2020-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/chayaBlog/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h3><p>二叉树遍历：前序、中序、后序、层次遍历、深度优先、广度优先<br>二叉树遍历分为深度优先遍历和广度优先遍历，深度遍历有前序、中序以及后序三种遍历方法，广度优先遍历即我们平常所说的层次遍历。</p>
+<h5 id="四种主要的遍历思想为："><a href="#四种主要的遍历思想为：" class="headerlink" title="四种主要的遍历思想为："></a>四种主要的遍历思想为：</h5><ol>
+<li><p>前序遍历：根结点 —&gt; 左子树 —&gt; 右子树</p>
+</li>
+<li><p>中序遍历：左子树—&gt; 根结点 —&gt; 右子树</p>
+</li>
+<li><p>后序遍历：左子树 —&gt; 右子树 —&gt; 根结点</p>
+</li>
+<li><p>层次遍历：只需按层次遍历即可</p>
+</li>
+</ol>
+<p>例如 : 以下二叉树</p>
+<pre><code>     1
+   /   \
+  2     3
+ /\      \
+4  5      6
+   /\
+  7  8
+</code></pre><p>前序遍历：1  2  4  5  7  8  3  6 </p>
+<p>中序遍历：4  2  7  5  8  1  3  6</p>
+<p>后序遍历：4  7  8  5  2  6  3  1</p>
+<p>层次遍历：1  2  3  4  5  6  7  8</p>
+<ul>
+<li>前序遍历</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> preorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>中序遍历</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> inorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  <span class="keyword">let</span> node = root;</span><br><span class="line">  <span class="keyword">while</span> (node || stuck.length) &#123;</span><br><span class="line">    <span class="keyword">while</span> (node) &#123;</span><br><span class="line">      stuck.push(node);</span><br><span class="line">      node = node.left;</span><br><span class="line">    &#125;</span><br><span class="line">    node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node = node.right;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>后序遍历 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 和前序思路类似</span></span><br><span class="line"><span class="keyword">const</span> postorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.unshift(node.val);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>层次遍历</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> levelOrder = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> currentStuckLength = stuck.length;</span><br><span class="line">    result.push([]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; currentStuckLength; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> node = stuck.shift();</span><br><span class="line">      result[result.length - <span class="number">1</span>].push(node.val);</span><br><span class="line">      node.left &amp;&amp;  stuck.push(node.left);</span><br><span class="line">      node.right &amp;&amp;  stuck.push(node.right);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2020/05/12/算法/LRU/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1539,7 +1718,7 @@
 <h3 id="call"><a href="#call" class="headerlink" title="call"></a>call</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).call(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>);</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
 <h3 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).bind(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>)();</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
 <p>### </p>
-<h3 id="new-的过程"><a href="#new-的过程" class="headerlink" title="new 的过程"></a>new 的过程</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// new myFunction</span></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> obj = &#123;&#125;;</span><br><span class="line">    obj.__proto__ = myFunction.propertype;</span><br><span class="line">    <span class="keyword">const</span> result = myFunction.call(obj,...arguments);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : obj;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<h3 id="new-的过程"><a href="#new-的过程" class="headerlink" title="new 的过程"></a>new 的过程</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// new myFunction</span></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">   <span class="comment">// const obj = &#123;&#125;;</span></span><br><span class="line">   <span class="comment">// obj.__proto__ = myFunction.propertype;</span></span><br><span class="line">    <span class="keyword">const</span> obj = <span class="built_in">Object</span>.create(myFunction.prototype)</span><br><span class="line">    <span class="keyword">const</span> result = myFunction.call(obj,...arguments);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : obj;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1784,189 +1963,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hcyisgakusei.github.io/chayaBlog/2019/11/26/js/Dom-Attribute-VS-Property/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="H.C.Y">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/hcyisgakusei/chayaBlog/gh-pages/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Chaya's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/chayaBlog/2019/11/26/js/Dom-Attribute-VS-Property/" itemprop="url">JS DOM  Attribute VS Property</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-26T00:00:00+08:00">
-                2019-11-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/chayaBlog/categories/JS/" itemprop="url" rel="index">
-                    <span itemprop="name">JS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Attribute-VS-Property"><a href="#Attribute-VS-Property" class="headerlink" title="Attribute VS Property"></a>Attribute VS Property</h3><ul>
-<li><h5 id="Attribute-是我们在-HTML-代码中看到的键值对，例如"><a href="#Attribute-是我们在-HTML-代码中看到的键值对，例如" class="headerlink" title="Attribute 是我们在 HTML 代码中看到的键值对，例如"></a>Attribute 是我们在 HTML 代码中看到的键值对，例如</h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  上面代码中的 input 节点有三个 attribute，通过<code>getAttribute</code>可以获取对应的值:</p>
-<ul>
-<li>id : name</li>
-<li>type : text</li>
-<li>value : test</li>
-</ul>
-<ul>
-<li><h5 id="Property-是-attribute对应的DOM节点的对象属性，例如"><a href="#Property-是-attribute对应的DOM节点的对象属性，例如" class="headerlink" title="Property 是 attribute对应的DOM节点的对象属性，例如"></a>Property 是 attribute对应的DOM节点的对象属性，例如</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTMLInputElement.id === <span class="string">'name'</span></span><br><span class="line">HTMLInputElement.type === <span class="string">'text'</span></span><br><span class="line">HTMLInputElement.value === <span class="string">'test'</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h5 id="Attribute-和-Property-的区别"><a href="#Attribute-和-Property-的区别" class="headerlink" title="Attribute 和 Property 的区别"></a>Attribute 和 Property 的区别</h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"typo"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 页面加载之后，在input中输入 Jack --&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  注意这段代码中的 type 属性, 我们给的值是 <strong>typo</strong>, 这并不属于 input 支持的 type 种类.</p>
-<p>  上面这个 input 节点的 attribute 和 property:</p>
-  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// attribute still remains the original value</span></span><br><span class="line">input.getAttribute(<span class="string">'id'</span>) <span class="comment">// name</span></span><br><span class="line">input.getAttribute(<span class="string">'type'</span>) <span class="comment">// typo</span></span><br><span class="line">input.getAttribute(<span class="string">'value'</span>) <span class="comment">// test</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// property is a different story</span></span><br><span class="line">input.id <span class="comment">// name</span></span><br><span class="line">input.type <span class="comment">//  text</span></span><br><span class="line">input.value <span class="comment">// Jack</span></span><br></pre></td></tr></table></figure>
-<p>  可以看到, 在 attribute 中, 值仍然是 html 代码中的值. 而在 property 中, type 被自动修正为了 <strong>text</strong>, 而 value 随着用户改变 input 的输入, 也变更为了 <strong>Jack</strong></p>
-<p>  这就是 <strong>attribute</strong> 和 <strong>Property</strong> 间的区别:</p>
-<p>  a<strong>t</strong>tribute 会始终保持 html 代码中的<strong>初始值</strong>, 而 <strong>Property</strong> 是有可能变化的.</p>
-<p>  其实, 我们从这两个单词的名称也能看出些端倪:</p>
-<p>  <strong>attribute</strong> 从语义上, 更倾向于不可变更的</p>
-<p>  而 <strong>property</strong> 从语义上更倾向于在其生命周期中是可变的</p>
-<ul>
-<li><h5 id="Attribute可以自定义，但是Property不可以"><a href="#Attribute可以自定义，但是Property不可以" class="headerlink" title="Attribute可以自定义，但是Property不可以"></a>Attribute可以自定义，但是Property不可以</h5><p>在 html 中自定义 attribute:</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"customInput"</span> <span class="attr">customeAttr</span>=<span class="string">"custome attribute value"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  获取自定义的属性:</p>
-  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input.getAttribute(<span class="string">'customAttr'</span>) <span class="comment">// custome attribute value</span></span><br><span class="line">input.customAttr <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-<p>  能够成功的获取自定义的 attribute, 但是无法获取 property.</p>
-<p>  DOM 节点在初始化的时候会将<strong>html 规范</strong>中定义的 attribute 赋值到 property 上, 而自定义的 attribute 并不属于这个氛围内, 自然生成的 DOM 节点就没有这个 property.</p>
-<ul>
-<li><h5 id="一些补充"><a href="#一些补充" class="headerlink" title="一些补充"></a>一些补充</h5><p>需要注意, 有一些特殊的 attribute, 它们对应的 Property 名称会发生改变, 比如:</p>
-<ul>
-<li>for (attr) =&gt; htmlFor (prop)</li>
-<li>class (attr) =&gt; className (prop)</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2019,7 +2015,7 @@
               
                 <a href="/chayaBlog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
