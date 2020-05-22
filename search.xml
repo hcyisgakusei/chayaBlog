@@ -42,56 +42,6 @@
       </categories>
   </entry>
   <entry>
-    <title>JS DOM  Attribute VS Property</title>
-    <url>/chayaBlog/2019/11/26/js/Dom-Attribute-VS-Property/</url>
-    <content><![CDATA[<h3 id="Attribute-VS-Property"><a href="#Attribute-VS-Property" class="headerlink" title="Attribute VS Property"></a>Attribute VS Property</h3><ul>
-<li><h5 id="Attribute-是我们在-HTML-代码中看到的键值对，例如"><a href="#Attribute-是我们在-HTML-代码中看到的键值对，例如" class="headerlink" title="Attribute 是我们在 HTML 代码中看到的键值对，例如"></a>Attribute 是我们在 HTML 代码中看到的键值对，例如</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  上面代码中的 input 节点有三个 attribute，通过<code>getAttribute</code>可以获取对应的值:</p>
-<ul>
-<li>id : name</li>
-<li>type : text</li>
-<li>value : test</li>
-</ul>
-<ul>
-<li><h5 id="Property-是-attribute对应的DOM节点的对象属性，例如"><a href="#Property-是-attribute对应的DOM节点的对象属性，例如" class="headerlink" title="Property 是 attribute对应的DOM节点的对象属性，例如"></a>Property 是 attribute对应的DOM节点的对象属性，例如</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">HTMLInputElement.id === <span class="string">'name'</span></span><br><span class="line">HTMLInputElement.type === <span class="string">'text'</span></span><br><span class="line">HTMLInputElement.value === <span class="string">'test'</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h5 id="Attribute-和-Property-的区别"><a href="#Attribute-和-Property-的区别" class="headerlink" title="Attribute 和 Property 的区别"></a>Attribute 和 Property 的区别</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"typo"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 页面加载之后，在input中输入 Jack --&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  注意这段代码中的 type 属性, 我们给的值是 <strong>typo</strong>, 这并不属于 input 支持的 type 种类.</p>
-<p>  上面这个 input 节点的 attribute 和 property:</p>
-  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// attribute still remains the original value</span></span><br><span class="line">input.getAttribute(<span class="string">'id'</span>) <span class="comment">// name</span></span><br><span class="line">input.getAttribute(<span class="string">'type'</span>) <span class="comment">// typo</span></span><br><span class="line">input.getAttribute(<span class="string">'value'</span>) <span class="comment">// test</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// property is a different story</span></span><br><span class="line">input.id <span class="comment">// name</span></span><br><span class="line">input.type <span class="comment">//  text</span></span><br><span class="line">input.value <span class="comment">// Jack</span></span><br></pre></td></tr></table></figure>
-<p>  可以看到, 在 attribute 中, 值仍然是 html 代码中的值. 而在 property 中, type 被自动修正为了 <strong>text</strong>, 而 value 随着用户改变 input 的输入, 也变更为了 <strong>Jack</strong></p>
-<p>  这就是 <strong>attribute</strong> 和 <strong>Property</strong> 间的区别:</p>
-<p>  a<strong>t</strong>tribute 会始终保持 html 代码中的<strong>初始值</strong>, 而 <strong>Property</strong> 是有可能变化的.</p>
-<p>  其实, 我们从这两个单词的名称也能看出些端倪:</p>
-<p>  <strong>attribute</strong> 从语义上, 更倾向于不可变更的</p>
-<p>  而 <strong>property</strong> 从语义上更倾向于在其生命周期中是可变的</p>
-<ul>
-<li><h5 id="Attribute可以自定义，但是Property不可以"><a href="#Attribute可以自定义，但是Property不可以" class="headerlink" title="Attribute可以自定义，但是Property不可以"></a>Attribute可以自定义，但是Property不可以</h5><p>在 html 中自定义 attribute:</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"customInput"</span> <span class="attr">customeAttr</span>=<span class="string">"custome attribute value"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  获取自定义的属性:</p>
-  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">input.getAttribute(<span class="string">'customAttr'</span>) <span class="comment">// custome attribute value</span></span><br><span class="line">input.customAttr <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-<p>  能够成功的获取自定义的 attribute, 但是无法获取 property.</p>
-<p>  DOM 节点在初始化的时候会将<strong>html 规范</strong>中定义的 attribute 赋值到 property 上, 而自定义的 attribute 并不属于这个氛围内, 自然生成的 DOM 节点就没有这个 property.</p>
-<ul>
-<li><h5 id="一些补充"><a href="#一些补充" class="headerlink" title="一些补充"></a>一些补充</h5><p>需要注意, 有一些特殊的 attribute, 它们对应的 Property 名称会发生改变, 比如:</p>
-<ul>
-<li>for (attr) =&gt; htmlFor (prop)</li>
-<li>class (attr) =&gt; className (prop)</li>
-</ul>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>JS</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Flex 布局</title>
     <url>/chayaBlog/2020/01/10/css/Flex%E5%B8%83%E5%B1%80/</url>
     <content><![CDATA[<h3 id="Flex布局"><a href="#Flex布局" class="headerlink" title="Flex布局"></a>Flex布局</h3><p><strong>需要注意的是：当时设置 flex 布局之后，子元素的 float、clear、vertical-align 的属性将会失效。</strong></p>
@@ -168,6 +118,56 @@
       </categories>
   </entry>
   <entry>
+    <title>JS DOM  Attribute VS Property</title>
+    <url>/chayaBlog/2019/11/26/js/Dom-Attribute-VS-Property/</url>
+    <content><![CDATA[<h3 id="Attribute-VS-Property"><a href="#Attribute-VS-Property" class="headerlink" title="Attribute VS Property"></a>Attribute VS Property</h3><ul>
+<li><h5 id="Attribute-是我们在-HTML-代码中看到的键值对，例如"><a href="#Attribute-是我们在-HTML-代码中看到的键值对，例如" class="headerlink" title="Attribute 是我们在 HTML 代码中看到的键值对，例如"></a>Attribute 是我们在 HTML 代码中看到的键值对，例如</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  上面代码中的 input 节点有三个 attribute，通过<code>getAttribute</code>可以获取对应的值:</p>
+<ul>
+<li>id : name</li>
+<li>type : text</li>
+<li>value : test</li>
+</ul>
+<ul>
+<li><h5 id="Property-是-attribute对应的DOM节点的对象属性，例如"><a href="#Property-是-attribute对应的DOM节点的对象属性，例如" class="headerlink" title="Property 是 attribute对应的DOM节点的对象属性，例如"></a>Property 是 attribute对应的DOM节点的对象属性，例如</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">HTMLInputElement.id === <span class="string">'name'</span></span><br><span class="line">HTMLInputElement.type === <span class="string">'text'</span></span><br><span class="line">HTMLInputElement.value === <span class="string">'test'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="Attribute-和-Property-的区别"><a href="#Attribute-和-Property-的区别" class="headerlink" title="Attribute 和 Property 的区别"></a>Attribute 和 Property 的区别</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">type</span>=<span class="string">"typo"</span> <span class="attr">value</span>=<span class="string">"test"</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 页面加载之后，在input中输入 Jack --&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  注意这段代码中的 type 属性, 我们给的值是 <strong>typo</strong>, 这并不属于 input 支持的 type 种类.</p>
+<p>  上面这个 input 节点的 attribute 和 property:</p>
+  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// attribute still remains the original value</span></span><br><span class="line">input.getAttribute(<span class="string">'id'</span>) <span class="comment">// name</span></span><br><span class="line">input.getAttribute(<span class="string">'type'</span>) <span class="comment">// typo</span></span><br><span class="line">input.getAttribute(<span class="string">'value'</span>) <span class="comment">// test</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// property is a different story</span></span><br><span class="line">input.id <span class="comment">// name</span></span><br><span class="line">input.type <span class="comment">//  text</span></span><br><span class="line">input.value <span class="comment">// Jack</span></span><br></pre></td></tr></table></figure>
+<p>  可以看到, 在 attribute 中, 值仍然是 html 代码中的值. 而在 property 中, type 被自动修正为了 <strong>text</strong>, 而 value 随着用户改变 input 的输入, 也变更为了 <strong>Jack</strong></p>
+<p>  这就是 <strong>attribute</strong> 和 <strong>Property</strong> 间的区别:</p>
+<p>  a<strong>t</strong>tribute 会始终保持 html 代码中的<strong>初始值</strong>, 而 <strong>Property</strong> 是有可能变化的.</p>
+<p>  其实, 我们从这两个单词的名称也能看出些端倪:</p>
+<p>  <strong>attribute</strong> 从语义上, 更倾向于不可变更的</p>
+<p>  而 <strong>property</strong> 从语义上更倾向于在其生命周期中是可变的</p>
+<ul>
+<li><h5 id="Attribute可以自定义，但是Property不可以"><a href="#Attribute可以自定义，但是Property不可以" class="headerlink" title="Attribute可以自定义，但是Property不可以"></a>Attribute可以自定义，但是Property不可以</h5><p>在 html 中自定义 attribute:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"customInput"</span> <span class="attr">customeAttr</span>=<span class="string">"custome attribute value"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  获取自定义的属性:</p>
+  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">input.getAttribute(<span class="string">'customAttr'</span>) <span class="comment">// custome attribute value</span></span><br><span class="line">input.customAttr <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<p>  能够成功的获取自定义的 attribute, 但是无法获取 property.</p>
+<p>  DOM 节点在初始化的时候会将<strong>html 规范</strong>中定义的 attribute 赋值到 property 上, 而自定义的 attribute 并不属于这个氛围内, 自然生成的 DOM 节点就没有这个 property.</p>
+<ul>
+<li><h5 id="一些补充"><a href="#一些补充" class="headerlink" title="一些补充"></a>一些补充</h5><p>需要注意, 有一些特殊的 attribute, 它们对应的 Property 名称会发生改变, 比如:</p>
+<ul>
+<li>for (attr) =&gt; htmlFor (prop)</li>
+<li>class (attr) =&gt; className (prop)</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
     <title>js 对象与hash表</title>
     <url>/chayaBlog/2019/01/26/js/hash%E8%A1%A8/</url>
     <content><![CDATA[<h2 id="hash-表"><a href="#hash-表" class="headerlink" title="hash 表"></a>hash 表</h2><p>哈希表也叫散列表，我们在中使用的对象就是一种hash结构。哈希表根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。</p>
@@ -215,6 +215,62 @@
 <p>相比于 <code>slice</code>，<code>from</code> 更强大一点，<code>from</code> 还可以将带有遍历器属性<code>[Symbol.iterator]</code>的对象转化为数组</p>
 <p>例如我们可以这样操作</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = &#123;&#125;</span><br><span class="line">test[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span> *(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(test);<span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>JS This 指向</title>
+    <url>/chayaBlog/2020/01/19/js/this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="this-、apply、-call、bind"><a href="#this-、apply、-call、bind" class="headerlink" title="this 、apply、 call、bind"></a>this 、apply、 call、bind</h1><h2 id="this的指向"><a href="#this的指向" class="headerlink" title="this的指向"></a>this的指向</h2><p>在ES5中，<strong>this永远指向最后调用它的那个对象</strong></p>
+<p><strong>匿名函数的 this 永远指向 window</strong></p>
+<ul>
+<li><strong>例子1</strong></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowName"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">"aName"</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// windowsName</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"inner"</span>,<span class="keyword">this</span>); <span class="comment">// inner: Window</span></span><br><span class="line">&#125;</span><br><span class="line">a();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"outer:"</span>,  <span class="keyword">this</span>); <span class="comment">// outer: Window</span></span><br></pre></td></tr></table></figure>
+<p>“<strong>this 永远指向最后调用它的那个对象</strong>”，调用 <code>a</code> 的地方 <code>a();</code>，前面没有调用的对象那么就是全局对象 window，这就相当于是 <code>window.a()</code>；注意，这里我们没有使用严格模式，如果使用严格模式的话，全局对象就是 <code>undefined</code>，那么就会报错 <code>Uncaught TypeError: Cannot read property &#39;name&#39; of undefined</code>。</p>
+<ul>
+<li><p><strong>例子2</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">     name: <span class="string">"aName"</span>,</span><br><span class="line">     fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// aName</span></span><br><span class="line">      &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> a.fn();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  函数<code>fn</code>是对象a调用的，所有<code>this</code>指向的就是<code>a</code></p>
+<ul>
+<li><strong>例子3</strong></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">      name: <span class="string">"aName"</span>,</span><br><span class="line">      fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// aName</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">window</span>.a.fn();</span><br></pre></td></tr></table></figure>
+<p>因为<strong>this永远指向最后调用它的那个对象</strong>，所以<code>fn</code>中的<code>this</code>还是指向<code>a</code></p>
+<ul>
+<li><strong>例子4</strong></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name :<span class="string">"aName"</span>,</span><br><span class="line">       fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// windowsName</span></span><br><span class="line">       &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">var</span> f = a.fn;</span><br><span class="line"> f();</span><br></pre></td></tr></table></figure>
+<p>因为虽然将 <code>a</code> 对象的<code>fn</code> 方法赋值给变量<code>f</code>了，但是没有调用，<strong>this 永远指向最后调用它的那个对象</strong>。由于刚刚的 <code>f</code> 并没有调用，所以 <code>fn()</code> 最后仍然是被 <code>window</code> 调用的。所以 <code>this</code> 指向的也就是 <code>window</code>。</p>
+<ul>
+<li><p><strong>例子5</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> name = <span class="string">"fnName"</span>;</span><br><span class="line">      innerFunction();</span><br><span class="line">      <span class="function"><span class="keyword">function</span> <span class="title">innerFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// windowsName</span></span><br><span class="line">      &#125;</span><br><span class="line"> &#125;</span><br><span class="line">fn();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  记住：<strong>this永远指向最后调用它的那个对象！！！！</strong></p>
+<h2 id="改变this指向"><a href="#改变this指向" class="headerlink" title="改变this指向"></a>改变this指向</h2><ul>
+<li>使用 ES6 的箭头函数</li>
+<li>在函数内部使用 <code>_this = this</code></li>
+<li>使用 <code>apply</code>、<code>call</code>、<code>bind</code></li>
+<li>new 实例化一个对象</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">        name : <span class="string">"aName"</span>,</span><br><span class="line">        func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">        &#125;,</span><br><span class="line">        func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            setTimeout( <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.func1()</span><br><span class="line">            &#125;,<span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">a.func2();     <span class="comment">// this.func1 is not a function</span></span><br></pre></td></tr></table></figure>
+<p>是会报错，因为最后调用 <code>setTimeout</code> 的对象是 <code>window</code>，但是在 window<code></code>中并没有 <code>func1</code> 函数。</p>
+<h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><p><strong>箭头函数里面根本没有自己的<code>this</code>，而是引用外层的<code>this</code>。</strong></p>
+<p><strong>箭头函数的this始终指向函数定义时的this，而非执行时。</strong> 箭头函数需要记着这句话：“箭头函数中没有 this 绑定，必须通过查找作用域链来决定其值。如果箭头函数被非箭头函数包含，则 this 绑定的是最近一层非箭头函数的 this，否则，this 为 undefined”。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name : <span class="string">"aName"</span>,</span><br><span class="line">       func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">       &#125;,</span><br><span class="line">       func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           setTimeout( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">               <span class="keyword">this</span>.func1()</span><br><span class="line">           &#125;,<span class="number">100</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br><span class="line">a.func2();     <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
+<h2 id="在函数内部使用-this-this"><a href="#在函数内部使用-this-this" class="headerlink" title="在函数内部使用 _this = this"></a>在函数内部使用 <code>_this = this</code></h2><p>在不使用es6的情况下，那么这种方式应该是最简单的不会出错的方式了，我们是先将调用这个函数的对象保存在变量 <code>_this</code> 中，然后在函数中都使用这个 <code>_this</code>，这样 <code>_this</code> 就不会改变了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name : <span class="string">"aName"</span>,</span><br><span class="line">       func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">       &#125;,</span><br><span class="line">       func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="keyword">var</span> _this = <span class="keyword">this</span>;</span><br><span class="line">           setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">               _this.func1()</span><br><span class="line">           &#125;,<span class="number">100</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br><span class="line">a.func2();  <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
+<p>在 <code>func2</code> 中，首先设置 <code>var _this = this;</code>，这里的 <code>this</code> 是调用 <code>func2</code> 的对象 <code>a</code>，为了防止在 <code>func2</code> 中的 setTimeout 被 <code>window</code> 调用而导致的在 <code>setTimeout</code> 中的 <code>this</code> 为 <code>window</code>。我们将 <code>this</code>(指向变量 <code>a</code>) 赋值给一个变量 <code>_this</code>，这样，在 <code>func2</code> 中我们使用 <code>_this</code> 就是指向对象 <code>a</code> 了。</p>
+<h2 id="使用-apply、call、bind"><a href="#使用-apply、call、bind" class="headerlink" title="使用 apply、call、bind"></a>使用 apply、call、bind</h2><h3 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// 'aName'</span></span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">          <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).apply(a,[<span class="string">'test1'</span>,<span class="string">'test2'</span>]);</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();</span><br></pre></td></tr></table></figure>
+<h3 id="call"><a href="#call" class="headerlink" title="call"></a>call</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).call(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>);</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
+<h3 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).bind(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>)();</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
+<p>### </p>
+<h3 id="new-的过程"><a href="#new-的过程" class="headerlink" title="new 的过程"></a>new 的过程</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// new myFunction</span></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">   <span class="comment">// const obj = &#123;&#125;;</span></span><br><span class="line">   <span class="comment">// obj.__proto__ = myFunction.propertype;</span></span><br><span class="line">    <span class="keyword">const</span> obj = <span class="built_in">Object</span>.create(myFunction.prototype)</span><br><span class="line">    <span class="keyword">const</span> result = myFunction.call(obj,...arguments);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : obj;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>JS</category>
@@ -310,6 +366,28 @@
       </categories>
   </entry>
   <entry>
+    <title>快速理解js继承原理</title>
+    <url>/chayaBlog/2018/03/10/js/%E7%BB%A7%E6%89%BF%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="JS继承原理"><a href="#JS继承原理" class="headerlink" title="JS继承原理"></a>JS继承原理</h2><p>js 的继承是通过原型链来实现的</p>
+<h3 id="什么是原型链呢？"><a href="#什么是原型链呢？" class="headerlink" title="什么是原型链呢？"></a>什么是原型链呢？</h3><p>首先说一下 <code>prototype</code> 属性，在js中所有的方法都会有一个<code>prototype</code>属性,这个属性就是方法的原型对象</p>
+<p>比方说：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'run'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> Animal()</span><br></pre></td></tr></table></figure>
+<p>当我们声明 Animal 这个方法的时候， js引擎会赋予Animal一个原型对象，打印出来可以看到</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(Animal.prototype)</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    constructor:这个指向 Animal这个方法,</span></span><br><span class="line"><span class="comment">    __proto__:这个指向Object.prototype</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">**/</span></span><br></pre></td></tr></table></figure>
+<p>在我们构造实例的时候,cat的<code>__proto__</code> 会指向 Animal 的 <code>prototype</code>, js引擎 在访问对象的属性的时候会先查看当前对象是否这个属性，如果没有则会查看改对象的 <code>__proto__</code> 是否有这个属性，访问会沿着原型链访问下去直到找到属性或者 <code>__proto__</code>为null为止。</p>
+<h3 id="如何实现继承"><a href="#如何实现继承" class="headerlink" title="如何实现继承"></a>如何实现继承</h3><p>这里只讲通用的一种继承的写法</p>
+<p>这是父类：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>子类的写法：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Cat</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 这里通过调用父类并把this绑定到父类上</span></span><br><span class="line">    Animal.call(<span class="keyword">this</span>,name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// 这里其实本质要做的就是让Cat.prototype.__proto__=Animal.prototype</span></span><br><span class="line">    <span class="comment">// Cat.prototype =Object.create(Animal.prototype) 相当于做了如下的工作</span></span><br><span class="line">    <span class="comment">// Cat.prototype.__proto__ = Animal.prototype;</span></span><br><span class="line"></span><br><span class="line">    Cat.prototype = <span class="built_in">Object</span>.create(Animal.prototype);</span><br><span class="line">    Cat.prototype.constructor = Cat;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<h3 id="ES6-的写法："><a href="#ES6-的写法：" class="headerlink" title="ES6 的写法："></a>ES6 的写法：</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">Class Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    run()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class Cat extends Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="comment">// ES6要求子类构造函数中必须要调用这个方法，这个方式是用来调用父类的constructor的</span></span><br><span class="line">        <span class="keyword">super</span>(name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实es6的写法本质上上面的语法糖，使用之后代码对代码的可读性有了明显的提高，但是我们还是需要知道JS继承的原理是怎样的。</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+  </entry>
+  <entry>
     <title>JS 类型判断</title>
     <url>/chayaBlog/2020/02/24/js/%E7%B1%BB%E5%9E%8B%E5%88%A4%E6%96%AD/</url>
     <content><![CDATA[<h2 id="JS类型判断"><a href="#JS类型判断" class="headerlink" title="JS类型判断"></a>JS类型判断</h2><h4 id="js7种数据类型"><a href="#js7种数据类型" class="headerlink" title="js7种数据类型"></a>js7种数据类型</h4><blockquote>
@@ -363,84 +441,6 @@
 <p>对于 Object 对象，直接调用 toString()  就能返回 [object Object] 。而对于其他对象，则需要通过 call / apply 来调用才能返回正确的类型信息。</p>
 </blockquote>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">''</span>);   <span class="comment">// "[object String]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>);    <span class="comment">// "[object Number]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>); <span class="comment">// "[object Boolean]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>()); <span class="comment">// "[object Symbol]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>); <span class="comment">// "[object Undefined]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>); <span class="comment">// "[object Null]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()); <span class="comment">// "[object Function]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()); <span class="comment">// "[object Date]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]); <span class="comment">// "[object Array]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()); <span class="comment">// "[object RegExp]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()); <span class="comment">// "[object Error]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>); <span class="comment">// "[object HTMLDocument]"</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>); <span class="comment">// "[object global]" window 是全局对象 global 的引用</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>JS</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>JS This 指向</title>
-    <url>/chayaBlog/2020/01/19/js/this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="this-、apply、-call、bind"><a href="#this-、apply、-call、bind" class="headerlink" title="this 、apply、 call、bind"></a>this 、apply、 call、bind</h1><h2 id="this的指向"><a href="#this的指向" class="headerlink" title="this的指向"></a>this的指向</h2><p>在ES5中，<strong>this永远指向最后调用它的那个对象</strong></p>
-<p><strong>匿名函数的 this 永远指向 window</strong></p>
-<ul>
-<li><strong>例子1</strong></li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowName"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">"aName"</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// windowsName</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"inner"</span>,<span class="keyword">this</span>); <span class="comment">// inner: Window</span></span><br><span class="line">&#125;</span><br><span class="line">a();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"outer:"</span>,  <span class="keyword">this</span>); <span class="comment">// outer: Window</span></span><br></pre></td></tr></table></figure>
-<p>“<strong>this 永远指向最后调用它的那个对象</strong>”，调用 <code>a</code> 的地方 <code>a();</code>，前面没有调用的对象那么就是全局对象 window，这就相当于是 <code>window.a()</code>；注意，这里我们没有使用严格模式，如果使用严格模式的话，全局对象就是 <code>undefined</code>，那么就会报错 <code>Uncaught TypeError: Cannot read property &#39;name&#39; of undefined</code>。</p>
-<ul>
-<li><p><strong>例子2</strong></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">     name: <span class="string">"aName"</span>,</span><br><span class="line">     fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// aName</span></span><br><span class="line">      &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> a.fn();</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  函数<code>fn</code>是对象a调用的，所有<code>this</code>指向的就是<code>a</code></p>
-<ul>
-<li><strong>例子3</strong></li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">      name: <span class="string">"aName"</span>,</span><br><span class="line">      fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// aName</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">window</span>.a.fn();</span><br></pre></td></tr></table></figure>
-<p>因为<strong>this永远指向最后调用它的那个对象</strong>，所以<code>fn</code>中的<code>this</code>还是指向<code>a</code></p>
-<ul>
-<li><strong>例子4</strong></li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name :<span class="string">"aName"</span>,</span><br><span class="line">       fn : <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// windowsName</span></span><br><span class="line">       &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">var</span> f = a.fn;</span><br><span class="line"> f();</span><br></pre></td></tr></table></figure>
-<p>因为虽然将 <code>a</code> 对象的<code>fn</code> 方法赋值给变量<code>f</code>了，但是没有调用，<strong>this 永远指向最后调用它的那个对象</strong>。由于刚刚的 <code>f</code> 并没有调用，所以 <code>fn()</code> 最后仍然是被 <code>window</code> 调用的。所以 <code>this</code> 指向的也就是 <code>window</code>。</p>
-<ul>
-<li><p><strong>例子5</strong></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> name = <span class="string">"fnName"</span>;</span><br><span class="line">      innerFunction();</span><br><span class="line">      <span class="function"><span class="keyword">function</span> <span class="title">innerFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);      <span class="comment">// windowsName</span></span><br><span class="line">      &#125;</span><br><span class="line"> &#125;</span><br><span class="line">fn();</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>  记住：<strong>this永远指向最后调用它的那个对象！！！！</strong></p>
-<h2 id="改变this指向"><a href="#改变this指向" class="headerlink" title="改变this指向"></a>改变this指向</h2><ul>
-<li>使用 ES6 的箭头函数</li>
-<li>在函数内部使用 <code>_this = this</code></li>
-<li>使用 <code>apply</code>、<code>call</code>、<code>bind</code></li>
-<li>new 实例化一个对象</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">        name : <span class="string">"aName"</span>,</span><br><span class="line">        func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">        &#125;,</span><br><span class="line">        func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            setTimeout( <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.func1()</span><br><span class="line">            &#125;,<span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">a.func2();     <span class="comment">// this.func1 is not a function</span></span><br></pre></td></tr></table></figure>
-<p>是会报错，因为最后调用 <code>setTimeout</code> 的对象是 <code>window</code>，但是在 window<code></code>中并没有 <code>func1</code> 函数。</p>
-<h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><p><strong>箭头函数里面根本没有自己的<code>this</code>，而是引用外层的<code>this</code>。</strong></p>
-<p><strong>箭头函数的this始终指向函数定义时的this，而非执行时。</strong> 箭头函数需要记着这句话：“箭头函数中没有 this 绑定，必须通过查找作用域链来决定其值。如果箭头函数被非箭头函数包含，则 this 绑定的是最近一层非箭头函数的 this，否则，this 为 undefined”。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name : <span class="string">"aName"</span>,</span><br><span class="line">       func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">       &#125;,</span><br><span class="line">       func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           setTimeout( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">               <span class="keyword">this</span>.func1()</span><br><span class="line">           &#125;,<span class="number">100</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br><span class="line">a.func2();     <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
-<h2 id="在函数内部使用-this-this"><a href="#在函数内部使用-this-this" class="headerlink" title="在函数内部使用 _this = this"></a>在函数内部使用 <code>_this = this</code></h2><p>在不使用es6的情况下，那么这种方式应该是最简单的不会出错的方式了，我们是先将调用这个函数的对象保存在变量 <code>_this</code> 中，然后在函数中都使用这个 <code>_this</code>，这样 <code>_this</code> 就不会改变了。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">"windowsName"</span>;</span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">       name : <span class="string">"aName"</span>,</span><br><span class="line">       func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)     </span><br><span class="line">       &#125;,</span><br><span class="line">       func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">           <span class="keyword">var</span> _this = <span class="keyword">this</span>;</span><br><span class="line">           setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">               _this.func1()</span><br><span class="line">           &#125;,<span class="number">100</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br><span class="line">a.func2();  <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
-<p>在 <code>func2</code> 中，首先设置 <code>var _this = this;</code>，这里的 <code>this</code> 是调用 <code>func2</code> 的对象 <code>a</code>，为了防止在 <code>func2</code> 中的 setTimeout 被 <code>window</code> 调用而导致的在 <code>setTimeout</code> 中的 <code>this</code> 为 <code>window</code>。我们将 <code>this</code>(指向变量 <code>a</code>) 赋值给一个变量 <code>_this</code>，这样，在 <code>func2</code> 中我们使用 <code>_this</code> 就是指向对象 <code>a</code> 了。</p>
-<h2 id="使用-apply、call、bind"><a href="#使用-apply、call、bind" class="headerlink" title="使用 apply、call、bind"></a>使用 apply、call、bind</h2><h3 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name); <span class="comment">// 'aName'</span></span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">          <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).apply(a,[<span class="string">'test1'</span>,<span class="string">'test2'</span>]);</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();</span><br></pre></td></tr></table></figure>
-<h3 id="call"><a href="#call" class="headerlink" title="call"></a>call</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).call(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>);</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
-<h3 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    name : <span class="string">"aName"</span>,</span><br><span class="line">    func1: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="keyword">this</span>.name)</span><br><span class="line">     &#125;,</span><br><span class="line">    func2: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         (<span class="function"><span class="keyword">function</span>(<span class="params">str1,str2</span>) </span>&#123;</span><br><span class="line">           <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;str1&#125;</span> &amp; <span class="subst">$&#123;str2&#125;</span>`</span>); <span class="comment">// 'test1 &amp; test2'</span></span><br><span class="line">           <span class="keyword">this</span>.func1();</span><br><span class="line">         &#125;).bind(a,<span class="string">'test1'</span>,<span class="string">'test2'</span>)();</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">a.func2();        <span class="comment">// aName</span></span><br></pre></td></tr></table></figure>
-<p>### </p>
-<h3 id="new-的过程"><a href="#new-的过程" class="headerlink" title="new 的过程"></a>new 的过程</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// new myFunction</span></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">   <span class="comment">// const obj = &#123;&#125;;</span></span><br><span class="line">   <span class="comment">// obj.__proto__ = myFunction.propertype;</span></span><br><span class="line">    <span class="keyword">const</span> obj = <span class="built_in">Object</span>.create(myFunction.prototype)</span><br><span class="line">    <span class="keyword">const</span> result = myFunction.call(obj,...arguments);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : obj;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>JS</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>快速理解js继承原理</title>
-    <url>/chayaBlog/2018/03/10/js/%E7%BB%A7%E6%89%BF%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h2 id="JS继承原理"><a href="#JS继承原理" class="headerlink" title="JS继承原理"></a>JS继承原理</h2><p>js 的继承是通过原型链来实现的</p>
-<h3 id="什么是原型链呢？"><a href="#什么是原型链呢？" class="headerlink" title="什么是原型链呢？"></a>什么是原型链呢？</h3><p>首先说一下 <code>prototype</code> 属性，在js中所有的方法都会有一个<code>prototype</code>属性,这个属性就是方法的原型对象</p>
-<p>比方说：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'run'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> Animal()</span><br></pre></td></tr></table></figure>
-<p>当我们声明 Animal 这个方法的时候， js引擎会赋予Animal一个原型对象，打印出来可以看到</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(Animal.prototype)</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    constructor:这个指向 Animal这个方法,</span></span><br><span class="line"><span class="comment">    __proto__:这个指向Object.prototype</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">**/</span></span><br></pre></td></tr></table></figure>
-<p>在我们构造实例的时候,cat的<code>__proto__</code> 会指向 Animal 的 <code>prototype</code>, js引擎 在访问对象的属性的时候会先查看当前对象是否这个属性，如果没有则会查看改对象的 <code>__proto__</code> 是否有这个属性，访问会沿着原型链访问下去直到找到属性或者 <code>__proto__</code>为null为止。</p>
-<h3 id="如何实现继承"><a href="#如何实现继承" class="headerlink" title="如何实现继承"></a>如何实现继承</h3><p>这里只讲通用的一种继承的写法</p>
-<p>这是父类：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Animal.prototype.run = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>子类的写法：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Cat</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 这里通过调用父类并把this绑定到父类上</span></span><br><span class="line">    Animal.call(<span class="keyword">this</span>,name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// 这里其实本质要做的就是让Cat.prototype.__proto__=Animal.prototype</span></span><br><span class="line">    <span class="comment">// Cat.prototype =Object.create(Animal.prototype) 相当于做了如下的工作</span></span><br><span class="line">    <span class="comment">// Cat.prototype.__proto__ = Animal.prototype;</span></span><br><span class="line"></span><br><span class="line">    Cat.prototype = <span class="built_in">Object</span>.create(Animal.prototype);</span><br><span class="line">    Cat.prototype.constructor = Cat;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
-<h3 id="ES6-的写法："><a href="#ES6-的写法：" class="headerlink" title="ES6 的写法："></a>ES6 的写法：</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">Class Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    run()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name + <span class="string">' is run'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class Cat extends Animal&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name)&#123;</span><br><span class="line">        <span class="comment">// ES6要求子类构造函数中必须要调用这个方法，这个方式是用来调用父类的constructor的</span></span><br><span class="line">        <span class="keyword">super</span>(name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其实es6的写法本质上上面的语法糖，使用之后代码对代码的可读性有了明显的提高，但是我们还是需要知道JS继承的原理是怎样的。</p>
 ]]></content>
       <categories>
         <category>JS</category>
@@ -819,52 +819,6 @@
       </categories>
   </entry>
   <entry>
-    <title>二叉树遍历</title>
-    <url>/chayaBlog/2020/05/17/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86/</url>
-    <content><![CDATA[<h3 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h3><p>二叉树遍历：前序、中序、后序、层次遍历、深度优先、广度优先<br>二叉树遍历分为深度优先遍历和广度优先遍历，深度遍历有前序、中序以及后序三种遍历方法，广度优先遍历即我们平常所说的层次遍历。</p>
-<h5 id="四种主要的遍历思想为："><a href="#四种主要的遍历思想为：" class="headerlink" title="四种主要的遍历思想为："></a>四种主要的遍历思想为：</h5><ol>
-<li><p>前序遍历：根结点 —&gt; 左子树 —&gt; 右子树</p>
-</li>
-<li><p>中序遍历：左子树—&gt; 根结点 —&gt; 右子树</p>
-</li>
-<li><p>后序遍历：左子树 —&gt; 右子树 —&gt; 根结点</p>
-</li>
-<li><p>层次遍历：只需按层次遍历即可</p>
-</li>
-</ol>
-<p>例如 : 以下二叉树</p>
-<pre><code>     1
-   /   \
-  2     3
- /\      \
-4  5      6
-   /\
-  7  8
-</code></pre><p>前序遍历：1  2  4  5  7  8  3  6 </p>
-<p>中序遍历：4  2  7  5  8  1  3  6</p>
-<p>后序遍历：4  7  8  5  2  6  3  1</p>
-<p>层次遍历：1  2  3  4  5  6  7  8</p>
-<ul>
-<li>前序遍历</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> preorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>中序遍历</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> inorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  <span class="keyword">let</span> node = root;</span><br><span class="line">  <span class="keyword">while</span> (node || stuck.length) &#123;</span><br><span class="line">    <span class="keyword">while</span> (node) &#123;</span><br><span class="line">      stuck.push(node);</span><br><span class="line">      node = node.left;</span><br><span class="line">    &#125;</span><br><span class="line">    node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node = node.right;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>后序遍历 </p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 和前序思路类似</span></span><br><span class="line"><span class="keyword">const</span> postorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.unshift(node.val);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>层次遍历</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> levelOrder = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> currentStuckLength = stuck.length;</span><br><span class="line">    result.push([]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; currentStuckLength; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> node = stuck.shift();</span><br><span class="line">      result[result.length - <span class="number">1</span>].push(node.val);</span><br><span class="line">      node.left &amp;&amp;  stuck.push(node.left);</span><br><span class="line">      node.right &amp;&amp;  stuck.push(node.right);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-  </entry>
-  <entry>
     <title>快速理解 js 模块规范</title>
     <url>/chayaBlog/2018/10/13/%E6%A8%A1%E5%9D%97%E5%8C%96/%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83/</url>
     <content><![CDATA[<p>随着前端的日益壮大，前端模块化的编程成为了一个非常重要的东西，这可以更好的帮我们构造工程化的前端项目。</p>
@@ -919,9 +873,68 @@
       </categories>
   </entry>
   <entry>
+    <title>二叉树遍历</title>
+    <url>/chayaBlog/2020/05/17/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86/</url>
+    <content><![CDATA[<h3 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h3><p>二叉树遍历：前序、中序、后序、层次遍历、深度优先、广度优先<br>二叉树遍历分为深度优先遍历和广度优先遍历，深度遍历有前序、中序以及后序三种遍历方法，广度优先遍历即我们平常所说的层次遍历。</p>
+<h5 id="四种主要的遍历思想为："><a href="#四种主要的遍历思想为：" class="headerlink" title="四种主要的遍历思想为："></a>四种主要的遍历思想为：</h5><ol>
+<li><p>前序遍历：根结点 —&gt; 左子树 —&gt; 右子树</p>
+</li>
+<li><p>中序遍历：左子树—&gt; 根结点 —&gt; 右子树</p>
+</li>
+<li><p>后序遍历：左子树 —&gt; 右子树 —&gt; 根结点</p>
+</li>
+<li><p>层次遍历：只需按层次遍历即可</p>
+</li>
+</ol>
+<p>例如 : 以下二叉树</p>
+<pre><code>     1
+   /   \
+  2     3
+ /\      \
+4  5      6
+   /\
+  7  8
+</code></pre><p>前序遍历：1  2  4  5  7  8  3  6 </p>
+<p>中序遍历：4  2  7  5  8  1  3  6</p>
+<p>后序遍历：4  7  8  5  2  6  3  1</p>
+<p>层次遍历：1  2  3  4  5  6  7  8</p>
+<ul>
+<li>前序遍历</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> preorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>中序遍历</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> inorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  <span class="keyword">let</span> node = root;</span><br><span class="line">  <span class="keyword">while</span> (node || stuck.length) &#123;</span><br><span class="line">    <span class="keyword">while</span> (node) &#123;</span><br><span class="line">      stuck.push(node);</span><br><span class="line">      node = node.left;</span><br><span class="line">    &#125;</span><br><span class="line">    node = stuck.pop();</span><br><span class="line">    result.push(node.val);</span><br><span class="line">    node = node.right;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>后序遍历 </p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 和前序思路类似</span></span><br><span class="line"><span class="keyword">const</span> postorderTraversal = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> node = stuck.pop();</span><br><span class="line">    result.unshift(node.val);</span><br><span class="line">    node.left &amp;&amp; stuck.push(node.left);</span><br><span class="line">    node.right &amp;&amp; stuck.push(node.right);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>层次遍历</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> levelOrder = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stuck = [], result = [];</span><br><span class="line">  root &amp;&amp; stuck.push(root);</span><br><span class="line">  <span class="keyword">while</span> (stuck.length) &#123;</span><br><span class="line">    <span class="keyword">let</span> currentStuckLength = stuck.length;</span><br><span class="line">    result.push([]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; currentStuckLength; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> node = stuck.shift();</span><br><span class="line">      result[result.length - <span class="number">1</span>].push(node.val);</span><br><span class="line">      node.left &amp;&amp;  stuck.push(node.left);</span><br><span class="line">      node.right &amp;&amp;  stuck.push(node.right);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
     <title>判断两颗树是否对称</title>
     <url>/chayaBlog/2020/04/24/%E7%AE%97%E6%B3%95/%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
     <content><![CDATA[<h3 id="判断两颗树是否对称"><a href="#判断两颗树是否对称" class="headerlink" title="判断两颗树是否对称"></a>判断两颗树是否对称</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isSymmetric = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> isSymmetricTree = <span class="function">(<span class="params">tree1, tree2</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!tree1 &amp;&amp; !tree2) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (!tree1 || !tree2) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (tree1.val !== tree2.val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> isSymmetricTree(tree1.left, tree2.right) &amp;&amp; isSymmetricTree(tree1.right, tree2.left);</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">return</span> isSymmetricTree(root, root);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>排序算法</title>
+    <url>/chayaBlog/2020/04/15/%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F/</url>
+    <content><![CDATA[<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>冒泡排序从小到大排序：一开始交换的区间为0~N-1，将第1个数和第2个数进行比较，前面大于后面，交换两个数，否则不交换。再比较第2个数和第三个数，前面大于后面，交换两个数否则不交换。依次进行，最大的数会放在数组最后的位置。然后将范围变为0~N-2，数组第二大的数会放在数组倒数第二的位置。依次进行整个交换过程，最后范围只剩一个数时数组即为有序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = i + <span class="number">1</span>; j &lt; arr.length; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (arr[i] &gt; arr[j]) &#123;</span><br><span class="line">        [arr[i], arr[j]] = [arr[j], arr[i]];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>平均时间复杂度:O(n²)</strong><br><strong>最坏时间复杂度:O(n²)</strong><br><strong>最好时间复杂度:O(n)</strong></p>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序从小到大排序：在数组中随机选一个数（默认数组首个元素），数组中小于等于此数的放在左边部分，大于此数的放在右边部分，这个操作确保了这个数是处于正确位置的，再对左边部分数组和右边部分数组递归调用快速排序，重复这个过程。<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">quickSort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">_quickSort</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">let</span> i = left, j = right, pivot = arr[left];</span><br><span class="line">    <span class="keyword">while</span> (i !== j) &#123;</span><br><span class="line">      <span class="keyword">while</span> (j &gt; i &amp;&amp; arr[j] &gt;= pivot) &#123;</span><br><span class="line">        j--;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">while</span> (j &gt; i &amp;&amp; arr[i] &lt;= pivot) &#123;</span><br><span class="line">        i++;</span><br><span class="line">      &#125;</span><br><span class="line">      [arr[i], arr[j]] = [arr[j], arr[i]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt; i) &#123;</span><br><span class="line">      [arr[left], arr[i]] = [arr[i], arr[left]];</span><br><span class="line">    &#125;</span><br><span class="line">    _quickSort(left, i - <span class="number">1</span>);</span><br><span class="line">    _quickSort(i + <span class="number">1</span>, right);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _quickSort(<span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>平均时间复杂度:O(nlogn)</strong><br><strong>最坏时间复杂度:O(n²)</strong><br><strong>最好时间复杂度:O(nlogn)</strong></p>
 ]]></content>
       <categories>
         <category>算法</category>
@@ -1104,19 +1117,6 @@
 ]]></content>
       <categories>
         <category>Web安全</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>排序算法</title>
-    <url>/chayaBlog/2020/04/15/%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F/</url>
-    <content><![CDATA[<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>冒泡排序从小到大排序：一开始交换的区间为0~N-1，将第1个数和第2个数进行比较，前面大于后面，交换两个数，否则不交换。再比较第2个数和第三个数，前面大于后面，交换两个数否则不交换。依次进行，最大的数会放在数组最后的位置。然后将范围变为0~N-2，数组第二大的数会放在数组倒数第二的位置。依次进行整个交换过程，最后范围只剩一个数时数组即为有序</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = i + <span class="number">1</span>; j &lt; arr.length; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (arr[i] &gt; arr[j]) &#123;</span><br><span class="line">        [arr[i], arr[j]] = [arr[j], arr[i]];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>平均时间复杂度:O(n²)</strong><br><strong>最坏时间复杂度:O(n²)</strong><br><strong>最好时间复杂度:O(n)</strong></p>
-<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序从小到大排序：在数组中随机选一个数（默认数组首个元素），数组中小于等于此数的放在左边部分，大于此数的放在右边部分，这个操作确保了这个数是处于正确位置的，再对左边部分数组和右边部分数组递归调用快速排序，重复这个过程。<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">quickSort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">_quickSort</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">let</span> i = left, j = right, pivot = arr[left];</span><br><span class="line">    <span class="keyword">while</span> (i !== j) &#123;</span><br><span class="line">      <span class="keyword">while</span> (j &gt; i &amp;&amp; arr[j] &gt;= pivot) &#123;</span><br><span class="line">        j--;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">while</span> (j &gt; i &amp;&amp; arr[i] &lt;= pivot) &#123;</span><br><span class="line">        i++;</span><br><span class="line">      &#125;</span><br><span class="line">      [arr[i], arr[j]] = [arr[j], arr[i]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt; i) &#123;</span><br><span class="line">      [arr[left], arr[i]] = [arr[i], arr[left]];</span><br><span class="line">    &#125;</span><br><span class="line">    _quickSort(left, i - <span class="number">1</span>);</span><br><span class="line">    _quickSort(i + <span class="number">1</span>, right);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _quickSort(<span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>平均时间复杂度:O(nlogn)</strong><br><strong>最坏时间复杂度:O(n²)</strong><br><strong>最好时间复杂度:O(nlogn)</strong></p>
-]]></content>
-      <categories>
-        <category>算法</category>
       </categories>
   </entry>
   <entry>
